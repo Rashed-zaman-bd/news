@@ -1,77 +1,143 @@
 <template>
   <header class="w-full bg-white shadow-sm">
-    <!-- Desktop Top Bar -->
-    <div
-      class="hidden lg:flex max-w-7xl mx-auto items-center justify-between py-4 px-4 border-b border-gray-200"
-    >
-      <div class="flex items-center space-x-2 text-base text-gray-600 font-medium">
-        <i class="bi bi-calendar3"></i>
-        <span>{{ formattedDate }}</span>
+
+    <!-- =========================
+         DESKTOP TOP BAR
+    ========================== -->
+    <div class="hidden lg:grid max-w-7xl mx-auto grid-cols-2 items-center gap-6 py-4 px-4 border-b border-gray-200">
+      <!-- Left Side: Date + Logo -->
+      <div class="grid grid-cols-2 items-center">
+
+        <!-- Date -->
+        <div class="flex items-center space-x-2 text-base text-gray-600 font-medium">
+          <i class="bi bi-calendar3"></i>
+          <span>{{ formattedDate }}</span>
+        </div>
+
+        <!-- Logo -->
+        <div class="flex justify-center">
+          <a href="/" class="shrink-0">
+            <img src="/images/khobor logo.png" alt="Khobor Logo" class="h-24 w-auto object-contain" />
+          </a>
+        </div>
+
       </div>
 
-      <a href="/" class="shrink-0">
-        <img
-          src="/images/khobor logo.png"
-          alt="Khobor Logo"
-          class="h-24 w-auto object-contain"
-        />
-      </a>
 
-      <div class="flex items-center space-x-4">
-        <a href="#">
-          <img
-            src="/images/media.jpg"
-            class="w-36 h-24 object-cover rounded"
-          />
+      <!-- Right Side: Media 1 + Media 2 -->
+      <div class="flex items-center justify-end gap-6">
+
+        <!-- Media 1 -->
+        <a href="#" class="flex items-center gap-3 group min-w-0 w-64">
+          <!-- Image -->
+          <div class="relative shrink-0">
+            <img src="/images/media.jpg" alt="Media" class="w-24 h-16 object-cover rounded" />
+
+            <!-- Play Icon -->
+            <div class="absolute inset-0 flex items-center justify-center">
+              <i class="bi bi-play-circle-fill text-white text-2xl drop-shadow"></i>
+            </div>
+          </div>
+
+          <!-- Title -->
+          <p class="text-sm font-medium text-gray-700 leading-5
+               group-hover:text-red-600 transition-colors">
+            বিদ্যুৎ সাশ্রয়ে দেশের সব বিপণিবিতান
+          </p>
         </a>
 
-        <a href="#">
-          <img
-            src="/images/media.jpg"
-            class="w-36 h-24 object-cover rounded"
-          />
+
+        <!-- Media 2 -->
+        <a href="#" class="flex items-center gap-3 group min-w-0 w-64">
+          <!-- Image -->
+          <div class="relative shrink-0">
+            <img src="/images/media.jpg" alt="Media" class="w-24 h-16 object-cover rounded" />
+
+            <!-- Play Icon -->
+            <div class="absolute inset-0 flex items-center justify-center">
+              <i class="bi bi-play-circle-fill text-white text-2xl drop-shadow"></i>
+            </div>
+          </div>
+
+          <!-- Title -->
+          <p class="text-sm font-medium text-gray-700 leading-5
+               group-hover:text-red-600 transition-colors">
+            বিদ্যুৎ সাশ্রয়ে দেশের সব বিপণিবিতান,
+            মার্কেট ও দোকানপাট খোলার
+          </p>
         </a>
+
       </div>
     </div>
 
-    <!-- Spacer when desktop menu becomes fixed -->
-    <div
-      v-if="isDesktopSticky"
-      class="hidden lg:block h-14"
-    ></div>
+    <!-- =========================
+         DESKTOP FIXED SPACER
+    ========================== -->
+    <div v-if="isDesktopSticky" class="hidden lg:block h-14"></div>
 
-    <!-- Navigation -->
-    <nav
-      class="max-w-7xl mx-auto bg-white border-b border-gray-200 z-50 transition-all duration-300 ease-in-out"
-      :class="navClasses"
-    >
-      <div
-        class="container mx-auto px-4 flex items-center justify-between h-14"
-      >
-        <!-- Mobile Logo -->
-        <a href="/" class="lg:hidden">
-          <img
-            src="/images/khobor logo.png"
-            class="h-8"
-          />
+
+    <!-- =========================
+         NAVIGATION
+    ========================== -->
+    <nav class="bg-white border-b border-gray-200 z-50
+             transition-transform duration-300 ease-in-out" :class="navClasses">
+
+      <!-- NAV CONTAINER -->
+      <div class="max-w-7xl mx-auto px-4 h-14
+               flex items-center justify-between">
+
+        <!-- =========================
+             MOBILE LOGO
+        ========================== -->
+        <a href="/" class="lg:hidden shrink-0">
+          <img src="/images/khobor logo.png" alt="Khobor Logo" class="h-9 w-auto" />
         </a>
 
-        <!-- Desktop Menu -->
-        <div
-          class="hidden lg:flex items-center space-x-6 text-lg font-medium text-gray-800"
-        >
-          <a href="#" class="hover:text-red-600">সর্বশেষ</a>
-          <a href="#" class="hover:text-red-600">বাংলাদেশ</a>
-          <a href="#" class="hover:text-red-600">রাজনীতি</a>
-          <a href="#" class="hover:text-red-600">বিশ্ব</a>
-          <a href="#" class="hover:text-red-600">বাণিজ্য</a>
-          <a href="#" class="hover:text-red-600">মতামত</a>
-          <a href="#" class="hover:text-red-600">খেলা</a>
-          <a href="#" class="hover:text-red-600">বিনোদন</a>
+
+        <!-- =========================
+             DESKTOP MENU
+        ========================== -->
+        <div class="hidden lg:flex items-center space-x-6
+                 text-lg font-medium text-gray-800">
+          <a href="#" class="hover:text-red-600 transition-colors">
+            সর্বশেষ
+          </a>
+
+          <a href="#" class="hover:text-red-600 transition-colors">
+            বাংলাদেশ
+          </a>
+
+          <a href="#" class="hover:text-red-600 transition-colors">
+            রাজনীতি
+          </a>
+
+          <a href="#" class="hover:text-red-600 transition-colors">
+            বিশ্ব
+          </a>
+
+          <a href="#" class="hover:text-red-600 transition-colors">
+            বাণিজ্য
+          </a>
+
+          <a href="#" class="hover:text-red-600 transition-colors">
+            মতামত
+          </a>
+
+          <a href="#" class="hover:text-red-600 transition-colors">
+            খেলা
+          </a>
+
+          <a href="#" class="hover:text-red-600 transition-colors">
+            বিনোদন
+          </a>
         </div>
 
-        <!-- Right -->
-        <div class="flex items-center space-x-4 ml-auto text-base font-medium">
+
+        <!-- =========================
+             DESKTOP RIGHT
+        ========================== -->
+        <div class="hidden lg:flex items-center space-x-4
+                 ml-auto text-base font-medium">
           <button class="flex items-center gap-1 hover:text-red-600">
             <i class="bi bi-search"></i>
             <span>খুঁজুন</span>
@@ -81,34 +147,129 @@
             <i class="bi bi-person-fill"></i>
             <span>Login</span>
           </button>
+        </div>
 
-          <button class="">
-            <svg
-              class="w-6 h-6"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M4 6h16M4 12h16M4 18h16"
-              />
-            </svg>
+
+        <!-- =========================
+             MOBILE RIGHT
+        ========================== -->
+        <div class="flex lg:hidden items-center gap-4">
+
+          <!-- Search -->
+          <button type="button" class="text-gray-700 hover:text-red-600">
+            <i class="bi bi-search text-xl"></i>
           </button>
+
+
+          <!-- Login -->
+          <button type="button" class="text-gray-700 hover:text-red-600">
+            <i class="bi bi-person-fill text-xl"></i>
+          </button>
+
+
+          <!-- Hamburger -->
+          <button type="button" class="text-gray-700 hover:text-red-600" @click="mobileMenuOpen = !mobileMenuOpen">
+            <i v-if="!mobileMenuOpen" class="bi bi-list text-3xl"></i>
+
+            <i v-else class="bi bi-x-lg text-2xl"></i>
+          </button>
+
+        </div>
+
+      </div>
+
+
+      <!-- =========================
+           MOBILE MENU
+      ========================== -->
+      <div v-if="mobileMenuOpen" class="lg:hidden bg-white border-t border-gray-200 shadow-md">
+        <div class="max-w-7xl mx-auto px-4 py-3">
+
+          <nav class="flex flex-col">
+
+            <a href="#" class="py-3 border-b border-gray-100
+                     text-gray-800 font-medium
+                     hover:text-red-600" @click="mobileMenuOpen = false">
+              সর্বশেষ
+            </a>
+
+            <a href="#" class="py-3 border-b border-gray-100
+                     text-gray-800 font-medium
+                     hover:text-red-600" @click="mobileMenuOpen = false">
+              বাংলাদেশ
+            </a>
+
+            <a href="#" class="py-3 border-b border-gray-100
+                     text-gray-800 font-medium
+                     hover:text-red-600" @click="mobileMenuOpen = false">
+              রাজনীতি
+            </a>
+
+            <a href="#" class="py-3 border-b border-gray-100
+                     text-gray-800 font-medium
+                     hover:text-red-600" @click="mobileMenuOpen = false">
+              বিশ্ব
+            </a>
+
+            <a href="#" class="py-3 border-b border-gray-100
+                     text-gray-800 font-medium
+                     hover:text-red-600" @click="mobileMenuOpen = false">
+              বাণিজ্য
+            </a>
+
+            <a href="#" class="py-3 border-b border-gray-100
+                     text-gray-800 font-medium
+                     hover:text-red-600" @click="mobileMenuOpen = false">
+              মতামত
+            </a>
+
+            <a href="#" class="py-3 border-b border-gray-100
+                     text-gray-800 font-medium
+                     hover:text-red-600" @click="mobileMenuOpen = false">
+              খেলা
+            </a>
+
+            <a href="#" class="py-3 text-gray-800 font-medium
+                     hover:text-red-600" @click="mobileMenuOpen = false">
+              বিনোদন
+            </a>
+
+          </nav>
+
         </div>
       </div>
+
     </nav>
+
   </header>
 </template>
 
+
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted } from "vue";
+import {
+  ref,
+  computed,
+  onMounted,
+  onUnmounted
+} from "vue";
+
+
+/* =========================
+   STATE
+========================= */
 
 const isMenuVisible = ref(true);
+
 const isDesktopSticky = ref(false);
+
 const lastScrollY = ref(0);
+
+const mobileMenuOpen = ref(false);
+
+
+/* =========================
+   DATE
+========================= */
 
 const formattedDate = computed(() => {
   return new Date().toLocaleDateString("bn-BD", {
@@ -119,62 +280,149 @@ const formattedDate = computed(() => {
   });
 });
 
+
+/* =========================
+   NAV CLASSES
+========================= */
+
 const navClasses = computed(() => {
-  // Desktop
+
+  if (typeof window === "undefined") {
+    return "";
+  }
+
+  /* Desktop */
   if (window.innerWidth >= 1024) {
+
     return isDesktopSticky.value
       ? "fixed top-0 left-0 right-0 shadow-md"
       : "relative";
+
   }
 
-  // Mobile
+
+  /* Mobile */
+
   return [
-    "fixed top-0 left-0 right-0",
-    isMenuVisible.value ? "translate-y-0" : "-translate-y-full",
+    "fixed top-0 left-0 right-0 shadow-sm",
+    isMenuVisible.value
+      ? "translate-y-0"
+      : "-translate-y-full"
   ];
+
 });
+
+
+/* =========================
+   SCROLL
+========================= */
 
 const handleScroll = () => {
+
   const current = window.scrollY;
 
+
+  /* Desktop */
+
   if (window.innerWidth >= 1024) {
-    // Desktop
+
+    // Top bar height
     isDesktopSticky.value = current > 110;
 
-    // Always keep menu visible on desktop
+    // Desktop menu always visible
     isMenuVisible.value = true;
-  } else {
-    // Mobile
-    if (current <= 20) {
-      isMenuVisible.value = true;
-    } else if (current > lastScrollY.value) {
-      // Scrolling down → hide
-      isMenuVisible.value = false;
-    } else {
-      // Scrolling up → show
-      isMenuVisible.value = true;
-    }
+
+    // Close mobile menu
+    mobileMenuOpen.value = false;
+
   }
 
+
+  /* Mobile */
+
+  else {
+
+    if (current <= 20) {
+
+      isMenuVisible.value = true;
+
+    }
+
+    else if (current > lastScrollY.value) {
+
+      // Scrolling DOWN
+      isMenuVisible.value = false;
+
+      // Close mobile menu
+      mobileMenuOpen.value = false;
+
+    }
+
+    else {
+
+      // Scrolling UP
+      isMenuVisible.value = true;
+
+    }
+
+  }
+
+
   lastScrollY.value = current;
+
 };
+
+
+/* =========================
+   RESIZE
+========================= */
 
 const handleResize = () => {
+
   handleScroll();
+
 };
 
+
+/* =========================
+   MOUNT
+========================= */
+
 onMounted(() => {
+
   handleScroll();
 
-  window.addEventListener("scroll", handleScroll, {
-    passive: true,
-  });
+  window.addEventListener(
+    "scroll",
+    handleScroll,
+    {
+      passive: true
+    }
+  );
 
-  window.addEventListener("resize", handleResize);
+  window.addEventListener(
+    "resize",
+    handleResize
+  );
+
 });
 
+
+/* =========================
+   UNMOUNT
+========================= */
+
 onUnmounted(() => {
-  window.removeEventListener("scroll", handleScroll);
-  window.removeEventListener("resize", handleResize);
+
+  window.removeEventListener(
+    "scroll",
+    handleScroll
+  );
+
+  window.removeEventListener(
+    "resize",
+    handleResize
+  );
+
 });
 </script>
