@@ -2,9 +2,9 @@
   <header class="w-full bg-white shadow-sm">
     <!-- Desktop Top Bar -->
     <div
-      class="hidden lg:flex container mx-auto items-center justify-between py-4 px-4 border-b border-gray-200"
+      class="hidden lg:flex max-w-7xl mx-auto items-center justify-between py-4 px-4 border-b border-gray-200"
     >
-      <div class="flex items-center space-x-2 text-sm text-gray-600 font-medium">
+      <div class="flex items-center space-x-2 text-base text-gray-600 font-medium">
         <i class="bi bi-calendar3"></i>
         <span>{{ formattedDate }}</span>
       </div>
@@ -13,7 +13,7 @@
         <img
           src="/images/khobor logo.png"
           alt="Khobor Logo"
-          class="h-12 w-auto object-contain"
+          class="h-24 w-auto object-contain"
         />
       </a>
 
@@ -42,7 +42,7 @@
 
     <!-- Navigation -->
     <nav
-      class="bg-white border-b border-gray-200 z-50 transition-all duration-300 ease-in-out"
+      class="max-w-7xl mx-auto bg-white border-b border-gray-200 z-50 transition-all duration-300 ease-in-out"
       :class="navClasses"
     >
       <div
@@ -58,7 +58,7 @@
 
         <!-- Desktop Menu -->
         <div
-          class="hidden lg:flex items-center space-x-6 text-sm font-medium text-gray-800"
+          class="hidden lg:flex items-center space-x-6 text-lg font-medium text-gray-800"
         >
           <a href="#" class="hover:text-red-600">সর্বশেষ</a>
           <a href="#" class="hover:text-red-600">বাংলাদেশ</a>
@@ -71,7 +71,7 @@
         </div>
 
         <!-- Right -->
-        <div class="flex items-center space-x-4 ml-auto text-sm">
+        <div class="flex items-center space-x-4 ml-auto text-base font-medium">
           <button class="flex items-center gap-1 hover:text-red-600">
             <i class="bi bi-search"></i>
             <span>খুঁজুন</span>
@@ -82,7 +82,7 @@
             <span>Login</span>
           </button>
 
-          <button class="lg:hidden">
+          <button class="">
             <svg
               class="w-6 h-6"
               fill="none"
@@ -138,14 +138,20 @@ const handleScroll = () => {
   const current = window.scrollY;
 
   if (window.innerWidth >= 1024) {
-    // Height of top bar
+    // Desktop
     isDesktopSticky.value = current > 110;
+
+    // Always keep menu visible on desktop
+    isMenuVisible.value = true;
   } else {
-    if (current <= 50) {
+    // Mobile
+    if (current <= 20) {
       isMenuVisible.value = true;
     } else if (current > lastScrollY.value) {
+      // Scrolling down → hide
       isMenuVisible.value = false;
     } else {
+      // Scrolling up → show
       isMenuVisible.value = true;
     }
   }
