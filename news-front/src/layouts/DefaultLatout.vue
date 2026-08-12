@@ -4,7 +4,7 @@
 
     <Navbar/>
 
-    <main class="min-h-screen w-full overflow-x-hidden">
+    <main class="min-h-1200 w-full overflow-x-hidden">
       <RouterView />
     </main>
 
