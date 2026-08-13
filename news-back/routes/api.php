@@ -1,17 +1,33 @@
 <?php
 
-use App\Http\Controllers\Api\Admin\UserController;
+use App\Http\Controllers\Api\Admin\AdminUserController;
+use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\ProfileController;
 use Illuminate\Support\Facades\Route;
+
+
+
+// Public Auth Routes
+Route::post('/register', [UserController::class, 'register']);
+Route::post('/login', [UserController::class, 'login']);
+
+// Authenticated User Routes
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/me', [UserController::class, 'profile']);
+    Route::match(['put', 'patch'], '/me', [UserController::class, 'updateProfile']);
+    Route::post('/logout', [UserController::class, 'logout']);
+    Route::post('/logout-all', [UserController::class, 'logoutAllDevices']);
+});
+
 
 Route::middleware(['auth:sanctum'])->prefix('admin')->group(function () {
     
     // Restore route (MUST come before apiResource so it doesn't collide with GET /users/{user})
-    Route::post('users/{id}/restore', [UserController::class, 'restore'])
+    Route::post('users/{id}/restore', [AdminUserController::class, 'restore'])
         ->name('users.restore');
 
     // Standard CRUD routes (index, store, show, update, destroy)
-    Route::apiResource('users', UserController::class);
+    Route::apiResource('users', AdminUserController::class);
 
 });
 
