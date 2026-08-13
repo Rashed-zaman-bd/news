@@ -1,5 +1,5 @@
 <template>
-    <div class="min-h-screen flex flex-col justify-center items-center bg-gray-100 p-4">
+    <div class="flex flex-col justify-center items-center bg-gray-100 p-4">
         <!--Logo-->
         <div class="flex flex-col items-center mb-6">
             <img src="/images/khobor logo.png" alt="Logo"
@@ -44,7 +44,7 @@
 
                 <!--Register-->
                 <div class="text-center text-base text-gray-600">
-                    একাউন্ট না থাকলে
+                    যদি একাউন্ট না থাকে
                     <router-link to="/register"
                         class="text-gray-700 underline hover:font-semibold ml-1"
                     >
