@@ -145,7 +145,7 @@
 
           <router-link to="/login" class="flex items-center gap-1 hover:text-red-600 cursor-pointer">
             <i class="bi bi-person-fill"></i>
-            <span>Login</span>
+            <span>লগইন</span>
           </router-link>
         </div>
 

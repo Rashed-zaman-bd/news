@@ -3,7 +3,7 @@
         <!--Logo-->
         <div class="flex flex-col items-center mb-6">
             <img src="/images/khobor logo.png" alt="Logo"
-            class="w-full h-32 md:w-full md:h-36 "
+            class="w-72 md:h-24"
             >
         </div>
         <!--  Login Card-->
