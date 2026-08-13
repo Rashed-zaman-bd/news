@@ -16,9 +16,9 @@
 
         <!-- Logo -->
         <div class="flex justify-center">
-          <a href="/" class="shrink-0">
+          <router-link to="/" class="shrink-0">
             <img src="/images/khobor logo.png" alt="Khobor Logo" class="h-24 w-auto object-contain" />
-          </a>
+          </router-link>
         </div>
 
       </div>
@@ -35,7 +35,7 @@
 
             <!-- Play Icon -->
             <div class="absolute inset-0 flex items-center justify-center">
-              <i class="bi bi-play-circle-fill text-white text-2xl drop-shadow"></i>
+              <i class="bi bi-play-circle-fill text-red-500 text-2xl drop-shadow"></i>
             </div>
           </div>
 
@@ -55,7 +55,7 @@
 
             <!-- Play Icon -->
             <div class="absolute inset-0 flex items-center justify-center">
-              <i class="bi bi-play-circle-fill text-white text-2xl drop-shadow"></i>
+              <i class="bi bi-play-circle-fill text-red-500 text-2xl drop-shadow"></i>
             </div>
           </div>
 
@@ -143,10 +143,10 @@
             <span>খুঁজুন</span>
           </button>
 
-          <button class="flex items-center gap-1 hover:text-red-600">
+          <router-link to="/login" class="flex items-center gap-1 hover:text-red-600 cursor-pointer">
             <i class="bi bi-person-fill"></i>
             <span>Login</span>
-          </button>
+          </router-link>
         </div>
 
 
@@ -162,9 +162,9 @@
 
 
           <!-- Login -->
-          <button type="button" class="text-gray-700 hover:text-red-600">
+          <router-link to="/login" class="text-gray-700 hover:text-red-600">
             <i class="bi bi-person-fill text-xl"></i>
-          </button>
+          </router-link>
 
 
           <!-- Hamburger -->
@@ -182,62 +182,109 @@
       <!-- =========================
            MOBILE MENU
       ========================== -->
-      <div v-if="mobileMenuOpen" class="lg:hidden bg-white border-t border-gray-200 shadow-md">
-        <div class="max-w-7xl mx-auto px-4 py-3">
+      <!-- =========================
+     MOBILE MENU
+========================== -->
+<Transition
+  enter-active-class="transition-all duration-300 ease-out"
+  enter-from-class="opacity-0 -translate-y-4"
+  enter-to-class="opacity-100 translate-y-0"
+  leave-active-class="transition-all duration-250 ease-in"
+  leave-from-class="opacity-100 translate-y-0"
+  leave-to-class="opacity-0 -translate-y-4"
+>
+  <div
+    v-if="mobileMenuOpen"
+    class="lg:hidden bg-white border-t border-gray-200 shadow-md overflow-hidden"
+  >
+    <div class="max-w-7xl mx-auto px-4 py-3">
 
-          <nav class="flex flex-col">
+      <nav class="flex flex-col">
 
-            <a href="#" class="py-3 border-b border-gray-100
-                     text-gray-800 font-medium
-                     hover:text-red-600" @click="mobileMenuOpen = false">
-              সর্বশেষ
-            </a>
+        <a
+          href="#"
+          class="py-3 border-b border-gray-100
+                 text-gray-800 font-medium
+                 hover:text-red-600 transition-colors"
+          @click="mobileMenuOpen = false"
+        >
+          সর্বশেষ
+        </a>
 
-            <a href="#" class="py-3 border-b border-gray-100
-                     text-gray-800 font-medium
-                     hover:text-red-600" @click="mobileMenuOpen = false">
-              বাংলাদেশ
-            </a>
+        <a
+          href="#"
+          class="py-3 border-b border-gray-100
+                 text-gray-800 font-medium
+                 hover:text-red-600 transition-colors"
+          @click="mobileMenuOpen = false"
+        >
+          বাংলাদেশ
+        </a>
 
-            <a href="#" class="py-3 border-b border-gray-100
-                     text-gray-800 font-medium
-                     hover:text-red-600" @click="mobileMenuOpen = false">
-              রাজনীতি
-            </a>
+        <a
+          href="#"
+          class="py-3 border-b border-gray-100
+                 text-gray-800 font-medium
+                 hover:text-red-600 transition-colors"
+          @click="mobileMenuOpen = false"
+        >
+          রাজনীতি
+        </a>
 
-            <a href="#" class="py-3 border-b border-gray-100
-                     text-gray-800 font-medium
-                     hover:text-red-600" @click="mobileMenuOpen = false">
-              বিশ্ব
-            </a>
+        <a
+          href="#"
+          class="py-3 border-b border-gray-100
+                 text-gray-800 font-medium
+                 hover:text-red-600 transition-colors"
+          @click="mobileMenuOpen = false"
+        >
+          বিশ্ব
+        </a>
 
-            <a href="#" class="py-3 border-b border-gray-100
-                     text-gray-800 font-medium
-                     hover:text-red-600" @click="mobileMenuOpen = false">
-              বাণিজ্য
-            </a>
+        <a
+          href="#"
+          class="py-3 border-b border-gray-100
+                 text-gray-800 font-medium
+                 hover:text-red-600 transition-colors"
+          @click="mobileMenuOpen = false"
+        >
+          বাণিজ্য
+        </a>
 
-            <a href="#" class="py-3 border-b border-gray-100
-                     text-gray-800 font-medium
-                     hover:text-red-600" @click="mobileMenuOpen = false">
-              মতামত
-            </a>
+        <a
+          href="#"
+          class="py-3 border-b border-gray-100
+                 text-gray-800 font-medium
+                 hover:text-red-600 transition-colors"
+          @click="mobileMenuOpen = false"
+        >
+          মতামত
+        </a>
 
-            <a href="#" class="py-3 border-b border-gray-100
-                     text-gray-800 font-medium
-                     hover:text-red-600" @click="mobileMenuOpen = false">
-              খেলা
-            </a>
+        <a
+          href="#"
+          class="py-3 border-b border-gray-100
+                 text-gray-800 font-medium
+                 hover:text-red-600 transition-colors"
+          @click="mobileMenuOpen = false"
+        >
+          খেলা
+        </a>
 
-            <a href="#" class="py-3 text-gray-800 font-medium
-                     hover:text-red-600" @click="mobileMenuOpen = false">
-              বিনোদন
-            </a>
+        <a
+          href="#"
+          class="py-3 text-gray-800 font-medium
+                 hover:text-red-600 transition-colors"
+          @click="mobileMenuOpen = false"
+        >
+          বিনোদন
+        </a>
 
-          </nav>
+      </nav>
 
-        </div>
-      </div>
+    </div>
+  </div>
+</Transition>
 
     </nav>
 
@@ -246,12 +293,7 @@
 
 
 <script setup lang="ts">
-import {
-  ref,
-  computed,
-  onMounted,
-  onUnmounted
-} from "vue";
+import {ref, computed, onMounted, onUnmounted} from "vue";
 
 
 /* =========================

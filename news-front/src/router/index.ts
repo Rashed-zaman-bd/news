@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import DefaultLatout from '@/layouts/DefaultLatout.vue'
 
+
 const routes = [
   {
     path: "/",
@@ -10,6 +11,16 @@ const routes = [
         path: "",
         name: "home",
         component: () => import("@/views/HomeView.vue")
+      },
+      {
+        path: "login",
+        name: "login",
+        component: () => import("@/views/LoginView.vue")
+      },
+      {
+        path: "register",
+        name: "register",
+        component: () => import("@/views/RegisterView.vue")
       }
     ]
   }
