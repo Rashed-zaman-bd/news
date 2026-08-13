@@ -105,29 +105,39 @@ class UserController extends Controller
     }
 
     /**
-     * Update authenticated user profile.
-     * PUT/PATCH /api/me
-     */
-    public function updateProfile(UpdateUserRequest $request): JsonResponse
-    {
-        /** @var User $user */
-        $user = $request->user();
-        $data = $request->validated();
+ * Update authenticated user profile.
+ * PUT/PATCH /api/me (or POST /api/me with _method=PUT)
+ */
+public function updateProfile(UpdateUserRequest $request): JsonResponse
+{
+    /** @var User $user */
+    $user = $request->user();
+    
+    // Get validated input
+    $data = $request->validated();
 
-        if ($request->hasFile('avatar')) {
-            if ($user->avatar) {
-                Storage::disk('public')->delete($user->avatar);
-            }
-            $data['avatar'] = $request->file('avatar')->store('avatars', 'public');
-        }
-
-        $user->update($data);
-
-        return response()->json([
-            'message' => 'Profile updated successfully.',
-            'user' => new UserResource($user->fresh()),
-        ]);
+    // 1. Remove password if empty/null so it isn't overwritten or double-hashed
+    if (array_key_exists('password', $data) && empty($data['password'])) {
+        unset($data['password']);
     }
+
+    // 2. Handle avatar upload and remove old file if present
+    if ($request->hasFile('avatar')) {
+        if ($user->avatar && Storage::disk('public')->exists($user->avatar)) {
+            Storage::disk('public')->delete($user->avatar);
+        }
+        $data['avatar'] = $request->file('avatar')->store('avatars', 'public');
+    }
+
+    // 3. Perform update with fillable attributes
+    $user->fill($data);
+    $user->save();
+
+    return response()->json([
+        'message' => 'প্রোফাইল সফলভাবে আপডেট করা হয়েছে।',
+        'user' => new UserResource($user->fresh()),
+    ]);
+}
 
     /**
      * Log out current session (Revoke current token).

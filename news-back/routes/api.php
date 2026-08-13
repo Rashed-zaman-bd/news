@@ -11,10 +11,12 @@ use Illuminate\Support\Facades\Route;
 Route::post('/register', [UserController::class, 'register']);
 Route::post('/login', [UserController::class, 'login']);
 
-// Authenticated User Routes
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/me', [UserController::class, 'profile']);
-    Route::match(['put', 'patch'], '/me', [UserController::class, 'updateProfile']);
+    
+    // Allow both PUT and POST methods for profile update
+    Route::match(['put', 'patch', 'post'], '/me', [UserController::class, 'updateProfile']);
+    
     Route::post('/logout', [UserController::class, 'logout']);
     Route::post('/logout-all', [UserController::class, 'logoutAllDevices']);
 });

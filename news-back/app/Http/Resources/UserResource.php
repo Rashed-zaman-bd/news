@@ -24,11 +24,11 @@ class UserResource extends JsonResource
             'status' => $this->status,
             'designation' => $this->designation,
             'bio' => $this->bio,
-            'avatar' => $this->avatar ? Storage::url($this->avatar) : null,
-            'is_subscribed' => $this->is_subscribed,
-            'subscription_expires_at' => $this->subscription_expires_at,
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
+            'avatar' => $this->avatar ? asset('storage/' . $this->avatar) : null,
+            'is_subscribed' => (bool) $this->is_subscribed,
+            'subscription_expires_at' => $this->subscription_expires_at?->toIso8601String(),
+            'created_at' => $this->created_at?->toIso8601String(),
+            'updated_at' => $this->updated_at?->toIso8601String(),
         ];
     }
 }
