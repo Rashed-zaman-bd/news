@@ -80,7 +80,7 @@
     </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, reactive } from 'vue';
 import { useRouter } from 'vue-router';
 import api from '@/services/api';
@@ -135,12 +135,7 @@ const handleLogin = async () => {
     } catch (error) {
         let message = 'কিছু একটা ভুল হয়েছে। আবার চেষ্টা করুন।';
 
-        if (error.response?.data?.errors?.phone) {
-            message = error.response.data.errors.phone[0];
-        } else if (error.response?.data?.message) {
-            message = error.response.data.message;
-        }
-
+       
         // Show Error Popup Modal
         Swal.fire({
             icon: 'error',
