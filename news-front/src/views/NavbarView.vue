@@ -133,20 +133,15 @@
         </div>
 
 
-        <!-- =========================
-             DESKTOP RIGHT
-        ========================== -->
-        <div class="hidden lg:flex items-center space-x-4
-                 ml-auto text-base font-medium">
+        <!-- DESKTOP RIGHT -->
+        <div class="hidden lg:flex items-center space-x-4 ml-auto text-base font-medium">
           <button class="flex items-center gap-1 hover:text-red-600">
             <i class="bi bi-search"></i>
             <span>খুঁজুন</span>
           </button>
 
-          <router-link to="/login" class="flex items-center gap-1 hover:text-red-600 cursor-pointer">
-            <i class="bi bi-person-fill"></i>
-            <span>লগইন</span>
-          </router-link>
+          <!-- Clean User Account Dropdown -->
+          <UserAccount />
         </div>
 
 
@@ -162,9 +157,7 @@
 
 
           <!-- Login -->
-          <router-link to="/login" class="text-gray-700 hover:text-red-600">
-            <i class="bi bi-person-fill text-xl"></i>
-          </router-link>
+          <UserAccount />
 
 
           <!-- Hamburger -->
@@ -293,6 +286,7 @@
 
 
 <script setup lang="ts">
+import UserAccount from "@/components/UserAccount.vue";
 import {ref, computed, onMounted, onUnmounted} from "vue";
 
 

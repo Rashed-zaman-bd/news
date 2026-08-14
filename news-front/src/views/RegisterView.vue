@@ -302,12 +302,17 @@ const handleRegister = async () => {
             }
         });
 
+        // Inside handleRegister method in Register.vue
+
         if (response.data.access_token) {
             localStorage.setItem('apiToken', response.data.access_token);
         }
         if (response.data.user) {
             localStorage.setItem('user', JSON.stringify(response.data.user));
         }
+
+        // 💥 DISPATCH EVENT TO NOTIFY Header / UserAccount
+        window.dispatchEvent(new Event('auth-changed'));
 
         Toast.fire({
             icon: 'success',
