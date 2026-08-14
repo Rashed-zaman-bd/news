@@ -16,10 +16,7 @@ use Illuminate\Validation\ValidationException;
 
 class UserController extends Controller
 {
-    /**
-     * Register a new user account.
-     * POST /api/register
-     */
+
     public function register(RegisterUserRequest $request): JsonResponse
     {
         $data = $request->validated();
@@ -49,14 +46,7 @@ class UserController extends Controller
         ], 201);
     }
 
-    /**
-     * Authenticate user and issue an API token.
-     * POST /api/login
-     */
-    /**
- * Authenticate user and issue an API token.
- * POST /api/login
- */
+
     public function login(LoginRequest $request): JsonResponse
     {
         $user = User::where('phone', $request->phone)->first();
@@ -93,10 +83,7 @@ class UserController extends Controller
         ]);
     }
 
-    /**
-     * Get authenticated user profile.
-     * GET /api/me
-     */
+
     public function profile(Request $request): JsonResponse
     {
         return response()->json([
@@ -104,40 +91,37 @@ class UserController extends Controller
         ]);
     }
 
-    /**
- * Update authenticated user profile.
- * PUT/PATCH /api/me (or POST /api/me with _method=PUT)
- */
-public function updateProfile(UpdateUserRequest $request): JsonResponse
-{
-    /** @var User $user */
-    $user = $request->user();
-    
-    // Get validated input
-    $data = $request->validated();
 
-    // 1. Remove password if empty/null so it isn't overwritten or double-hashed
-    if (array_key_exists('password', $data) && empty($data['password'])) {
-        unset($data['password']);
-    }
+    public function updateProfile(UpdateUserRequest $request): JsonResponse
+    {
+        /** @var User $user */
+        $user = $request->user();
+        
+        // Get validated input
+        $data = $request->validated();
 
-    // 2. Handle avatar upload and remove old file if present
-    if ($request->hasFile('avatar')) {
-        if ($user->avatar && Storage::disk('public')->exists($user->avatar)) {
-            Storage::disk('public')->delete($user->avatar);
+        // 1. Remove password if empty/null so it isn't overwritten or double-hashed
+        if (array_key_exists('password', $data) && empty($data['password'])) {
+            unset($data['password']);
         }
-        $data['avatar'] = $request->file('avatar')->store('avatars', 'public');
+
+        // 2. Handle avatar upload and remove old file if present
+        if ($request->hasFile('avatar')) {
+            if ($user->avatar && Storage::disk('public')->exists($user->avatar)) {
+                Storage::disk('public')->delete($user->avatar);
+            }
+            $data['avatar'] = $request->file('avatar')->store('avatars', 'public');
+        }
+
+        // 3. Perform update with fillable attributes
+        $user->fill($data);
+        $user->save();
+
+        return response()->json([
+            'message' => 'প্রোফাইল সফলভাবে আপডেট করা হয়েছে।',
+            'user' => new UserResource($user->fresh()),
+        ]);
     }
-
-    // 3. Perform update with fillable attributes
-    $user->fill($data);
-    $user->save();
-
-    return response()->json([
-        'message' => 'প্রোফাইল সফলভাবে আপডেট করা হয়েছে।',
-        'user' => new UserResource($user->fresh()),
-    ]);
-}
 
     /**
      * Log out current session (Revoke current token).
