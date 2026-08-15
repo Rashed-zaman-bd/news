@@ -1,13 +1,14 @@
 <?php
 
 use App\Http\Controllers\Api\Admin\AdminUserController;
-use App\Http\Controllers\Api\UserController;
+use App\Http\Controllers\Api\Auth\PasswordResetController;
 use App\Http\Controllers\Api\ProfileController;
+use App\Http\Controllers\Api\UserController;
 use Illuminate\Support\Facades\Route;
 
 
 
-// Public Auth Routes
+// User Routes
 Route::post('/register', [UserController::class, 'register']);
 Route::post('/login', [UserController::class, 'login']);
 
@@ -21,7 +22,17 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout-all', [UserController::class, 'logoutAllDevices']);
 });
 
+//User password reset routes
+Route::post('/forgot-password', [PasswordResetController::class, 'sendResetLinkEmail'])
+    ->middleware('guest')
+    ->name('password.email');
 
+Route::post('/reset-password', [PasswordResetController::class, 'resetPassword'])
+    ->middleware('guest')
+    ->name('password.update');
+
+    
+//Admin user routes
 Route::middleware(['auth:sanctum'])->prefix('admin')->group(function () {
     
     // Restore route (MUST come before apiResource so it doesn't collide with GET /users/{user})

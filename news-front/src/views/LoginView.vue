@@ -2,7 +2,7 @@
     <div class="flex flex-col justify-center items-center bg-gray-100 p-4 min-h-screen">
         <!-- Logo -->
         <div class="flex flex-col items-center mb-6">
-            <img src="/images/khobor logo.png" alt="Logo" class="w-72 md:h-24 object-contain">
+            <img src="/images/khobor red logo.png" alt="Logo" class="w-72 md:h-24 object-contain">
         </div>
 
         <!-- Login Card -->
@@ -39,6 +39,12 @@
                         required
                         class="w-full rounded-md border px-3 py-2 outline-none focus:ring-2 focus:ring-blue-300"
                     >
+                </div>
+
+                <div class="text-right text-base text-gray-600">
+                    <router-link to="/forgot-password" class="text-red-400 hover:font-semibold ml-1">
+                        পাসওয়ার্ড ভুলে গেছেন?
+                    </router-link>
                 </div>
 
                 <!-- Submit Button -->

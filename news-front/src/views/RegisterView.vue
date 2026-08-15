@@ -2,7 +2,7 @@
     <div class="flex flex-col justify-center items-center bg-gray-100 p-4 min-h-screen">
         <!-- Logo -->
         <div class="flex flex-col items-center mb-6">
-            <img src="/images/khobor logo.png" alt="Logo" class="w-72 md:h-24 object-contain">
+            <img src="/images/khobor red logo.png" alt="Logo" class="w-72 md:h-24 object-contain">
         </div>
 
         <!-- Register Card -->

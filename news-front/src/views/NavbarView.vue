@@ -17,7 +17,7 @@
         <!-- Logo -->
         <div class="flex justify-center">
           <router-link to="/" class="shrink-0">
-            <img src="/images/khobor logo.png" alt="Khobor Logo" class="h-24 w-auto object-contain" />
+            <img src="/images/khobor red logo.png" alt="Khobor Logo" class="h-24 w-auto object-contain" />
           </router-link>
         </div>
 

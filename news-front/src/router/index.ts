@@ -1,33 +1,45 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import DefaultLatout from '@/layouts/DefaultLatout.vue'
-
+import DefaultLayout from '@/layouts/DefaultLatout.vue' 
 
 const routes = [
+  // Routes WITH DefaultLayout (Navbar/Footer will show here)
   {
     path: "/",
-    component: DefaultLatout,
+    component: DefaultLayout,
     children: [
       {
         path: "",
         name: "home",
         component: () => import("@/views/HomeView.vue")
-      },
-      {
-        path: "login",
-        name: "login",
-        component: () => import("@/views/LoginView.vue")
-      },
-      {
-        path: "register",
-        name: "register",
-        component: () => import("@/views/RegisterView.vue")
-      },
-      {
-        path: "profile",
-        name: "profile",
-        component: () => import("@/components/ProfileUpdate.vue")
       }
     ]
+  },
+
+  // Routes WITHOUT DefaultLayout (Standalone pages)
+  {
+    path: "/login",
+    name: "login",
+    component: () => import("@/views/LoginView.vue")
+  },
+  {
+    path: "/register",
+    name: "register",
+    component: () => import("@/views/RegisterView.vue")
+  },
+  {
+    path: "/profile",
+    name: "profile",
+    component: () => import("@/components/ProfileUpdate.vue")
+  },
+  {
+    path: "/forgot-password",
+    name: "forgot-password",
+    component: () => import("@/views/ForgotPassword.vue")
+  },
+  {
+    path: "/reset-password",
+    name: "reset-password",
+    component: () => import("@/views/ResetPassword.vue")
   }
 ]
 
