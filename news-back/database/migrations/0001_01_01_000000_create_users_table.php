@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('name');
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
+            $table->string('password')->nullable();
 
             // Role & permissions
             $table->enum('role', ['admin', 'editor', 'author', 'reader'])->default('reader');
@@ -33,6 +33,10 @@ return new class extends Migration
             // Subscription (if you plan premium/paid articles later)
             $table->boolean('is_subscribed')->default(false);
             $table->timestamp('subscription_expires_at')->nullable();
+
+            // OAuth / Social Login
+            $table->string('provider')->nullable();
+            $table->string('provider_id')->nullable();
 
             $table->rememberToken();
             $table->timestamps();

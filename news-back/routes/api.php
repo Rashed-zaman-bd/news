@@ -4,6 +4,8 @@ use App\Http\Controllers\Api\Admin\AdminUserController;
 use App\Http\Controllers\Api\Auth\PasswordResetController;
 use App\Http\Controllers\Api\ProfileController;
 use App\Http\Controllers\Api\UserController;
+use App\Http\Controllers\Auth\GoogleController;
+use App\Http\Controllers\Auth\SocialAuthController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -22,14 +24,11 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout-all', [UserController::class, 'logoutAllDevices']);
 });
 
-//User password reset routes
-Route::post('/forgot-password', [PasswordResetController::class, 'sendResetLinkEmail'])
-    ->middleware('guest')
-    ->name('password.email');
 
-Route::post('/reset-password', [PasswordResetController::class, 'resetPassword'])
-    ->middleware('guest')
-    ->name('password.update');
+//google or facebook login route
+Route::get('/auth/{provider}', [SocialAuthController::class, 'redirect']);
+Route::get('/auth/{provider}/callback', [SocialAuthController::class, 'callback']);
+
 
     
 //Admin user routes

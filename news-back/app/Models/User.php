@@ -30,13 +30,16 @@ class User extends Authenticatable
     |--------------------------------------------------------------------------
     */
 
-    public const STATUS_ACTIVE = 'active';
-    public const STATUS_INACTIVE = 'inactive';
+    public const STATUS_ACTIVE    = 'active';
+    public const STATUS_INACTIVE  = 'inactive';
     public const STATUS_SUSPENDED = 'suspended';
 
-    /**
-     * Mass assignable attributes.
-     */
+    /*
+    |--------------------------------------------------------------------------
+    | Mass Assignable
+    |--------------------------------------------------------------------------
+    */
+
     protected $fillable = [
         'name',
         'email',
@@ -49,32 +52,40 @@ class User extends Authenticatable
         'designation',
         'is_subscribed',
         'subscription_expires_at',
+        'provider',
+        'provider_id',
     ];
 
-    /**
-     * Hidden attributes.
-     */
+    /*
+    |--------------------------------------------------------------------------
+    | Hidden
+    |--------------------------------------------------------------------------
+    */
+
     protected $hidden = [
         'password',
         'remember_token',
     ];
 
-    /**
-     * Attribute casting.
-     */
+    /*
+    |--------------------------------------------------------------------------
+    | Casts
+    |--------------------------------------------------------------------------
+    */
+
     protected function casts(): array
     {
         return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
-            'is_subscribed' => 'boolean',
+            'email_verified_at'       => 'datetime',
+            'password'                => 'hashed',
+            'is_subscribed'           => 'boolean',
             'subscription_expires_at' => 'datetime',
         ];
     }
 
     /*
     |--------------------------------------------------------------------------
-    | Helper Methods
+    | Role Helpers
     |--------------------------------------------------------------------------
     */
 
@@ -98,9 +109,6 @@ class User extends Authenticatable
         return $this->role === self::ROLE_READER;
     }
 
-    /**
-     * Admin, Editor and Author are considered staff.
-     */
     public function isStaff(): bool
     {
         return in_array($this->role, [
@@ -109,6 +117,12 @@ class User extends Authenticatable
             self::ROLE_AUTHOR,
         ], true);
     }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Status Helpers
+    |--------------------------------------------------------------------------
+    */
 
     public function isActive(): bool
     {
@@ -125,15 +139,18 @@ class User extends Authenticatable
         return $this->status === self::STATUS_SUSPENDED;
     }
 
-    /**
-     * Check whether the subscription is still valid.
-     */
+    /*
+    |--------------------------------------------------------------------------
+    | Subscription
+    |--------------------------------------------------------------------------
+    */
+
     public function hasActiveSubscription(): bool
     {
-        return $this->is_subscribed &&
-            (
-                is_null($this->subscription_expires_at) ||
-                $this->subscription_expires_at->isFuture()
+        return $this->is_subscribed
+            && (
+                is_null($this->subscription_expires_at)
+                || $this->subscription_expires_at->isFuture()
             );
     }
 
@@ -171,8 +188,8 @@ class User extends Authenticatable
 
         return $query->where(function (Builder $query) use ($search) {
             $query->where('name', 'LIKE', "%{$search}%")
-                  ->orWhere('email', 'LIKE', "%{$search}%")
-                  ->orWhere('phone', 'LIKE', "%{$search}%");
+                ->orWhere('email', 'LIKE', "%{$search}%")
+                ->orWhere('phone', 'LIKE', "%{$search}%");
         });
     }
 }

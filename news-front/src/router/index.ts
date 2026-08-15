@@ -31,6 +31,13 @@ const routes = [
     name: "profile",
     component: () => import("@/components/ProfileUpdate.vue")
   },
+
+  {
+    path: '/auth/callback',
+    name: 'auth.callback',
+    component: () => import('@/views/auth/AuthCallbackView.vue'),
+    meta: { requiresAuth: false }
+  },
   {
     path: "/forgot-password",
     name: "forgot-password",

@@ -71,9 +71,14 @@
                 </div>
 
                 <div class="flex flex-col sm:flex-row gap-3 w-full">
-                    <button type="button" class="w-full sm:w-1/2 flex items-center justify-center gap-2 bg-gray-500 hover:bg-gray-700 text-white py-2 px-1 rounded-md transition opacity-50 cursor-not-allowed">
+                    <!-- Gmail Login Button -->
+                    <button 
+                        type="button" 
+                        @click="loginWithGoogle"
+                        class="w-full sm:w-1/2 flex items-center justify-center gap-2 bg-red-600 hover:bg-red-700 text-white py-2 px-1 rounded-md transition"
+                    >
                         <i class="bi bi-envelope-at text-lg"></i>
-                        <span>জিমেইলে একাউন্ট করুন</span>
+                        <span>জিমেইলে লগইন করুন</span>
                     </button>
 
                     <button type="button" class="w-full sm:w-1/2 flex items-center justify-center gap-2 bg-gray-500 hover:bg-gray-700 text-white py-2 px-1 rounded-md transition opacity-50 cursor-not-allowed">
@@ -116,6 +121,14 @@ const Toast = Swal.mixin({
         toast.addEventListener('mouseleave', Swal.resumeTimer);
     }
 });
+
+// LoginView.vue - script setup section
+const BACKEND_URL = import.meta.env.VITE_API_BASE_URL.replace(/\/+$/, '');
+
+const loginWithGoogle = () => {
+    // Appended /api to match your Laravel routes/api.php prefix
+    window.location.href = `${BACKEND_URL}/api/auth/google`;
+};
 
 const handleLogin = async () => {
     loading.value = true;
