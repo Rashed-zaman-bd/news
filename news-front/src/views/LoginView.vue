@@ -75,15 +75,20 @@
                     <button 
                         type="button" 
                         @click="loginWithGoogle"
-                        class="w-full sm:w-1/2 flex items-center justify-center gap-2 bg-red-600 hover:bg-red-700 text-white py-2 px-1 rounded-md transition"
+                        class="w-full sm:w-1/2 flex items-center justify-center gap-2 bg-gray-600 hover:bg-gray-800 text-white py-2 px-1 rounded-md transition"
                     >
                         <i class="bi bi-envelope-at text-lg"></i>
                         <span>জিমেইলে লগইন করুন</span>
                     </button>
 
-                    <button type="button" class="w-full sm:w-1/2 flex items-center justify-center gap-2 bg-gray-500 hover:bg-gray-700 text-white py-2 px-1 rounded-md transition opacity-50 cursor-not-allowed">
+                    <!-- Facebook Login Button -->
+                    <button 
+                        type="button" 
+                        @click="loginWithFacebook"
+                        class="w-full sm:w-1/2 flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white py-2 px-1 rounded-md transition"
+                    >
                         <i class="bi bi-facebook text-lg"></i>
-                        <span>ফেসবুকে একাউন্ট করুন</span>
+                        <span>ফেসবুকে লগইন করুন</span>
                     </button>
                 </div>
             </form>
@@ -128,6 +133,11 @@ const BACKEND_URL = import.meta.env.VITE_API_BASE_URL.replace(/\/+$/, '');
 const loginWithGoogle = () => {
     // Appended /api to match your Laravel routes/api.php prefix
     window.location.href = `${BACKEND_URL}/api/auth/google`;
+};
+
+// LoginView.vue - Script Setup
+const loginWithFacebook = () => {
+    window.location.href = `${BACKEND_URL}/api/auth/facebook`;
 };
 
 const handleLogin = async () => {
