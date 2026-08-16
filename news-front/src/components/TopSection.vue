@@ -1,5 +1,5 @@
 <template>
-  <div class="max-w-7xl mx-auto pl-4 pr-4 bg-white text-gray-900">
+  <div class="max-w-7xl mx-auto pl-4 pr-4 bg-white text-gray-900 pb-4">
     <!-- Top advert banner -->
     <div class="w-full flex items-center justify-center cursor-pointer p-4 mt-14 sm:mt-0">
       <img src="/images/topbanner.png" alt="Top Banner" />
@@ -85,77 +85,68 @@
     </div>
 
     <!-- Bottom Section: 4-Column Grid Row (Image + Title) -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6  border-b border-gray-200 pb-6">
-      
-      <!-- Card 1 -->
-      <article class="flex flex-row items-start gap-3 border-b sm:border-b-0 border-gray-200 pb-4 sm:pb-0">
-        <!-- Image: Takes up 1/3 width (w-1/3) -->
-        <div class="w-3/5 aspect-video shrink-0 overflow-hidden rounded bg-gray-100">
-            <img 
-            src="/images/topsideimage.png" 
-            alt="Article 1" 
-            class="w-full h-full border border-4 border-gray-500 object-cover cursor-pointer hover:scale-105 transition-transform duration-300" 
-            />
-        </div>
-
-        <!-- Title: Takes up 2/3 width (w-2/3) -->
-        <h3 class="w-2/5 font-bold text-sm md:text-base leading-snug text-gray-900 hover:text-amber-700 cursor-pointer">
-            <span>ডারউইন টেস্ট : ৫৭ রানের টার্গেট দিল অস্ট্রেলিয়া</span>
-        </h3>
-        </article>
-
-      <!-- Card 2 -->
-      <article class="flex flex-row items-start gap-3 border-b sm:border-b-0 border-gray-200 pb-4 sm:pb-0">
-        <!-- Image: Takes up 1/3 width (w-1/3) -->
-        <div class="w-3/5 aspect-video shrink-0 overflow-hidden rounded bg-gray-100">
-            <img 
-            src="/images/topsideimage.png" 
-            alt="Article 1" 
-            class="w-full h-full border border-4 border-gray-500 object-cover cursor-pointer hover:scale-105 transition-transform duration-300" 
-            />
-        </div>
-
-        <!-- Title: Takes up 2/3 width (w-2/3) -->
-        <h3 class="w-2/5 font-bold text-sm md:text-base leading-snug text-gray-900 hover:text-amber-700 cursor-pointer">
-            <span>ডারউইন টেস্ট : ৫৭ রানের টার্গেট দিল অস্ট্রেলিয়া</span>
-        </h3>
-        </article>
-
-      <!-- Card 3 -->
-      <article class="flex flex-row items-start gap-3 border-b sm:border-b-0 border-gray-200 pb-4 sm:pb-0">
-        <!-- Image: Takes up 1/3 width (w-1/3) -->
-        <div class="w-3/5 aspect-video shrink-0 overflow-hidden rounded bg-gray-100">
-            <img 
-            src="/images/topsideimage.png" 
-            alt="Article 1" 
-            class="w-full h-full border border-4 border-gray-500 object-cover cursor-pointer hover:scale-105 transition-transform duration-300" 
-            />
-        </div>
-
-        <!-- Title: Takes up 2/3 width (w-2/3) -->
-        <h3 class="w-2/5 font-bold text-sm md:text-base leading-snug text-gray-900 hover:text-amber-700 cursor-pointer">
-            <span>ডারউইন টেস্ট : ৫৭ রানের টার্গেট দিল অস্ট্রেলিয়া</span>
-        </h3>
-        </article>
-
-      <!-- Card 4 -->
-      <article class="flex flex-row items-start gap-3 border-b sm:border-b-0 border-gray-200 pb-4 sm:pb-0">
-        <!-- Image: Takes up 1/3 width (w-1/3) -->
-        <div class="w-3/5 aspect-video shrink-0 overflow-hidden rounded bg-gray-100">
-            <img 
-            src="/images/topsideimage.png" 
-            alt="Article 1" 
-            class="w-full h-full border border-4 border-gray-500 object-cover cursor-pointer hover:scale-105 transition-transform duration-300" 
-            />
-        </div>
-
-        <!-- Title: Takes up 2/3 width (w-2/3) -->
-        <h3 class="w-2/5 font-bold text-sm md:text-base leading-snug text-gray-900 hover:text-amber-700 cursor-pointer">
-            <span>ডারউইন টেস্ট : ৫৭ রানের টার্গেট দিল অস্ট্রেলিয়া</span>
-        </h3>
-        </article>
-
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 border-b border-gray-200 pb-6">
+  
+  <!-- Card 1 -->
+  <article class="flex flex-row items-start gap-3 border-b sm:border-b-0 border-gray-200 pb-4 sm:pb-0">
+    <!-- Image Wrapper: Holds border and clips the image zoom -->
+    <div class="w-3/5 aspect-video shrink-0 overflow-hidden rounded border-2 border-gray-400 bg-gray-100">
+      <img 
+        src="/images/topsideimage.png" 
+        alt="Article 1" 
+        class="w-full h-full object-cover cursor-pointer hover:scale-105 transition-transform duration-300" 
+      />
     </div>
+
+    <!-- Title: 2/3 width -->
+    <h3 class="w-2/5 font-bold text-sm md:text-base leading-snug text-gray-900 hover:text-amber-700 cursor-pointer">
+      <span>ডারউইন টেস্ট : ৫৭ রানের টার্গেট দিল অস্ট্রেলিয়া</span>
+    </h3>
+  </article>
+
+  <!-- Card 2 -->
+  <article class="flex flex-row items-start gap-3 border-b sm:border-b-0 border-gray-200 pb-4 sm:pb-0">
+    <div class="w-3/5 aspect-video shrink-0 overflow-hidden rounded border-2 border-gray-400 bg-gray-100">
+      <img 
+        src="/images/topsideimage.png" 
+        alt="Article 2" 
+        class="w-full h-full object-cover cursor-pointer hover:scale-105 transition-transform duration-300" 
+      />
+    </div>
+    <h3 class="w-2/5 font-bold text-sm md:text-base leading-snug text-gray-900 hover:text-amber-700 cursor-pointer">
+      <span>ডারউইন টেস্ট : ৫৭ রানের টার্গেট দিল অস্ট্রেলিয়া</span>
+    </h3>
+  </article>
+
+  <!-- Card 3 -->
+  <article class="flex flex-row items-start gap-3 border-b sm:border-b-0 border-gray-200 pb-4 sm:pb-0">
+    <div class="w-3/5 aspect-video shrink-0 overflow-hidden rounded border-2 border-gray-400 bg-gray-100">
+      <img 
+        src="/images/topsideimage.png" 
+        alt="Article 3" 
+        class="w-full h-full object-cover cursor-pointer hover:scale-105 transition-transform duration-300" 
+      />
+    </div>
+    <h3 class="w-2/5 font-bold text-sm md:text-base leading-snug text-gray-900 hover:text-amber-700 cursor-pointer">
+      <span>ডারউইন টেস্ট : ৫৭ রানের টার্গেট দিল অস্ট্রেলিয়া</span>
+    </h3>
+  </article>
+
+  <!-- Card 4 -->
+  <article class="flex flex-row items-start gap-3 border-b sm:border-b-0 border-gray-200 pb-4 sm:pb-0">
+    <div class="w-3/5 aspect-video shrink-0 overflow-hidden rounded border-2 border-gray-400 bg-gray-100">
+      <img 
+        src="/images/topsideimage.png" 
+        alt="Article 4" 
+        class="w-full h-full object-cover cursor-pointer hover:scale-105 transition-transform duration-300" 
+      />
+    </div>
+    <h3 class="w-2/5 font-bold text-sm md:text-base leading-snug text-gray-900 hover:text-amber-700 cursor-pointer">
+      <span>ডারউইন টেস্ট : ৫৭ রানের টার্গেট দিল অস্ট্রেলিয়া</span>
+    </h3>
+  </article>
+
+</div>
 
     <!-- Top advert banner -->
     <div class="w-full flex items-center justify-center cursor-pointer p-4 border-b border-gray-200">
