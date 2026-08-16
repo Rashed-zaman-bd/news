@@ -39,7 +39,7 @@ class UserController extends Controller
         $token = $user->createToken($deviceName)->plainTextToken;
 
         return response()->json([
-            'message' => 'User registered successfully.',
+            'message' => 'রেজিস্ট্রেশন সফল হয়েছে!',
             'access_token' => $token,
             'token_type' => 'Bearer',
             'user' => new UserResource($user),

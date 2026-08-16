@@ -87,11 +87,21 @@
                flex items-center justify-between">
 
         <!-- =========================
-             MOBILE LOGO
+            MOBILE LOGO
         ========================== -->
-        <a href="/" class="lg:hidden shrink-0">
-          <img src="/images/khobor logo.png" alt="Khobor Logo" class="h-9 w-auto" />
-        </a>
+        <div class="lg:hidden flex flex-col items-start shrink-0">
+          <a href="/" class="shrink-0">
+            <img
+              src="/images/khobor red logo.png"
+              alt="Khobor Logo"
+              class="h-9 w-auto"
+            />
+          </a>
+
+          <span class="text-xs text-gray-600 mt-1">
+            {{ formattedDate }}
+          </span>
+        </div>
 
 
         <!-- =========================

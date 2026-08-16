@@ -1,7 +1,9 @@
 <template>
-    <div class="text-red-500">
-        Hello news
-    </div>
+    <TopSection/>
+    <SecendSection/>
 </template>
-<script lang="ts">
+<script setup lang="ts">
+import SecendSection from '@/components/SecendSection.vue';
+import TopSection from '@/components/TopSection.vue';
+
 </script>
