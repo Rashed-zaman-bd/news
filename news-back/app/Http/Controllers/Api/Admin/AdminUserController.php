@@ -7,7 +7,6 @@ use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
 use App\Http\Resources\UserResource;
 use App\Models\User;
-use id;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -98,6 +97,20 @@ class AdminUserController extends Controller
     public function update(UpdateUserRequest $request, User $user): JsonResponse
     {
         $data = $request->validated();
+
+        if (auth()->id() === $user->id && isset($data['role']) && $data['role'] !== $user->role) {
+            return response()->json([
+                'success' => false,
+                'message' => 'You cannot change your own role.',
+            ], 422);
+        }
+
+        if (auth()->id() === $user->id && isset($data['status']) && $data['status'] !== User::STATUS_ACTIVE) {
+            return response()->json([
+                'success' => false,
+                'message' => 'You cannot suspend or deactivate your own account.',
+            ], 422);
+        }
 
         DB::beginTransaction();
 

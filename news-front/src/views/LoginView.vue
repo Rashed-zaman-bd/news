@@ -145,7 +145,7 @@ const handleLogin = async () => {
 
     try {
         const response = await api.post('/login', form);
-        
+
         // Save auth data
         localStorage.setItem('apiToken', response.data.access_token);
         localStorage.setItem('user', JSON.stringify(response.data.user));
@@ -156,16 +156,29 @@ const handleLogin = async () => {
             title: response.data.message || 'লগইন সফল হয়েছে!'
         });
 
+        const user = response.data.user;
+
         // Delay redirect briefly to let toast appear
         setTimeout(() => {
-            router.push('/');
+            // Respect a pending redirect (e.g. router guard sent them to /login?redirect=/admin/dashboard)
+            const redirect = router.currentRoute.value.query.redirect as string | undefined;
+
+            if (redirect) {
+                router.push(redirect);
+            } else if (user?.role === 'admin') {
+                router.push({ name: 'admin.dashboard' });
+            } else {
+                router.push('/');
+            }
         }, 800);
 
-    } catch (error) {
-        let message = 'কিছু একটা ভুল হয়েছে। আবার চেষ্টা করুন।';
+    } catch (error: any) {
+        // Pull the real message from the backend response instead of always using the fallback
+        const message =
+            error?.response?.data?.message ||
+            error?.response?.data?.errors?.phone?.[0] ||
+            'কিছু একটা ভুল হয়েছে। আবার চেষ্টা করুন।';
 
-       
-        // Show Error Popup Modal
         Swal.fire({
             icon: 'error',
             title: 'লগইন ব্যর্থ হয়েছে',
