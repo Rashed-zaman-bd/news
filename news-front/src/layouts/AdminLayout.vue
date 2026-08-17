@@ -127,6 +127,14 @@
         >
           <i class="bi bi-people mr-2"></i>Users
         </router-link>
+
+        <router-link
+          to="/admin/logo"
+          class="block px-4 py-2 rounded transition-colors hover:bg-gray-700"
+          active-class="bg-gray-800 text-emerald-400 font-semibold"
+        >
+          <i class="bi bi-image mr-2"></i>Logos
+        </router-link>
       </nav>
     </aside>
 

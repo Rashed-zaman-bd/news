@@ -81,6 +81,12 @@ const routes = [
         name: 'admin.user',
         component: () => import('@/views/admin/UserView.vue'),
       },
+
+      {
+        path: 'logo',
+        name: 'admin.logo',
+        component: () => import('@/views/admin/LogoViews.vue'),
+      },
     ],
   },
 ]

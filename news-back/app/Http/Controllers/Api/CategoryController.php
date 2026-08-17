@@ -23,13 +23,5 @@ class CategoryController extends Controller
         return CategoryResource::collection($categories);
     }
 
-    public function store(StoreCategoryRequest $request)
-    {
-        $category = Category::create([
-            ...$request->validated(),
-            'slug' => Str::slug($request->slug ?? $request->name),
-        ]);
-
-        return new CategoryResource($category);
-    }
+ 
 }

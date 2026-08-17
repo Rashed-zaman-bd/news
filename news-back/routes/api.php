@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\Admin\AdminCategoryController;
 use App\Http\Controllers\Api\Admin\AdminUserController;
 use App\Http\Controllers\Api\CategoryController;
+use App\Http\Controllers\Api\LogoController;
 use App\Http\Controllers\Api\ProfileController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Auth\SocialAuthController;
@@ -51,8 +52,6 @@ Route::middleware(['auth:sanctum', 'admin'])->prefix('admin')->group(function ()
 });
 
 
-
-
 // Public
 Route::get('/category', [CategoryController::class, 'index']);
 
@@ -62,4 +61,16 @@ Route::middleware(['auth:sanctum', 'admin'])->prefix('admin')->group(function ()
     Route::post('categories', [AdminCategoryController::class, 'store']);
     Route::put('categories/{category}', [AdminCategoryController::class, 'update']);
     Route::delete('categories/{category}', [AdminCategoryController::class, 'destroy']);
+});
+
+//Logo routes
+Route::get('/logo', [LogoController::class, 'index']);
+
+Route::middleware(['auth:sanctum', 'admin'])->group(function () {
+
+    Route::post('/admin/logo', [LogoController::class, 'store']);
+
+    Route::post('/admin/logo/{logo}', [LogoController::class, 'update']);
+
+    Route::delete('/admin/logo/{logo}', [LogoController::class, 'destroy']);
 });
