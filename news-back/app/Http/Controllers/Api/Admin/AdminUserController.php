@@ -20,6 +20,7 @@ class AdminUserController extends Controller
     public function index(Request $request)
     {
         $users = User::query()
+            ->when($request->boolean('trashed'), fn ($q) => $q->onlyTrashed())
             ->search($request->search)
             ->when(
                 $request->filled('role'),
