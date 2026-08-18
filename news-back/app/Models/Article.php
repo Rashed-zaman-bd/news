@@ -11,7 +11,7 @@ class Article extends Model
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
-        'title', 'slug', 'excerpt', 'content', 'featured_image',
+        'title', 'slug', 'sub_title', 'excerpt', 'content', 'featured_image',
         'category_id', 'user_id', 'editor_id',
         'status', 'is_featured', 'is_breaking', 'views', 'published_at',
     ];
@@ -30,5 +30,15 @@ class Article extends Model
     public function author()
     {
         return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function editor()
+    {
+        return $this->belongsTo(User::class, 'editor_id');
+    }
+
+    public function comments()
+    {
+        return $this->hasMany(Comment::class);
     }
 }

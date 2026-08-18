@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\Admin\AdminCategoryController;
 use App\Http\Controllers\Api\Admin\AdminUserController;
+use App\Http\Controllers\Api\ArticleController;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\LogoController;
 use App\Http\Controllers\Api\ProfileController;
@@ -73,4 +74,14 @@ Route::middleware(['auth:sanctum', 'admin'])->group(function () {
     Route::post('/admin/logo/{logo}', [LogoController::class, 'update']);
 
     Route::delete('/admin/logo/{logo}', [LogoController::class, 'destroy']);
+});
+
+
+// Article Public routes — no auth required, published articles only
+Route::get('/articles', [ArticleController::class, 'index']);
+Route::get('/articles/{article:slug}', [ArticleController::class, 'show']);
+
+// Admin/editor routes — full CRUD, all statuses
+Route::middleware(['auth:sanctum', 'role:admin,editor'])->prefix('admin')->group(function () {
+    Route::apiResource('articles', ArticleController::class);
 });
