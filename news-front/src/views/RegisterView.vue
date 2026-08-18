@@ -2,7 +2,12 @@
     <div class="flex flex-col justify-center items-center bg-gray-100 p-4 min-h-screen">
         <!-- Logo -->
         <div class="flex flex-col items-center mb-6">
-            <img src="/images/khobor red logo.png" alt="Logo" class="w-72 md:h-24 object-contain">
+            <img
+                v-if="logo?.text_logo"
+                :src="logo.text_logo"
+                :alt="logo.title || 'Khobor Logo'"
+                class="w-72 md:h-24 object-contain"
+            >
         </div>
 
         <!-- Register Card -->
@@ -140,7 +145,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive } from 'vue';
+import { ref, reactive, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import api from '@/services/api';
 import Swal from 'sweetalert2';
@@ -163,6 +168,19 @@ const errors = reactive({
     password: '',
     avatar: '',
 });
+
+interface LogoData {
+    id:number
+    title:string
+    text_logo: string | null
+}
+
+const logo = ref<LogoData | null>(null)
+
+const fetchLogo = async () => {
+    const {data} = await api.get('/logo');
+    logo.value = data.data || data;
+}
 
 const avatarPreview = ref<string | null>(null);
 const loading = ref(false);
@@ -348,4 +366,8 @@ const handleRegister = async () => {
         loading.value = false;
     }
 };
+
+onMounted(() => {
+    fetchLogo();
+});
 </script>

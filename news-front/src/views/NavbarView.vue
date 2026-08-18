@@ -65,7 +65,11 @@
         <!-- MOBILE LOGO -->
         <div class="lg:hidden flex flex-col items-start shrink-0">
           <router-link to="/" class="shrink-0">
-            <img src="/images/khobor red logo.png" alt="Khobor Logo" class="h-9 w-auto" />
+            <img 
+              v-if="logo?.text_logo"
+              :src="logo.text_logo"
+              :alt="logo.title || 'Khobor Logo'"
+              class="h-9 w-auto object-contain">
           </router-link>
           <span class="text-xs text-gray-600 mt-1">{{ formattedDate }}</span>
         </div>
