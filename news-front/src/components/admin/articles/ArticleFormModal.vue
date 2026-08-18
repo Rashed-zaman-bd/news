@@ -37,12 +37,14 @@
                     </div>
 
                     <!-- Category + Status -->
+                    <!-- Category + Sub-category + Status -->
                     <div class="grid grid-cols-2 gap-4">
                         <div>
                             <label class="block text-sm font-medium mb-1">ক্যাটাগরি <span class="text-red-500">*</span></label>
                             <select
                                 v-model="form.category_id"
                                 required
+                                @change="onCategoryChange"
                                 class="w-full border rounded-md px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-300"
                             >
                                 <option value="" disabled>নির্বাচন করুন</option>
@@ -54,17 +56,33 @@
                         </div>
 
                         <div>
-                            <label class="block text-sm font-medium mb-1">স্ট্যাটাস</label>
+                            <label class="block text-sm font-medium mb-1">সাব-ক্যাটাগরি</label>
                             <select
-                                v-model="form.status"
-                                class="w-full border rounded-md px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-300"
+                                v-model="form.sub_category_id"
+                                :disabled="!form.category_id || !availableSubCategories.length"
+                                class="w-full border rounded-md px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-300 disabled:bg-gray-100"
                             >
-                                <option value="draft">খসড়া</option>
-                                <option value="pending">পর্যালোচনাধীন</option>
-                                <option value="published">প্রকাশিত</option>
-                                <option value="archived">আর্কাইভড</option>
+                                <option value="">নির্বাচন করুন (ঐচ্ছিক)</option>
+                                <option v-for="sub in availableSubCategories" :key="sub.id" :value="sub.id">
+                                    {{ sub.name }}
+                                </option>
                             </select>
+                            <p v-if="errors.sub_category_id" class="text-red-500 text-xs mt-1">{{ errors.sub_category_id }}</p>
                         </div>
+                    </div>
+
+                    <!-- Status moves to its own row now that the grid above is full -->
+                    <div>
+                        <label class="block text-sm font-medium mb-1">স্ট্যাটাস</label>
+                        <select
+                            v-model="form.status"
+                            class="w-full border rounded-md px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-300"
+                        >
+                            <option value="draft">Draft</option>
+                            <option value="pending">Pending</option>
+                            <option value="published">Published</option>
+                            <option value="archived">Archived</option>
+                        </select>
                     </div>
 
                     <!-- Excerpt -->
@@ -149,6 +167,8 @@ import Swal from 'sweetalert2';
 interface Category {
     id: number;
     name: string;
+    parent_id: number | null;
+    children?: Category[];
 }
 
 interface ArticleData {
@@ -159,6 +179,8 @@ interface ArticleData {
     content: string;
     category_id?: number | string;
     category?: { id: number; name: string } | null;
+    sub_category_id?: number | string | null;
+    sub_category?: { id: number; name: string } | null;
     status: string;
     is_featured: boolean;
     is_breaking: boolean;
@@ -168,7 +190,7 @@ interface ArticleData {
 const props = defineProps<{
     show: boolean;
     article?: ArticleData | null;
-    categories: Category[];
+    categories: Category[]; // top-level categories WITH children eager-loaded
 }>();
 
 const emit = defineEmits<{
@@ -187,6 +209,7 @@ const form = reactive({
     excerpt: '',
     content: '',
     category_id: '' as number | string,
+    sub_category_id: '' as number | string,
     status: 'draft',
     is_featured: false,
     is_breaking: false,
@@ -195,9 +218,23 @@ const form = reactive({
 const errors = reactive({
     title: '',
     category_id: '',
+    sub_category_id: '',
     content: '',
     featured_image: '',
 });
+
+// Sub-categories belonging to the currently selected parent category
+const availableSubCategories = computed(() => {
+    if (!form.category_id) return [];
+    const parent = props.categories.find((c) => c.id === Number(form.category_id));
+    return parent?.children ?? [];
+});
+
+const onCategoryChange = () => {
+    // Reset sub-category whenever the parent category changes,
+    // since the previously selected sub-category may not belong to the new parent
+    form.sub_category_id = '';
+};
 
 const resetForm = () => {
     form.title = '';
@@ -205,6 +242,7 @@ const resetForm = () => {
     form.excerpt = '';
     form.content = '';
     form.category_id = '';
+    form.sub_category_id = '';
     form.status = 'draft';
     form.is_featured = false;
     form.is_breaking = false;
@@ -223,7 +261,8 @@ watch(
             form.sub_title = props.article.sub_title ?? '';
             form.excerpt = props.article.excerpt ?? '';
             form.content = props.article.content;
-            form.category_id = props.article.category_id ?? '';
+            form.category_id = props.article.category_id ?? props.article.category?.id ?? '';
+            form.sub_category_id = props.article.sub_category_id ?? props.article.sub_category?.id ?? '';
             form.status = props.article.status ?? 'draft';
             form.is_featured = Boolean(props.article.is_featured);
             form.is_breaking = Boolean(props.article.is_breaking);
@@ -280,6 +319,7 @@ const handleSubmit = async () => {
         formData.append('is_featured', form.is_featured ? '1' : '0');
         formData.append('is_breaking', form.is_breaking ? '1' : '0');
 
+        if (form.sub_category_id) formData.append('sub_category_id', String(form.sub_category_id));
         if (form.sub_title) formData.append('sub_title', form.sub_title);
         if (form.excerpt) formData.append('excerpt', form.excerpt);
         if (imageFile.value) formData.append('featured_image', imageFile.value);

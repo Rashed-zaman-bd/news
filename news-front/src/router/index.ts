@@ -3,25 +3,16 @@ import DefaultLayout from '@/layouts/DefaultLatout.vue'
 import AdminLayout from '@/layouts/AdminLayout.vue'
 import api from '@/services/api'
 
+const ALL_ADMIN_ROLES = ['admin', 'editor', 'author']
+
 const routes = [
-  // =========================
-  // DEFAULT LAYOUT
-  // =========================
   {
     path: '/',
     component: DefaultLayout,
     children: [
-      {
-        path: '',
-        name: 'home',
-        component: () => import('@/views/HomeView.vue'),
-      },
+      { path: '', name: 'home', component: () => import('@/views/HomeView.vue') },
     ],
   },
-
-  // =========================
-  // AUTH PAGES
-  // =========================
   {
     path: '/login',
     name: 'login',
@@ -34,21 +25,12 @@ const routes = [
     component: () => import('@/views/RegisterView.vue'),
     meta: { requiresAuth: false },
   },
-
-
-  // =========================
-  // PROFILE
-  // =========================
   {
     path: '/profile',
     name: 'profile',
     component: () => import('@/components/ProfileUpdate.vue'),
     meta: { requiresAuth: true },
   },
-
-  // =========================
-  // SOCIAL AUTH CALLBACK
-  // =========================
   {
     path: '/auth/callback',
     name: 'auth.callback',
@@ -62,36 +44,50 @@ const routes = [
   {
     path: '/admin',
     component: AdminLayout,
-    meta: { requiresAuth: true, requiresAdmin: true },
+    // Base gate: any admin-panel role can enter the layout/dashboard
+    meta: { requiresAuth: true, requiresAdmin: true, roles: ALL_ADMIN_ROLES },
     children: [
       {
         path: 'dashboard',
         name: 'admin.dashboard',
         component: () => import('@/views/admin/DashboardView.vue'),
+        meta: { roles: ALL_ADMIN_ROLES },
       },
-
+      {
+        path: 'article',
+        name: 'admin.article',
+        component: () => import('@/views/admin/ArticleView.vue'),
+        meta: { roles: ['admin', 'editor'] }, // matches your backend articles routes
+      },
+      {
+        path: 'article/create',
+        name: 'admin.article.create',
+        component: () => import('@/views/admin/ArticleCreateView.vue'),
+        meta: { roles: ALL_ADMIN_ROLES },
+      },
+      {
+        path: 'article/pending',
+        name: 'admin.article.pending',
+        component: () => import('@/views/admin/ArticalePendingView.vue'),
+        meta: { roles: ALL_ADMIN_ROLES },
+      },
       {
         path: 'category',
         name: 'admin.category',
         component: () => import('@/views/admin/CategoryView.vue'),
+        meta: { roles: ['admin'] }, // matches your backend admin-only categories routes
       },
-
-      {
-        path: 'article',
-        name: 'admin.article',
-        component: () => import('@/views/admin/ArticleView.vue')
-      },
-
       {
         path: 'user',
         name: 'admin.user',
         component: () => import('@/views/admin/UserView.vue'),
+        meta: { roles: ['admin'] }, // your backend uses role:admin,editor,author for users though — see note below
       },
-
       {
         path: 'logo',
         name: 'admin.logo',
         component: () => import('@/views/admin/LogoViews.vue'),
+        meta: { roles: ['admin'] }, // matches your backend admin-only logo routes
       },
     ],
   },
@@ -102,9 +98,8 @@ const router = createRouter({
   routes,
 })
 
-// Only verify with the backend once per browser session unless the cache is missing/stale.
-// Keeps admin nav snappy while still confirming role server-side on first entry.
 let adminVerified = false
+let cachedRole: string | null = null
 
 router.beforeEach(async (to, from, next) => {
   const requiresAuth = to.matched.some((route) => route.meta.requiresAuth)
@@ -121,11 +116,16 @@ router.beforeEach(async (to, from, next) => {
   }
 
   if (requiresAdmin) {
+    // Merge roles meta from all matched route segments (deepest wins if defined)
+    const allowedRoles = to.matched
+      .slice()
+      .reverse()
+      .find((r) => r.meta.roles)?.meta.roles as string[] | undefined ?? ALL_ADMIN_ROLES
+
     // Fast path: already verified this session, trust cached role
-    if (adminVerified) {
-      const cached = localStorage.getItem('user')
-      const user = cached ? JSON.parse(cached) : null
-      if (user?.role === 'admin') return next()
+    if (adminVerified && cachedRole) {
+      if (allowedRoles.includes(cachedRole)) return next()
+      return next({ name: 'home' })
     }
 
     try {
@@ -133,14 +133,13 @@ router.beforeEach(async (to, from, next) => {
       const user = response.data.user
 
       localStorage.setItem('user', JSON.stringify(user))
+      cachedRole = user.role
+      adminVerified = true
 
-      if (user.role !== 'admin') {
+      if (!allowedRoles.includes(user.role)) {
         return next({ name: 'home' })
       }
-
-      adminVerified = true
     } catch (error: any) {
-      // Only nuke the session on an actual auth failure, not a network hiccup
       if (error?.response?.status === 401) {
         localStorage.removeItem('apiToken')
         localStorage.removeItem('user')

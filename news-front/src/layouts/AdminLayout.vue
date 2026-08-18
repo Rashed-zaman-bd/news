@@ -95,7 +95,7 @@
                 Write New
               </router-link>
               <router-link
-                to="/admin/article_pending"
+                to="/admin/article/pending"
                 class="block px-4 py-2 rounded text-sm text-gray-300 hover:bg-gray-700 hover:text-white transition-colors"
                 active-class="bg-gray-800 text-emerald-400 font-semibold"
               >

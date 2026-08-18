@@ -21,6 +21,7 @@ class Article extends Model
         'content',
         'featured_image',
         'category_id',
+        'sub_category_id',
         'user_id',
         'editor_id',
         'status',
@@ -51,6 +52,11 @@ class Article extends Model
     {
         return $this->belongsTo(Category::class);
     }
+
+    public function subCategory(): BelongsTo
+{
+    return $this->belongsTo(Category::class, 'sub_category_id');
+}
 
     public function author(): BelongsTo
     {

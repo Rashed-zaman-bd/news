@@ -29,7 +29,9 @@ class ArticleResource extends JsonResource
             'updated_at'     => $this->updated_at?->toIso8601String(),
 
             // Relationships
-            'category' => $this->whenLoaded('category', fn () => new CategoryResource($this->category)),
+            'category'     => $this->whenLoaded('category', fn () => new CategoryResource($this->category)),
+            'sub_category' => $this->whenLoaded('subCategory', fn () => $this->subCategory
+                ? new CategoryResource($this->subCategory) : null),
             'author'   => $this->whenLoaded('author', fn () => [
                 'id'   => $this->author->id,
                 'name' => $this->author->name,

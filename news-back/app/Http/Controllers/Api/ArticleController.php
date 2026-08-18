@@ -17,7 +17,7 @@ class ArticleController extends Controller
 {
     public function index(Request $request): AnonymousResourceCollection
     {
-        $query = Article::with(['category', 'author', 'editor'])
+        $query = Article::with(['category', 'subCategory', 'author', 'editor'])
             ->latest('published_at');
 
         if ($request->filled('status')) {
@@ -26,6 +26,22 @@ class ArticleController extends Controller
 
         if ($request->filled('category_id')) {
             $query->where('category_id', $request->category_id);
+        }
+
+        if ($request->filled('sub_category_id')) {
+            $query->where('sub_category_id', $request->sub_category_id);
+        }
+
+        if ($request->filled('author_id')) {
+            $query->where('user_id', $request->author_id);
+        }
+
+        if ($request->filled('date_from')) {
+            $query->whereDate('published_at', '>=', $request->date_from);
+        }
+
+        if ($request->filled('date_to')) {
+            $query->whereDate('published_at', '<=', $request->date_to);
         }
 
         if ($request->filled('is_featured')) {

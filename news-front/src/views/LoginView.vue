@@ -176,14 +176,15 @@ const handleLogin = async () => {
 
         const user = response.data.user;
 
+        const ADMIN_ROLES = ['admin', 'editor', 'author'];
+
         // Delay redirect briefly to let toast appear
         setTimeout(() => {
-            // Respect a pending redirect (e.g. router guard sent them to /login?redirect=/admin/dashboard)
             const redirect = router.currentRoute.value.query.redirect as string | undefined;
 
             if (redirect) {
                 router.push(redirect);
-            } else if (user?.role === 'admin') {
+            } else if (user?.role && ADMIN_ROLES.includes(user.role)) {
                 router.push({ name: 'admin.dashboard' });
             } else {
                 router.push('/');

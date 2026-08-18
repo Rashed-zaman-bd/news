@@ -24,6 +24,7 @@ class UpdateArticleRequest extends FormRequest
             'content' => ['sometimes', 'required', 'string'],
             'featured_image' => ['nullable', 'image', 'mimes:jpeg,jpg,png,webp', 'max:2048'],
             'category_id' => ['sometimes', 'required', 'exists:categories,id'],
+            'sub_category_id' => ['nullable', 'exists:categories,id'],
             'status' => ['nullable', Rule::in(['draft', 'pending', 'published', 'archived'])],
             'is_featured' => ['nullable', 'boolean'],
             'is_breaking' => ['nullable', 'boolean'],

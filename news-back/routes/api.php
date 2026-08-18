@@ -43,12 +43,9 @@ Route::get('/auth/{provider}/callback', [SocialAuthController::class, 'callback'
     
 // Admin user routes
 Route::middleware(['auth:sanctum', 'admin'])->prefix('admin')->group(function () {
-
-    // Restore route (MUST come before apiResource so it doesn't collide with GET /users/{user})
     Route::post('users/{id}/restore', [AdminUserController::class, 'restore'])
         ->name('users.restore');
 
-    // Standard CRUD routes (index, store, show, update, destroy)
     Route::apiResource('users', AdminUserController::class);
 });
 
