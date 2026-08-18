@@ -77,11 +77,16 @@ Route::middleware(['auth:sanctum', 'admin'])->group(function () {
 });
 
 
-// Article Public routes — no auth required, published articles only
+// Public routes — no auth required, by slug (SEO-friendly)
 Route::get('/articles', [ArticleController::class, 'index']);
 Route::get('/articles/{article:slug}', [ArticleController::class, 'show']);
 
-// Admin/editor routes — full CRUD, all statuses
+// Admin/editor routes — full CRUD, all statuses, by numeric id
 Route::middleware(['auth:sanctum', 'role:admin,editor'])->prefix('admin')->group(function () {
-    Route::apiResource('articles', ArticleController::class);
+    Route::get('/articles', [ArticleController::class, 'index']);
+    Route::post('/articles', [ArticleController::class, 'store']);
+    Route::get('/articles/{article:id}', [ArticleController::class, 'show']);
+    Route::put('/articles/{article:id}', [ArticleController::class, 'update']);
+    Route::patch('/articles/{article:id}', [ArticleController::class, 'update']);
+    Route::delete('/articles/{article:id}', [ArticleController::class, 'destroy']);
 });
