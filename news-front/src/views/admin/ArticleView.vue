@@ -290,7 +290,7 @@ const activeSubCategories = computed(() => {
 
 const statusLabel = (status: string) => {
     const map: Record<string, string> = {
-        draft: 'খসড়া', pending: 'পর্যালোচনাধীন', published: 'প্রকাশিত', archived: 'আর্কাইভড',
+        draft: 'draft', pending: 'pending', published: 'published', archived: 'archived',
     };
     return map[status] ?? status;
 };

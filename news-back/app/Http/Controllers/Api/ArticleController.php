@@ -21,7 +21,11 @@ class ArticleController extends Controller
             ->latest('published_at');
 
         if ($request->filled('status')) {
-            $query->where('status', $request->status);
+            $statuses = is_array($request->status)
+                ? $request->status
+                : explode(',', $request->status);
+
+            $query->whereIn('status', $statuses);
         }
 
         if ($request->filled('category_id')) {
@@ -42,14 +46,6 @@ class ArticleController extends Controller
 
         if ($request->filled('date_to')) {
             $query->whereDate('published_at', '<=', $request->date_to);
-        }
-
-        if ($request->filled('is_featured')) {
-            $query->where('is_featured', $request->boolean('is_featured'));
-        }
-
-        if ($request->filled('is_breaking')) {
-            $query->where('is_breaking', $request->boolean('is_breaking'));
         }
 
         if ($request->filled('search')) {
