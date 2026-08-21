@@ -75,7 +75,7 @@ const routes = [
         path: 'category',
         name: 'admin.category',
         component: () => import('@/views/admin/CategoryView.vue'),
-        meta: { roles: ['admin'] }, // matches your backend admin-only categories routes
+        meta: { roles: ['admin', 'editor'] }, // matches your backend admin-only categories routes
       },
       {
         path: 'user',

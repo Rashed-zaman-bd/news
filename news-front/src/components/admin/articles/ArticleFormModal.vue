@@ -190,7 +190,8 @@ interface ArticleData {
 const props = defineProps<{
     show: boolean;
     article?: ArticleData | null;
-    categories: Category[]; // top-level categories WITH children eager-loaded
+    categories: Category[];
+    
 }>();
 
 const emit = defineEmits<{

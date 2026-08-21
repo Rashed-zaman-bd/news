@@ -40,6 +40,7 @@
                         {{ sub.name }}
                     </option>
                 </select>
+                
 
                 <select
                     v-model="filters.author_id"

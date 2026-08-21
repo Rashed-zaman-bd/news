@@ -17,7 +17,7 @@ class ArticleController extends Controller
 {
     public function index(Request $request): AnonymousResourceCollection
     {
-        $query = Article::with(['category', 'subCategory', 'author', 'editor'])
+        $query = Article::latest()->with(['category', 'subCategory', 'author', 'editor'])
             ->latest('published_at');
 
         if ($request->filled('status')) {
