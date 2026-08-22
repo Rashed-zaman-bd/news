@@ -40,6 +40,7 @@ class ArticleResource extends JsonResource
                 'id'   => $this->editor->id,
                 'name' => $this->editor->name,
             ] : null),
+
         ];
     }
 }

@@ -79,6 +79,12 @@
         ========================== -->
         <div class="hidden lg:flex items-center space-x-10 text-lg  text-gray-800">
 
+          <div class="flex items-center gap-1 cursor-pointer hover:text-red-600 transition-colors">
+              <router-link :to="`/category/latest`" class="whitespace-nowrap">
+                সর্বশেষ
+              </router-link>
+          </div>
+
           <!-- Skeleton Loader -->
           <template v-if="categoriesLoading">
             <div v-for="i in 6" :key="i" class="h-5 w-16 bg-gray-200 animate-pulse rounded"></div>
@@ -137,6 +143,12 @@
         <div v-if="mobileMenuOpen" class="lg:hidden bg-white border-t border-gray-200 shadow-md overflow-hidden">
           <div class="max-w-7xl mx-auto px-4 py-3">
             <nav class="flex flex-col">
+
+              <div class="flex items-center gap-1 cursor-pointer hover:text-red-600 transition-colors">
+                  <router-link :to="`/category/latest`" class="whitespace-nowrap">
+                    সর্বশেষ
+                  </router-link>
+              </div>
 
               <!-- Dynamic Categories -->
               <div v-for="cat in categories" :key="cat.id" class="border-b border-gray-100">

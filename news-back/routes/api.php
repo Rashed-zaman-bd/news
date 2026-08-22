@@ -52,6 +52,9 @@ Route::middleware(['auth:sanctum', 'admin'])->prefix('admin')->group(function ()
 
 // Public
 Route::get('/category', [CategoryController::class, 'index']);
+Route::get('/categories/{slug}', [CategoryController::class, 'show']);
+Route::get('/categories/{slug}/articles', [CategoryController::class, 'articles']);
+Route::get('/categories/{slug}/popular', [CategoryController::class, 'popular']);
 
 // Admin
 Route::middleware(['auth:sanctum', 'admin'])->prefix('admin')->group(function () {

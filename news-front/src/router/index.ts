@@ -11,6 +11,20 @@ const routes = [
     component: DefaultLayout,
     children: [
       { path: '', name: 'home', component: () => import('@/views/HomeView.vue') },
+
+     {
+        path: "/category/:slug",
+        name: "category-detail",
+        component: () => import("@/views/category/[slug].vue"),
+        meta: { requiresAuth: false },
+      },
+
+      {
+        path: "/category/latest",
+        name: "category-latest",
+        component: () => import("@/views/category/latest.vue"),
+        meta: { requiresAuth: false },
+      },
     ],
   },
   {
@@ -38,6 +52,7 @@ const routes = [
     meta: { requiresAuth: false },
   },
 
+ 
   // =========================
   // ADMIN
   // =========================

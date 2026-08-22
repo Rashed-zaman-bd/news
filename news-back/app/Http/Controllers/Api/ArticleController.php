@@ -20,6 +20,21 @@ class ArticleController extends Controller
         $query = Article::latest()->with(['category', 'subCategory', 'author', 'editor'])
             ->latest('published_at');
 
+        
+        $user = $request->user();
+        $isStaff = $user && in_array($user->role, ['admin', 'editor']);
+
+        if (!$isStaff) {
+            // Public callers only ever see published content, regardless of ?status=
+            $query->where('status', 'published');
+        } elseif ($request->filled('status')) {
+            $statuses = is_array($request->status)
+                ? $request->status
+                : explode(',', $request->status);
+
+            $query->whereIn('status', $statuses);
+        }
+
         if ($request->filled('status')) {
             $statuses = is_array($request->status)
                 ? $request->status
