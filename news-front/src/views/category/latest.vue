@@ -129,55 +129,54 @@
                 <!-- /LEFT SECTION -->
 
                 <!-- RIGHT SECTION: Sidebar -->
-                <div class="lg:col-span-4 xl:col-span-3 flex flex-col gap-6">
+                <div class="lg:col-span-4 xl:col-span-3 flex flex-col gap-6 border-l border-gray-300 p-3">
 
-                    <!-- Side Banner Slot -->
-                    <div class="w-full border rounded overflow-hidden flex justify-center">
-                        <img src="/images/topbanner.png" alt="Ad" class="w-full h-auto object-cover max-w-xs sm:max-w-none" />
-                    </div>
-
-                    <!-- Tabbed Widget -->
-                    <div class="border-t-2 border-red-600 pt-2">
-                        <div class="flex border-b border-gray-200 gap-6 text-base font-bold pb-2">
-                            <button
-                                class="relative pb-1 transition-colors"
-                                :class="sideTab === 'featured' ? 'text-gray-900 font-extrabold after:absolute after:bottom-[-9px] after:left-0 after:right-0 after:h-[2px] after:bg-red-600' : 'text-gray-500 hover:text-gray-800'"
-                                @click="sideTab = 'featured'"
-                            >
-                                নির্বাচিত
-                            </button>
-                            <button
-                                class="relative pb-1 transition-colors"
-                                :class="sideTab === 'popular' ? 'text-gray-900 font-extrabold after:absolute after:bottom-[-9px] after:left-0 after:right-0 after:h-[2px] after:bg-red-600' : 'text-gray-500 hover:text-gray-800'"
-                                @click="sideTab = 'popular'"
-                            >
-                                পঠিত
-                            </button>
-                        </div>
-
-                        <ul class="divide-y divide-gray-100">
-                            <li
-                                v-for="(item, i) in sidePanelList"
-                                :key="item.id"
-                                class="py-3 flex items-start gap-3 group"
-                            >
-                                <span class="text-2xl font-bold text-gray-400 leading-none shrink-0 w-5">
-                                    {{ toBengaliNumber(i + 1) }}
-                                </span>
-                                <router-link
-                                    :to="`/article/${item.slug}`"
-                                    class="text-sm font-semibold text-gray-800 group-hover:text-red-600 leading-snug"
-                                >
-                                    {{ item.title }}
-                                </router-link>
-                            </li>
-                            <li v-if="!sidePanelList.length" class="py-4 text-xs text-gray-400">
-                                কোনো তথ্য নেই
-                            </li>
-                        </ul>
-                    </div>
-
+                <!-- Side Banner Slot -->
+                <div class="w-full border rounded overflow-hidden flex justify-center">
+                    <img src="/images/topbanner.png" alt="Ad" class="w-full h-auto object-cover max-w-xs sm:max-w-none" />
                 </div>
+
+                <!-- Tabbed Widget -->
+                <div class="border-t-2 border-red-600 pt-2">
+                    <div class="flex border-b border-gray-200 gap-6 text-lg font-bold pb-2">
+                        <button
+                            class="relative pb-1 transition-colors"
+                            :class="sideTab === 'popular' ? 'text-gray-900 font-extrabold after:absolute after:bottom-[-9px] after:left-0 after:right-0 after:h-[2px] after:bg-red-600' : 'text-gray-500 hover:text-gray-800'"
+                            @click="sideTab = 'popular'"
+                        >
+                            সর্বাধিক পঠিত
+                        </button>
+                        <button
+                            class="relative pb-1 transition-colors"
+                            :class="sideTab === 'featured' ? 'text-gray-900 font-extrabold after:absolute after:bottom-[-9px] after:left-0 after:right-0 after:h-[2px] after:bg-red-600' : 'text-gray-500 hover:text-gray-800'"
+                            @click="sideTab = 'featured'"
+                        >
+                            নির্বাচিত
+                        </button>
+                        
+                    </div>
+
+                    <!-- Numbered List -->
+                    <ul class="divide-y divide-gray-100">
+                        <li
+                            v-for="(item, i) in sidePanelList"
+                            :key="item.id"
+                            class="py-3 flex items-start gap-3 group"
+                        >
+                            <span class="text-2xl font-bold text-gray-400 leading-none shrink-0 w-5">
+                                {{ toBengaliNumber(i + 1) }}
+                            </span>
+                            <router-link
+                                :to="`/article/${item.slug}`"
+                                class="text-base font-semibold text-gray-800 group-hover:text-red-600 leading-snug"
+                            >
+                                {{ item.title }}
+                            </router-link>
+                        </li>
+                    </ul>
+                </div>
+
+            </div>
 
             </div>
 
@@ -190,72 +189,55 @@
             </div>
 
             <!-- BOTTOM SECTION: Remaining Articles -->
-            <div v-if="bottomArticles.length" class="mt-2">
-                <div class="grid grid-cols-1 gap-4 sm:gap-6">
+            <div v-if="bottomArticles.length" class="mt-8 max-w-lg mx-auto ">
+                <div class="grid grid-cols-1 gap-4 sm:gap-6 justify-center">
                     <template v-for="(chunk, chunkIndex) in listArticleChunks" :key="`chunk-${chunkIndex}`">
                         <div class="flex flex-col gap-4">
                             <router-link
                                 v-for="article in chunk"
                                 :key="article.id"
                                 :to="`/article/${article.slug}`"
-                                class="group flex flex-row items-start gap-3 sm:gap-4 pb-3 border-b border-gray-100 last:border-0"
+                                class="group flex flex-row md:flex-col items-start gap-3 sm:gap-4 pb-3 border-b border-gray-100 last:border-0"
                             >
-                                <div class="relative h-20 w-28 sm:h-24 sm:w-32 shrink-0 rounded overflow-hidden">
-                                    <img
-                                        v-if="article.featured_image"
-                                        :src="article.featured_image"
-                                        class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                                        alt=""
-                                    />
-                                    <div v-else class="w-full h-full bg-gray-200"></div>
+                                <!-- Image Container (Fixed dimensions on mobile for horizontal alignment) -->
+                                <div class="flex gap-3 group">
 
-                                    <div v-if="article.is_video" class="absolute top-1 left-1 bg-red-600 text-white p-0.5 rounded">
-                                        <i class="bi bi-camera-fill text-[10px]"></i>
+                                    <!-- Image -->
+                                    <div class="relative h-20 w-28 sm:h-46 sm:w-56 shrink-0 rounded overflow-hidden">
+                                        <img
+                                            v-if="article.featured_image"
+                                            :src="article.featured_image"
+                                            class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                                            :alt="article.title"
+                                        />
+                                        <div v-else class="w-full h-full bg-gray-200"></div>
+
+                                        <div v-if="article.is_video" class="absolute top-1 left-1 bg-red-600 text-white p-0.5 rounded">
+                                            <i class="bi bi-camera-fill text-[10px]"></i>
+                                        </div>
                                     </div>
-                                </div>
 
-                                <div class="flex-1 flex flex-col justify-between min-w-0">
-                                    <div>
-                                        <h4 class="font-bold text-sm sm:text-base text-gray-900 leading-snug group-hover:text-red-700 line-clamp-2">
+                                    <!-- Content -->
+                                    <div class="flex-1 min-w-0">
+                                        <h4 class="font-bold text-sm sm:text-base text-gray-900 leading-snug group-hover:text-red-700">
                                             <span v-if="article.sub_category" class="text-red-600 font-bold">
                                                 {{ article.sub_category.name }} •
                                             </span>
                                             {{ article.title }}
                                         </h4>
-                                        <p v-if="article.excerpt" class="text-xs text-gray-500 mt-1 line-clamp-2 leading-relaxed">
+                                        <p v-if="article.excerpt" class="text-base text-gray-500 mt-1 leading-relaxed">
                                             {{ article.excerpt }}
                                         </p>
-                                    </div>
-
-                                    <span class="text-[11px] text-gray-400 mt-1.5 block">
+                                        <span class="text-[11px] text-gray-400 mt-1.5 block">
                                         {{ timeAgo(article.published_at) }}
                                     </span>
+                                    </div>
+
                                 </div>
                             </router-link>
                         </div>
                     </template>
                 </div>
-            </div>
-
-            <!-- Pagination -->
-            <div v-if="meta.last_page > 1" class="flex justify-center items-center gap-2 mt-10">
-                <button
-                    :disabled="meta.current_page === 1"
-                    @click="fetchArticles(meta.current_page - 1)"
-                    class="px-4 py-1.5 text-sm rounded border border-gray-300 hover:bg-gray-100 disabled:opacity-40"
-                >
-                    পূর্ববর্তী
-                </button>
-                <span class="text-sm text-gray-600 font-medium">
-                    {{ toBengaliNumber(meta.current_page) }} / {{ toBengaliNumber(meta.last_page) }}
-                </span>
-                <button
-                    :disabled="meta.current_page === meta.last_page"
-                    @click="fetchArticles(meta.current_page + 1)"
-                    class="px-4 py-1.5 text-sm rounded border border-gray-300 hover:bg-gray-100 disabled:opacity-40"
-                >
-                    পরবর্তী
-                </button>
             </div>
         </template>
     </div>
@@ -292,7 +274,7 @@ const articles = ref<Article[]>([]);
 const featuredList = ref<Article[]>([]);
 const popularList = ref<Article[]>([]);
 const loading = ref(false);
-const sideTab = ref<'featured' | 'popular'>('featured');
+const sideTab = ref<'featured' | 'popular'>('popular');
 const meta = reactive({ current_page: 1, last_page: 1 });
 
 // Article Distribution Strategy (same as [slug].vue)
@@ -354,10 +336,12 @@ const fetchArticles = async (page = 1) => {
         try {
             const { data: popularData } = await api.get(popularEndpoint);
             popularList.value = popularData.data ?? [];
-        } catch {
+        } catch (popularError) {
+            console.error('Failed to load popular articles:', popularError); // was silently ignored before
             popularList.value = [];
         }
     } catch (error) {
+        console.error('Failed to load articles:', error); // this one was also silently swallowing errors
         articles.value = [];
     } finally {
         loading.value = false;

@@ -88,14 +88,14 @@
 
                         <div class="flex flex-col justify-between">
                             <div>
-                                <h3 class="font-bold text-sm sm:text-lg text-gray-900 group-hover:text-red-700 leading-snug">
+                                <h3 class="font-bold text-base sm:text-xl text-gray-900 group-hover:text-red-700 leading-snug">
                                     {{ secondaryArticle.title }}
                                 </h3>
-                                <p v-if="secondaryArticle.excerpt" class="text-xs sm:text-sm text-gray-600 mt-1 line-clamp-2 sm:line-clamp-3 leading-relaxed">
+                                <p v-if="secondaryArticle.excerpt" class="text-sm sm:text-base text-gray-600 mt-1 line-clamp-2 sm:line-clamp-3 leading-relaxed">
                                     {{ secondaryArticle.excerpt }}
                                 </p>
                             </div>
-                            <span class="text-[11px] text-gray-400 mt-2">
+                            <span class="text-[14px] text-gray-600 mt-2">
                                 {{ timeAgo(secondaryArticle.published_at) }}
                             </span>
                         </div>
@@ -121,18 +121,18 @@
                                 <div v-else class="w-full h-full bg-gray-200"></div>
                             </div>
 
-                            <h4 class="font-bold text-sm sm:text-base text-gray-900 leading-snug group-hover:text-red-700">
+                            <h4 class="font-bold text-base sm:text-xl text-gray-900 leading-snug group-hover:text-red-700">
                                 <span v-if="article.sub_category" class="text-red-600 font-bold">
                                     {{ article.sub_category.name }} • 
                                 </span>
                                 {{ article.title }}
                             </h4>
-                            <p v-if="article.excerpt" class="text-xs sm:text-sm text-gray-500 mt-1 line-clamp-2 sm:line-clamp-3 leading-relaxed">
+                            <p v-if="article.excerpt" class="text-sm sm:text-base text-gray-700 mt-3 line-clamp-2 sm:line-clamp-3 leading-relaxed">
                                 {{ article.excerpt }}
                             </p>
                         </div>
 
-                        <span class="text-[11px] text-gray-400 mt-2">
+                        <span class="text-[14px] text-gray-600 mt-4">
                             {{ timeAgo(article.published_at) }}
                         </span>
                     </router-link>
@@ -141,7 +141,7 @@
             </div>
 
             <!-- RIGHT SECTION: Sidebar -->
-            <div class="lg:col-span-4 xl:col-span-3 flex flex-col gap-6">
+            <div class="lg:col-span-4 xl:col-span-3 flex flex-col gap-6 border-l border-gray-300 p-3">
 
                 <!-- Side Banner Slot -->
                 <div class="w-full border rounded overflow-hidden flex justify-center">
@@ -150,7 +150,14 @@
 
                 <!-- Tabbed Widget -->
                 <div class="border-t-2 border-red-600 pt-2">
-                    <div class="flex border-b border-gray-200 gap-6 text-base font-bold pb-2">
+                    <div class="flex border-b border-gray-200 gap-6 text-lg font-bold pb-2">
+                        <button
+                            class="relative pb-1 transition-colors"
+                            :class="sideTab === 'popular' ? 'text-gray-900 font-extrabold after:absolute after:bottom-[-9px] after:left-0 after:right-0 after:h-[2px] after:bg-red-600' : 'text-gray-500 hover:text-gray-800'"
+                            @click="sideTab = 'popular'"
+                        >
+                            সর্বাধিক পঠিত
+                        </button>
                         <button
                             class="relative pb-1 transition-colors"
                             :class="sideTab === 'featured' ? 'text-gray-900 font-extrabold after:absolute after:bottom-[-9px] after:left-0 after:right-0 after:h-[2px] after:bg-red-600' : 'text-gray-500 hover:text-gray-800'"
@@ -158,13 +165,7 @@
                         >
                             নির্বাচিত
                         </button>
-                        <button
-                            class="relative pb-1 transition-colors"
-                            :class="sideTab === 'popular' ? 'text-gray-900 font-extrabold after:absolute after:bottom-[-9px] after:left-0 after:right-0 after:h-[2px] after:bg-red-600' : 'text-gray-500 hover:text-gray-800'"
-                            @click="sideTab = 'popular'"
-                        >
-                            পঠিত
-                        </button>
+                        
                     </div>
 
                     <!-- Numbered List -->
@@ -179,7 +180,7 @@
                             </span>
                             <router-link
                                 :to="`/article/${item.slug}`"
-                                class="text-sm font-semibold text-gray-800 group-hover:text-red-600 leading-snug"
+                                class="text-base font-semibold text-gray-800 group-hover:text-red-600 leading-snug"
                             >
                                 {{ item.title }}
                             </router-link>
@@ -200,56 +201,56 @@
         </div>
 
         <!-- BOTTOM SECTION: Remaining 10 Articles (#6 to #15) -->
-<!-- BOTTOM SECTION: Remaining 10 Articles (#6 to #15) -->
-<div v-if="bottomArticles.length" class="mt-8 max-w-sm mx-auto px-2">
-    <div class="grid grid-cols-1 md:grid-cols-1 gap-4 sm:gap-6 justify-center">
-        <template v-for="(chunk, chunkIndex) in listArticleChunks" :key="`chunk-${chunkIndex}`">
-            <div class="flex flex-col gap-4">
-                <router-link
-                    v-for="article in chunk"
-                    :key="article.id"
-                    :to="`/article/${article.slug}`"
-                    class="group flex flex-row md:flex-col items-start gap-3 sm:gap-4 pb-3 border-b border-gray-100 last:border-0"
-                >
-                    <!-- Image Container (Fixed dimensions on mobile for horizontal alignment) -->
-                    <div class="relative h-20 w-28 sm:h-36 sm:w-full shrink-0 rounded overflow-hidden">
-                        <img
-                            v-if="article.featured_image"
-                            :src="article.featured_image"
-                            class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                            alt=""
-                        />
-                        <div v-else class="w-full h-full bg-gray-200"></div>
+        <div v-if="bottomArticles.length" class="mt-8 max-w-lg mx-auto ">
+            <div class="grid grid-cols-1 gap-4 sm:gap-6 justify-center">
+                <template v-for="(chunk, chunkIndex) in listArticleChunks" :key="`chunk-${chunkIndex}`">
+                    <div class="flex flex-col gap-4">
+                        <router-link
+                            v-for="article in chunk"
+                            :key="article.id"
+                            :to="`/article/${article.slug}`"
+                            class="group flex flex-row md:flex-col items-start gap-3 sm:gap-4 pb-3 border-b border-gray-100 last:border-0"
+                        >
+                            <!-- Image Container (Fixed dimensions on mobile for horizontal alignment) -->
+                            <div class="flex gap-3 group">
 
-                        <div v-if="article.is_video" class="absolute top-1 left-1 bg-red-600 text-white p-0.5 rounded">
-                            <i class="bi bi-camera-fill text-[10px]"></i>
-                        </div>
-                    </div>
+                                <!-- Image -->
+                                <div class="relative h-20 w-28 sm:h-46 sm:w-56 shrink-0 rounded overflow-hidden">
+                                    <img
+                                        v-if="article.featured_image"
+                                        :src="article.featured_image"
+                                        class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                                        :alt="article.title"
+                                    />
+                                    <div v-else class="w-full h-full bg-gray-200"></div>
 
-                    <!-- Content Details -->
-                    <div class="flex-1 flex flex-col justify-between min-w-0">
-                        <div>
-                            <h4 class="font-bold text-sm sm:text-base text-gray-900 leading-snug group-hover:text-red-700 line-clamp-2">
-                                <span v-if="article.sub_category" class="text-red-600 font-bold">
-                                    {{ article.sub_category.name }} • 
+                                    <div v-if="article.is_video" class="absolute top-1 left-1 bg-red-600 text-white p-0.5 rounded">
+                                        <i class="bi bi-camera-fill text-[10px]"></i>
+                                    </div>
+                                </div>
+
+                                <!-- Content -->
+                                <div class="flex-1 min-w-0">
+                                    <h4 class="font-bold text-sm sm:text-base text-gray-900 leading-snug group-hover:text-red-700">
+                                        <span v-if="article.sub_category" class="text-red-600 font-bold">
+                                            {{ article.sub_category.name }} •
+                                        </span>
+                                        {{ article.title }}
+                                    </h4>
+                                    <p v-if="article.excerpt" class="text-base text-gray-500 mt-1 leading-relaxed">
+                                        {{ article.excerpt }}
+                                    </p>
+                                    <span class="text-[11px] text-gray-400 mt-1.5 block">
+                                    {{ timeAgo(article.published_at) }}
                                 </span>
-                                {{ article.title }}
-                            </h4>
-                            <p v-if="article.excerpt" class="text-xs text-gray-500 mt-1 line-clamp-2 leading-relaxed">
-                                {{ article.excerpt }}
-                            </p>
-                        </div>
+                                </div>
 
-                        <!-- Date Footer -->
-                        <span class="text-[11px] text-gray-400 mt-1.5 block">
-                            {{ timeAgo(article.published_at) }}
-                        </span>
+                            </div>
+                        </router-link>
                     </div>
-                </router-link>
+                </template>
             </div>
-        </template>
-    </div>
-</div>
+        </div>
 
     </div>
 </template>
@@ -290,7 +291,7 @@ const articles = ref<Article[]>([]);
 const featuredList = ref<Article[]>([]);
 const popularList = ref<Article[]>([]);
 const loading = ref(false);
-const sideTab = ref<'featured' | 'popular'>('featured');
+const sideTab = ref<'featured' | 'popular'>('popular')
 const meta = reactive({ current_page: 1, last_page: 1 });
 
 // Article Distribution Strategy (Total 15)
@@ -381,7 +382,7 @@ const fetchArticles = async (page = 1) => {
 watch(
     () => route.params.slug,
     () => {
-        activeSubCategory.value = null; // reset filter when the main category itself changes
+        activeSubCategory.value = null; 
         fetchArticles(1);
     }
 );

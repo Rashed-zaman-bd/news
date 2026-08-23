@@ -11,30 +11,29 @@
 
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
 
-                <!-- =====================================================
-                     LEFT / MAIN ARTICLE
-                ====================================================== -->
+                <!-- LEFT / MAIN ARTICLE -->
                 <main class="lg:col-span-9">
 
                     <!-- Category -->
-                    <div class="flex items-center gap-2 text-sm sm:text-base mb-3">
+                    <div class="flex items-center gap-2 text-base sm:text-lg mb-3">
                         <i class="bi bi-file-earmark-ruled text-red-600"></i>
-
                         <router-link v-if="article.category" :to="`/category/${article.category.slug}`"
                             class="text-red-600 font-semibold hover:underline">
                             {{ article.category.name }}
                         </router-link>
-
                         <span v-if="article.sub_category" class="text-gray-400">›</span>
-
                         <router-link v-if="article.sub_category" :to="`/category/${article.sub_category.slug}`"
                             class="text-gray-500 hover:underline">
                             {{ article.sub_category.name }}
                         </router-link>
                     </div>
 
+                    <h1 class="text-base sm:text-lg  text-gray-900 pt-4 leading-tight mb-2">
+                        {{ article.sub_title }}
+                    </h1>
+
                     <!-- TITLE -->
-                    <h1 class="text-3xl sm:text-4xl lg:text-[40px] font-bold text-gray-900 pt-4 leading-tight mb-4">
+                    <h1 class="text-3xl sm:text-4xl lg:text-[40px] font-bold text-gray-900leading-tight mb-4">
                         {{ article.title }}
                     </h1>
 
@@ -77,11 +76,11 @@
                     </div>
 
                     <!-- Image Caption -->
-                    <div v-if="article.featured_image" class="text-xs text-gray-500  pb-2 mb-5">
+                    <div v-if="article.featured_image" class="text-xs text-gray-500 pb-2 mb-5">
                         {{ article.title }}
                     </div>
 
-                    <!-- TOP BANNER (dynamic — the ONLY top ad block) -->
+                    <!-- TOP BANNER (dynamic) -->
                     <div
                         v-if="topAds[0]"
                         class="w-full border-y border-gray-200 py-2 mb-5 flex flex-col items-center cursor-pointer"
@@ -91,17 +90,29 @@
                         <span class="text-[10px] text-gray-400 mt-1">বিজ্ঞাপন — {{ topAds[0].provider }}</span>
                     </div>
 
-                    <!-- CONTENT + MIDDLE ADS -->
+                    <!-- CONTENT -->
                     <div class="max-w-2xl mx-auto">
-                        <p class="font-lg md:font-xl max-w-none text-gray-800">
+                        <div
+                            v-if="article.excerpt"
+                            class="whitespace-pre-line text-lg sm:text-xl text-gray-900 font-medium leading-relaxed space-y-4"
+                        >
+                            {{ article.excerpt }}
+                        </div>
+                    </div>
+
+                    <!-- CONTENT -->
+                    <div class="max-w-2xl mx-auto mt-4">
+                        <div
+                            v-if="article.content"
+                            class="whitespace-pre-line text-lg sm:text-xl text-gray-900 font-medium leading-relaxed space-y-4"
+                        >
                             {{ article.content }}
-                        </p>
+                        </div>
                     </div>
 
                     <!-- RELATED ARTICLES -->
                     <div v-if="related.length" class="mt-12 pt-6 border-t border-gray-200">
                         <h2 class="text-xl font-bold text-red-600 mb-5">সম্পর্কিত সংবাদ</h2>
-
                         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
                             <router-link v-for="item in related" :key="item.id" :to="`/article/${item.slug}`" class="group">
                                 <div class="relative h-44 overflow-hidden rounded">
@@ -118,12 +129,10 @@
 
                 </main>
 
-                <!-- =====================================================
-                     RIGHT SIDEBAR
-                ====================================================== -->
+                <!-- RIGHT SIDEBAR -->
                 <aside class="lg:col-span-3 border-l pl-3">
                     <div class="lg:sticky lg:top-20">
-                        <!-- Sidebar Advertisement (dynamic — the ONLY sidebar ad block) -->
+
                         <div class="space-y-5">
                             <div
                                 v-for="ad in sidebarAds"
@@ -134,12 +143,10 @@
                                 <img :src="ad.image" :alt="ad.name" class="w-full h-auto" />
                                 <div class="text-[10px] text-gray-400 mt-1 text-center">বিজ্ঞাপন — {{ ad.provider }}</div>
                             </div>
-
-                            
                         </div>
-                        <!-- Latest News -->
+
                         <div class="mb-5">
-                            <h2 class="text-sm font-bold text-gray-600 border-b border-gray-300 pb-2 mb-3">
+                            <h2 class="text-2xl font-bold text-gray-600 border-b border-gray-300 pb-2 mt-3 mb-3">
                                 সর্বশেষ খবর
                             </h2>
 
@@ -158,13 +165,11 @@
                                     />
                                     <div v-else class="w-full h-full bg-gray-200"></div>
                                 </div>
-
                                 <div class="flex flex-col justify-between">
-                                    <h3 class="text-base text-gray-800 group-hover:text-red-600">
+                                    <h3 class="text-xl text-gray-800 group-hover:text-red-600">
                                         {{ item.title }}
                                     </h3>
-
-                                    <span class="text-[11px] text-gray-400 mt-1">
+                                    <span class="text-[14px] text-gray-400 mt-1">
                                         {{ timeAgo(item.published_at) }}
                                     </span>
                                 </div>
@@ -181,6 +186,33 @@
                     </div>
                 </aside>
 
+            </div>
+
+            <!-- SAME CATEGORY — MORE NEWS (now inside the article branch, will actually render) -->
+            <div v-if="sameCategoryArticles.length" class="mt-8 pt-6 border-t border-gray-200">
+                <h3 class="text-lg font-bold text-red-600 mb-4">আরও সংবাদ</h3>
+
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                    <router-link
+                        v-for="item in sameCategoryArticles"
+                        :key="item.id"
+                        :to="`/article/${item.slug}`"
+                        class="group"
+                    >
+                        <div class="relative h-28 overflow-hidden rounded">
+                            <img
+                                v-if="item.featured_image"
+                                :src="item.featured_image"
+                                :alt="item.title"
+                                class="w-full h-full object-cover group-hover:scale-105 transition duration-300"
+                            />
+                            <div v-else class="w-full h-full bg-gray-200"></div>
+                        </div>
+                        <h4 class="mt-2 text-xs font-semibold leading-snug text-gray-800 group-hover:text-red-600 line-clamp-2">
+                            {{ item.title }}
+                        </h4>
+                    </router-link>
+                </div>
             </div>
 
         </template>
@@ -202,6 +234,7 @@ interface Article {
     id: number
     title: string
     slug: string
+    sub_title: string
     content?: string
     excerpt?: string | null
     featured_image: string | null
@@ -216,6 +249,8 @@ const article = ref<Article | null>(null)
 const related = ref<Article[]>([])
 const latestArticles = ref<Article[]>([])
 const loading = ref(false)
+const sameCategoryArticles = ref<Article[]>([])
+
 
 interface Advertisement {
     id: number
@@ -297,6 +332,8 @@ const fetchAds = async () => {
     }
 }
 
+
+
 const fetchArticle = async () => {
     loading.value = true
     article.value = null
@@ -305,6 +342,7 @@ const fetchArticle = async () => {
         const { data } = await api.get(`/articles/${slug}`)
         article.value = data.data
         related.value = data.related?.data ?? []
+        sameCategoryArticles.value = (data.related?.data ?? []).slice(0, 8)
     } catch (error) {
         console.error('Failed to load article:', error)
     } finally {
@@ -312,6 +350,8 @@ const fetchArticle = async () => {
         window.scrollTo({ top: 0, behavior: 'auto' })
     }
 }
+
+
 
 const trackClick = async (ad: Advertisement) => {
     if (!ad.link_url) return
@@ -333,3 +373,7 @@ onMounted(() => {
     fetchLatestArticles()
 })
 </script>
+
+<style scoped>
+
+</style>

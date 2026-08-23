@@ -2,8 +2,8 @@
 <template>
   <div class="min-h-screen flex bg-gray-100">
     <!-- Sidebar -->
-    <aside class="w-64 bg-gray-900 text-white flex flex-col">
-      <div class="h-16 flex items-center justify-center border-b border-gray-700">
+     <aside class="w-64 h-screen bg-gray-900 text-white flex flex-col flex-shrink-0">
+      <div class="h-16 flex items-center justify-center border-b border-gray-700 flex-shrink-0">
         <h2 class="text-xl font-bold">সংবাদ অ্যাডমিন প্যানেল</h2>
       </div>
 
@@ -147,9 +147,9 @@
     </aside>
 
     <!-- Content -->
-    <div class="flex-1 flex flex-col">
-      <!-- Header -->
-      <header class="bg-white shadow h-16 px-6 flex items-center justify-between">
+    <div class="flex-1 flex flex-col h-screen overflow-hidden">
+      <!-- Header (sticky — stays pinned at top of the content column) -->
+      <header class="bg-white shadow h-16 px-6 flex items-center justify-between flex-shrink-0 sticky top-0 z-40">
         <h1 class="text-xl font-semibold">নিউজ অ্যাডমিন</h1>
 
         <!-- Profile -->
@@ -206,7 +206,7 @@
       </header>
 
       <!-- Page -->
-      <main class="flex-1 p-6">
+      <main class="flex-1 overflow-y-auto p-6">
         <router-view />
       </main>
     </div>

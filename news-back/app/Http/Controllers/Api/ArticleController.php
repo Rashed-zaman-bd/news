@@ -17,10 +17,10 @@ class ArticleController extends Controller
 {
     public function index(Request $request): AnonymousResourceCollection
     {
-        $query = Article::latest()->with(['category', 'subCategory', 'author', 'editor'])
+        $query = Article::query()
+            ->with(['category', 'subCategory', 'author', 'editor'])
             ->latest('published_at');
 
-        
         $user = $request->user();
         $isStaff = $user && in_array($user->role, ['admin', 'editor']);
 
@@ -28,14 +28,6 @@ class ArticleController extends Controller
             // Public callers only ever see published content, regardless of ?status=
             $query->where('status', 'published');
         } elseif ($request->filled('status')) {
-            $statuses = is_array($request->status)
-                ? $request->status
-                : explode(',', $request->status);
-
-            $query->whereIn('status', $statuses);
-        }
-
-        if ($request->filled('status')) {
             $statuses = is_array($request->status)
                 ? $request->status
                 : explode(',', $request->status);
@@ -72,6 +64,22 @@ class ArticleController extends Controller
         return ArticleResource::collection($articles);
     }
 
+    /**
+     * Site-wide popular articles, ordered by views.
+     * Must be registered ABOVE the /articles/{slug} route,
+     * otherwise "popular" gets interpreted as a slug and 404s.
+     */
+    public function popular(Request $request): AnonymousResourceCollection
+    {
+        $articles = Article::query()
+            ->where('status', 'published')
+            ->orderByDesc('views')
+            ->limit($request->integer('limit', 8))
+            ->get();
+
+        return ArticleResource::collection($articles);
+    }
+
     public function store(StoreArticleRequest $request): JsonResponse
     {
         $data = $request->validated();
@@ -96,7 +104,7 @@ class ArticleController extends Controller
             ->setStatusCode(201);
     }
 
-   public function show(string $slug)
+    public function show(string $slug)
     {
         $article = Article::where('slug', $slug)
             ->where('status', 'published')
@@ -112,7 +120,7 @@ class ArticleController extends Controller
             ->where('status', 'published')
             ->with(['category:id,name,slug', 'subCategory:id,name,slug'])
             ->latest('published_at')
-            ->limit(6)
+            ->limit(8)
             ->get();
 
         return (new ArticleResource($article))->additional([
@@ -164,7 +172,7 @@ class ArticleController extends Controller
     {
         // 'language: null' allows UTF-8 multibyte characters (like Bangla) to stay intact
         $base = Str::slug($title, '-', null);
-        
+
         // Fallback if title contains only symbols that result in an empty string
         if (empty($base)) {
             $base = 'article-' . Str::random(6);
