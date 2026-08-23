@@ -113,6 +113,14 @@
         </div>
 
         <router-link
+          to="/admin/advertisement"
+          class="block px-4 py-2 rounded transition-colors hover:bg-gray-700"
+          active-class="bg-gray-800 text-emerald-400 font-semibold"
+        >
+          <i class="bi bi-chat-dots mr-2"></i>Advertisment
+        </router-link>
+
+        <router-link
           to="/admin/comments"
           class="block px-4 py-2 rounded transition-colors hover:bg-gray-700"
           active-class="bg-gray-800 text-emerald-400 font-semibold"

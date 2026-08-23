@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\Admin\AdminCategoryController;
 use App\Http\Controllers\Api\Admin\AdminUserController;
+use App\Http\Controllers\Api\AdvertisementController;
 use App\Http\Controllers\Api\ArticleController;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\LogoController;
@@ -79,8 +80,6 @@ Route::middleware(['auth:sanctum', 'admin'])->group(function () {
 
 // Public routes — no auth required, by slug (SEO-friendly)
 Route::get('/articles', [ArticleController::class, 'index']);
-Route::get('/articles/{article:slug}', [ArticleController::class, 'show']);
-// routes/api.php
 Route::get('/articles/{slug}', [ArticleController::class, 'show']);
 
 // Admin/editor routes — full CRUD, all statuses, by numeric id
@@ -91,4 +90,20 @@ Route::middleware(['auth:sanctum', 'role:admin,editor'])->prefix('admin')->group
     Route::put('/articles/{article:id}', [ArticleController::class, 'update']);
     Route::patch('/articles/{article:id}', [ArticleController::class, 'update']);
     Route::delete('/articles/{article:id}', [ArticleController::class, 'destroy']);
+});
+
+
+
+// Public route — used by the live site, only ever shows active ads
+// Public routes — used by the live article/site pages
+Route::get('/advertisements', [AdvertisementController::class, 'index']);
+Route::get('/advertisements/{advertisement}', [AdvertisementController::class, 'show']);
+Route::post('/advertisements/{advertisement}/click', [AdvertisementController::class, 'click']);
+
+// Admin/editor-only routes
+Route::middleware(['auth:sanctum', 'role:admin,editor'])->group(function () {
+    Route::get('/admin/advertisements', [AdvertisementController::class, 'adminIndex']);
+    Route::post('/advertisements', [AdvertisementController::class, 'store']);
+    Route::put('/advertisements/{advertisement}', [AdvertisementController::class, 'update']);
+    Route::delete('/advertisements/{advertisement}', [AdvertisementController::class, 'destroy']);
 });

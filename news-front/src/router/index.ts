@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import DefaultLayout from '@/layouts/DefaultLatout.vue'
 import AdminLayout from '@/layouts/AdminLayout.vue'
 import api from '@/services/api'
+import path from 'path'
 
 const ALL_ADMIN_ROLES = ['admin', 'editor', 'author']
 
@@ -97,6 +98,12 @@ const routes = [
         name: 'admin.category',
         component: () => import('@/views/admin/CategoryView.vue'),
         meta: { roles: ['admin', 'editor'] }, // matches your backend admin-only categories routes
+      },
+      {
+        path: 'advertisement',
+        name: 'admin.advertisement',
+        component: () => import('@/views/admin/Advertisement.vue')
+        
       },
       {
         path: 'user',

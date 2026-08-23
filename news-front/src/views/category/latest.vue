@@ -358,7 +358,6 @@ const fetchArticles = async (page = 1) => {
             popularList.value = [];
         }
     } catch (error) {
-        console.error('Failed to load articles:', error);
         articles.value = [];
     } finally {
         loading.value = false;

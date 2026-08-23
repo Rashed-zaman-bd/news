@@ -18,426 +18,175 @@
 
                     <!-- Category -->
                     <div class="flex items-center gap-2 text-sm sm:text-base mb-3">
-
                         <i class="bi bi-file-earmark-ruled text-red-600"></i>
 
-                        <router-link
-                            v-if="article.category"
-                            :to="`/category/${article.category.slug}`"
-                            class="text-red-600 font-semibold hover:underline"
-                        >
+                        <router-link v-if="article.category" :to="`/category/${article.category.slug}`"
+                            class="text-red-600 font-semibold hover:underline">
                             {{ article.category.name }}
                         </router-link>
 
-                        <span
-                            v-if="article.sub_category"
-                            class="text-gray-400"
-                        >
-                            ›
-                        </span>
+                        <span v-if="article.sub_category" class="text-gray-400">›</span>
 
-                        <router-link
-                            v-if="article.sub_category"
-                            :to="`/category/${article.sub_category.slug}`"
-                            class="text-gray-500 hover:underline"
-                        >
+                        <router-link v-if="article.sub_category" :to="`/category/${article.sub_category.slug}`"
+                            class="text-gray-500 hover:underline">
                             {{ article.sub_category.name }}
                         </router-link>
-
                     </div>
 
-
-                    <!-- =================================================
-                         TITLE
-                    ================================================== -->
-                    <h1
-                        class="text-3xl sm:text-4xl lg:text-[40px]
-                               font-bold text-gray-900
-                               leading-tight mb-4"
-                    >
+                    <!-- TITLE -->
+                    <h1 class="text-3xl sm:text-4xl lg:text-[40px] font-bold text-gray-900 pt-4 leading-tight mb-4">
                         {{ article.title }}
                     </h1>
 
-
-                    <!-- =================================================
-                         AUTHOR + DATE
-                    ================================================== -->
+                    <!-- AUTHOR + DATE -->
                     <div class="mb-4">
-
-                        <div class="text-base font-medium text-gray-800 mb-1">
-                            খবরজোন অনলাইন
-                        </div>
-
+                        <div class="text-base font-medium text-gray-800 mb-1">খবরজোন অনলাইন</div>
                         <div class="text-sm text-gray-500">
-                            <span class="font-medium">
-                                প্রকাশ :
-                            </span>
-
+                            <span class="font-medium">প্রকাশ :</span>
                             {{ formatBanglaDate(article.published_at) }}
                         </div>
-
                     </div>
 
-
-                    <!-- =================================================
-                         TOP BANNER
-                    ================================================== -->
-                    <div
-                        class="w-full border-y border-gray-200
-                               py-2 mb-3 flex justify-center"
-                    >
-                        <img
-                            src="/images/topbanner.png"
-                            alt="Advertisement"
-                            class="w-full max-w-[728px] h-auto object-contain"
-                        />
-                    </div>
-
-
-                    <!-- =================================================
-                         SHARE BAR
-                    ================================================== -->
-                    <div
-                        class="flex items-center justify-between
-                               border-b border-gray-200
-                               pb-2 mb-3"
-                    >
-
-                        <!-- Social -->
+                    <!-- SHARE BAR -->
+                    <div class="flex items-center justify-between border-b border-gray-200 pb-2 mb-3">
                         <div class="flex items-center gap-2">
-
-                            <button
-                                class="w-8 h-8 rounded-full bg-gray-100
-                                       flex items-center justify-center
-                                       text-gray-500 hover:bg-gray-200"
-                            >
+                            <button class="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-gray-500 hover:bg-gray-200">
                                 <i class="bi bi-facebook"></i>
                             </button>
-
-                            <button
-                                class="w-8 h-8 rounded-full bg-gray-100
-                                       flex items-center justify-center
-                                       text-gray-500 hover:bg-gray-200"
-                            >
+                            <button class="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-gray-500 hover:bg-gray-200">
                                 <i class="bi bi-twitter-x"></i>
                             </button>
-
-                            <button
-                                class="w-8 h-8 rounded-full bg-gray-100
-                                       flex items-center justify-center
-                                       text-gray-500 hover:bg-gray-200"
-                            >
+                            <button class="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-gray-500 hover:bg-gray-200">
                                 <i class="bi bi-whatsapp"></i>
                             </button>
-
-                            <button
-                                class="w-8 h-8 rounded-full bg-gray-100
-                                       flex items-center justify-center
-                                       text-gray-500 hover:bg-gray-200"
-                            >
+                            <button class="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-gray-500 hover:bg-gray-200">
                                 <i class="bi bi-telegram"></i>
                             </button>
-
-                            <button
-                                class="w-8 h-8 rounded-full bg-gray-100
-                                       flex items-center justify-center
-                                       text-gray-500 hover:bg-gray-200"
-                            >
+                            <button class="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-gray-500 hover:bg-gray-200">
                                 <i class="bi bi-linkedin"></i>
                             </button>
-
-                            <button
-                                class="w-8 h-8 rounded-full bg-gray-100
-                                       flex items-center justify-center
-                                       text-gray-500 hover:bg-gray-200"
-                            >
+                            <button class="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-gray-500 hover:bg-gray-200">
                                 <i class="bi bi-envelope-fill"></i>
                             </button>
-
                         </div>
-
                     </div>
 
-
-                    <!-- =================================================
-                         FEATURED IMAGE
-                    ================================================== -->
-                    <div
-                        v-if="article.featured_image"
-                        class="w-full overflow-hidden mb-1"
-                    >
-
-                        <img
-                            :src="article.featured_image"
-                            :alt="article.title"
-                            class="w-full h-auto object-cover"
-                        />
-
+                    <!-- FEATURED IMAGE -->
+                    <div v-if="article.featured_image" class="w-full overflow-hidden mb-1">
+                        <img :src="article.featured_image" :alt="article.title" class="w-full h-auto object-cover" />
                     </div>
-
 
                     <!-- Image Caption -->
-                    <div
-                        v-if="article.featured_image"
-                        class="text-xs text-gray-500
-                               border-b border-gray-200
-                               pb-2 mb-5"
-                    >
+                    <div v-if="article.featured_image" class="text-xs text-gray-500  pb-2 mb-5">
                         {{ article.title }}
                     </div>
 
-
-                    <div class="max-w-2xl mx-auto">
-    <!-- =================================================
-         CONTENT TOP AD
-    ================================================== -->
-    <div class="w-full flex justify-center py-3 mb-5">
-        <img
-            src="/images/topbanner.png"
-            alt="Advertisement"
-            class="max-w-full h-auto"
-        />
-    </div>
-
-    <!-- =================================================
-         FIRST PART OF CONTENT
-    ================================================== -->
-    <article
-        class="prose prose-lg max-w-none text-gray-800 leading-relaxed
-               prose-headings:text-gray-900
-               prose-p:mb-5
-               prose-img:w-full
-               prose-img:h-auto
-               prose-a:text-red-600
-               prose-a:no-underline
-               hover:prose-a:underline
-
-               [&>p:first-child]:bg-gray-50
-               [&>p:first-child]:border-l-4
-               [&>p:first-child]:border-red-500
-               [&>p:first-child]:px-4
-               [&>p:first-child]:py-3"
-        v-html="firstContent"
-    ></article>
-
-    <!-- =================================================
-         MIDDLE AD (only if there's more content after)
-    ================================================== -->
-    <div
-        v-if="secondContent"
-        class="w-full flex justify-center py-6 my-4 border-y border-gray-100"
-    >
-        <img
-            src="/images/topbanner.png"
-            alt="Advertisement"
-            class="max-w-full h-auto"
-        />
-    </div>
-
-    <!-- =================================================
-         REMAINING CONTENT
-    ================================================== -->
-    <article
-        v-if="secondContent"
-        class="prose prose-lg max-w-none text-gray-800 leading-relaxed
-               prose-headings:text-gray-900
-               prose-p:mb-5
-               prose-img:w-full
-               prose-img:h-auto
-               prose-a:text-red-600
-               prose-a:no-underline
-               hover:prose-a:underline"
-        v-html="secondContent"
-    ></article>
-</div>
-
-
-                    <!-- =================================================
-                         RELATED ARTICLES
-                    ================================================== -->
+                    <!-- TOP BANNER (dynamic — the ONLY top ad block) -->
                     <div
-                        v-if="related.length"
-                        class="mt-12 pt-6 border-t border-gray-200"
+                        v-if="topAds[0]"
+                        class="w-full border-y border-gray-200 py-2 mb-5 flex flex-col items-center cursor-pointer"
+                        @click="trackClick(topAds[0])"
                     >
+                        <img :src="topAds[0].image" :alt="topAds[0].name" class="w-full max-w-[728px] h-auto object-contain" />
+                        <span class="text-[10px] text-gray-400 mt-1">বিজ্ঞাপন — {{ topAds[0].provider }}</span>
+                    </div>
 
-                        <h2
-                            class="text-xl font-bold
-                                   text-red-600 mb-5"
-                        >
-                            সম্পর্কিত সংবাদ
-                        </h2>
+                    <!-- CONTENT + MIDDLE ADS -->
+                    <div class="max-w-2xl mx-auto">
+                        <p class="font-lg md:font-xl max-w-none text-gray-800">
+                            {{ article.content }}
+                        </p>
+                    </div>
 
-                        <div
-                            class="grid grid-cols-1
-                                   sm:grid-cols-2
-                                   lg:grid-cols-3 gap-5"
-                        >
+                    <!-- RELATED ARTICLES -->
+                    <div v-if="related.length" class="mt-12 pt-6 border-t border-gray-200">
+                        <h2 class="text-xl font-bold text-red-600 mb-5">সম্পর্কিত সংবাদ</h2>
 
-                            <router-link
-                                v-for="item in related"
-                                :key="item.id"
-                                :to="`/article/${item.slug}`"
-                                class="group"
-                            >
-
-                                <div
-                                    class="relative
-                                           h-44
-                                           overflow-hidden
-                                           rounded"
-                                >
-
-                                    <img
-                                        v-if="item.featured_image"
-                                        :src="item.featured_image"
-                                        :alt="item.title"
-                                        class="w-full h-full object-cover
-                                               group-hover:scale-105
-                                               transition duration-300"
-                                    />
-
-                                    <div
-                                        v-else
-                                        class="w-full h-full
-                                               bg-gray-200"
-                                    ></div>
-
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+                            <router-link v-for="item in related" :key="item.id" :to="`/article/${item.slug}`" class="group">
+                                <div class="relative h-44 overflow-hidden rounded">
+                                    <img v-if="item.featured_image" :src="item.featured_image" :alt="item.title"
+                                        class="w-full h-full object-cover group-hover:scale-105 transition duration-300" />
+                                    <div v-else class="w-full h-full bg-gray-200"></div>
                                 </div>
-
-                                <h3
-                                    class="mt-2 font-bold
-                                           text-sm leading-snug
-                                           group-hover:text-red-600"
-                                >
+                                <h3 class="mt-2 font-bold text-sm leading-snug group-hover:text-red-600">
                                     {{ item.title }}
                                 </h3>
-
                             </router-link>
-
                         </div>
-
                     </div>
 
                 </main>
 
-
                 <!-- =====================================================
                      RIGHT SIDEBAR
                 ====================================================== -->
-                <aside class="lg:col-span-3">
-
+                <aside class="lg:col-span-3 border-l pl-3">
                     <div class="lg:sticky lg:top-20">
+                        <!-- Sidebar Advertisement (dynamic — the ONLY sidebar ad block) -->
+                        <div class="space-y-5">
+                            <div
+                                v-for="ad in sidebarAds"
+                                :key="ad.id"
+                                class="overflow-hidden cursor-pointer"
+                                @click="trackClick(ad)"
+                            >
+                                <img :src="ad.image" :alt="ad.name" class="w-full h-auto" />
+                                <div class="text-[10px] text-gray-400 mt-1 text-center">বিজ্ঞাপন — {{ ad.provider }}</div>
+                            </div>
 
+                            
+                        </div>
                         <!-- Latest News -->
                         <div class="mb-5">
-
-                            <h2
-                                class="text-sm font-bold
-                                       text-gray-600
-                                       border-b border-gray-300
-                                       pb-2 mb-3"
-                            >
+                            <h2 class="text-sm font-bold text-gray-600 border-b border-gray-300 pb-2 mb-3">
                                 সর্বশেষ খবর
                             </h2>
 
-                            <div
-                                v-for="item in related.slice(0, 5)"
+                            <router-link
+                                v-for="item in latestArticles"
                                 :key="item.id"
-                                class="flex gap-3 py-3
-                                       border-b border-gray-200"
+                                :to="`/article/${item.slug}`"
+                                class="flex flex-col gap-3 py-3 border-b border-gray-200 group"
                             >
+                                <div class="w-full h-36 flex-shrink-0 overflow-hidden rounded">
+                                    <img
+                                        v-if="item.featured_image"
+                                        :src="item.featured_image"
+                                        :alt="item.title"
+                                        class="w-full h-full object-cover"
+                                    />
+                                    <div v-else class="w-full h-full bg-gray-200"></div>
+                                </div>
 
-                                <router-link
-                                    :to="`/article/${item.slug}`"
-                                    class="flex gap-3 w-full"
-                                >
+                                <div class="flex flex-col justify-between">
+                                    <h3 class="text-base text-gray-800 group-hover:text-red-600">
+                                        {{ item.title }}
+                                    </h3>
 
-                                    <div
-                                        class="w-20 h-14 flex-shrink-0
-                                               overflow-hidden"
-                                    >
-                                        <img
-                                            v-if="item.featured_image"
-                                            :src="item.featured_image"
-                                            :alt="item.title"
-                                            class="w-full h-full object-cover"
-                                        />
-                                    </div>
-
-                                    <div>
-                                        <h3
-                                            class="text-xs
-                                                   font-semibold
-                                                   leading-relaxed
-                                                   text-gray-800
-                                                   hover:text-red-600"
-                                        >
-                                            {{ item.title }}
-                                        </h3>
-                                    </div>
-
-                                </router-link>
-
-                            </div>
-
+                                    <span class="text-[11px] text-gray-400 mt-1">
+                                        {{ timeAgo(item.published_at) }}
+                                    </span>
+                                </div>
+                            </router-link>
                         </div>
 
-
-                        <!-- Sidebar Advertisement -->
-                        <div class="space-y-5">
-
-                            <div class="overflow-hidden">
-                                <img
-                                    src="/images/topbanner.png"
-                                    alt="Advertisement"
-                                    class="w-full h-auto"
-                                />
-                            </div>
-
-                            <div class="bg-gray-50 border border-gray-200 p-3">
-
-                                <h3
-                                    class="text-sm font-semibold
-                                           text-red-600 mb-2"
-                                >
-                                    বিশেষ সংবাদ
-                                </h3>
-
-                                <p
-                                    class="text-xs
-                                           text-gray-700
-                                           leading-relaxed"
-                                >
-                                    সর্বশেষ সংবাদ ও গুরুত্বপূর্ণ
-                                    আপডেট জানতে খবরজোনের সাথে থাকুন।
-                                </p>
-
-                            </div>
-
-                            <div class="overflow-hidden">
-                                <img
-                                    src="/images/topbanner.png"
-                                    alt="Advertisement"
-                                    class="w-full h-auto"
-                                />
-                            </div>
-
+                        <div class="bg-gray-50 border border-gray-200 p-3">
+                            <h3 class="text-sm font-semibold text-red-600 mb-2">বিশেষ সংবাদ</h3>
+                            <p class="text-xs text-gray-700 leading-relaxed">
+                                সর্বশেষ সংবাদ ও গুরুত্বপূর্ণ আপডেট জানতে খবরজোনের সাথে থাকুন।
+                            </p>
                         </div>
 
                     </div>
-
                 </aside>
 
             </div>
 
         </template>
 
-
         <!-- No article -->
-        <div
-            v-else
-            class="text-center py-20 text-gray-400"
-        >
+        <div v-else class="text-center py-20 text-gray-400">
             আর্টিকেল পাওয়া যায়নি
         </div>
 
@@ -457,73 +206,105 @@ interface Article {
     excerpt?: string | null
     featured_image: string | null
     published_at: string | null
-
-    category?: {
-        id: number
-        name: string
-        slug: string
-    }
-
-    sub_category?: {
-        id: number
-        name: string
-        slug: string
-    } | null
-
-    author?: {
-        id: number
-        name: string
-    }
+    category?: { id: number; name: string; slug: string }
+    sub_category?: { id: number; name: string; slug: string } | null
+    author?: { id: number; name: string }
 }
 
 const route = useRoute()
-
 const article = ref<Article | null>(null)
 const related = ref<Article[]>([])
+const latestArticles = ref<Article[]>([])
 const loading = ref(false)
 
-
-const formatBanglaDate = (date: string | null) => {
-
-    if (!date) {
-        return ''
-    }
-
-    const d = new Date(date)
-
-    const datePart = new Intl.DateTimeFormat('bn-BD', {
-        weekday: 'long',
-        day: 'numeric',
-        month: 'long',
-        year: 'numeric',
-    })
-        .format(d)
-        .replace(/,/g, '')
-        .replace(/ এ$/, '')
-
-    const timePart = new Intl.DateTimeFormat('bn-BD', {
-        hour: '2-digit',
-        minute: '2-digit',
-        hour12: false,
-    }).format(d)
-
-    return `${datePart} ; ${timePart} মি:`
+interface Advertisement {
+    id: number
+    image: string
+    name: string
+    provider: string
+    link_url: string | null
+    placement: 'top' | 'middle' | 'sidebar'
 }
 
+const topAds = ref<Advertisement[]>([])
+const middleAds = ref<Advertisement[]>([])
+const sidebarAds = ref<Advertisement[]>([])
+
+
+const fetchLatestArticles = async () => {
+    try {
+        const { data } = await api.get('/articles', {
+            params: { per_page: 5 }, 
+        })
+
+        latestArticles.value = (data.data ?? []).filter(
+            (item: Article) => item.slug !== route.params.slug
+        )
+    } catch (error) {
+        console.error('Failed to load latest articles:', error)
+    }
+}
+
+const timeAgo = (date: string | null): string => {
+    if (!date) return ''
+
+    const now = new Date()
+    const then = new Date(date)
+    const seconds = Math.floor((now.getTime() - then.getTime()) / 1000)
+
+    if (seconds < 60) return 'এইমাত্র'
+
+    const minutes = Math.floor(seconds / 60)
+    if (minutes < 60) return `${minutes} মিনিট আগে`
+
+    const hours = Math.floor(minutes / 60)
+    if (hours < 24) return `${hours} ঘণ্টা আগে`
+
+    const days = Math.floor(hours / 24)
+    if (days < 30) return `${days} দিন আগে`
+
+    const months = Math.floor(days / 30)
+    if (months < 12) return `${months} মাস আগে`
+
+    const years = Math.floor(months / 12)
+    return `${years} বছর আগে`
+}
+
+const formatBanglaDate = (date: string | null) => {
+    if (!date) return ''
+    const d = new Date(date)
+    const datePart = new Intl.DateTimeFormat('bn-BD', {
+        weekday: 'long', day: 'numeric', month: 'long', year: 'numeric',
+    }).format(d).replace(/,/g, '').replace(/ এ$/, '')
+    const timePart = new Intl.DateTimeFormat('bn-BD', {
+        hour: '2-digit', minute: '2-digit', hour12: false,
+    }).format(d)
+    return `${datePart} ; ${timePart}`
+}
+
+const fetchAds = async () => {
+    try {
+        const [topRes, middleRes, sidebarRes] = await Promise.all([
+            api.get('/advertisements', { params: { placement: 'top', limit: 1 } }),
+            api.get('/advertisements', { params: { placement: 'middle', limit: 3 } }),
+            api.get('/advertisements', { params: { placement: 'sidebar', limit: 2 } }),
+        ])
+        topAds.value = topRes.data.data ?? []
+        middleAds.value = middleRes.data.data ?? []
+        sidebarAds.value = sidebarRes.data.data ?? []
+    } catch (error) {
+        console.error('Failed to load advertisements:', error)
+    }
+}
 
 const fetchArticle = async () => {
     loading.value = true
     article.value = null
-
     try {
         const slug = route.params.slug as string
         const { data } = await api.get(`/articles/${slug}`)
-
         article.value = data.data
         related.value = data.related?.data ?? []
-
-        console.log('content:', article.value?.content) // <-- temp debug
-
     } catch (error) {
         console.error('Failed to load article:', error)
     } finally {
@@ -532,41 +313,23 @@ const fetchArticle = async () => {
     }
 }
 
-const parsedContent = computed(() => {
-    if (!article.value?.content) {
-        return { first: '', second: '' }
-    }
+const trackClick = async (ad: Advertisement) => {
+    if (!ad.link_url) return
+    try {
+        await api.post(`/advertisements/${ad.id}/click`)
+    } catch { /* non-blocking */ }
+    window.open(ad.link_url, '_blank')
+}
 
-    const parser = new DOMParser()
-    const doc = parser.parseFromString(article.value.content, 'text/html')
 
-    let blocks = Array.from(doc.body.children)
-
-    // If the editor wrapped everything in one container div,
-    // unwrap it so we split its children instead of the whole thing
-    if (blocks.length === 1 && blocks[0].children.length > 1) {
-        blocks = Array.from(blocks[0].children)
-    }
-
-    // Fallback: no block-level elements at all (plain text / inline only)
-    if (blocks.length === 0) {
-        return { first: article.value.content, second: '' }
-    }
-
-    const first = blocks.slice(0, 10).map(el => el.outerHTML).join('')
-    const second = blocks.slice(10).map(el => el.outerHTML).join('')
-
-    return { first, second }
+watch(() => route.params.slug, () => {
+    fetchArticle()
+    fetchLatestArticles()
 })
 
-const firstContent = computed(() => parsedContent.value.first)
-const secondContent = computed(() => parsedContent.value.second)
-
-
-watch(
-    () => route.params.slug,
-    fetchArticle
-)
-
-onMounted(fetchArticle)
+onMounted(() => {
+    fetchArticle()
+    fetchAds()
+    fetchLatestArticles()
+})
 </script>
