@@ -80,6 +80,8 @@ Route::middleware(['auth:sanctum', 'admin'])->group(function () {
 // Public routes — no auth required, by slug (SEO-friendly)
 Route::get('/articles', [ArticleController::class, 'index']);
 Route::get('/articles/{article:slug}', [ArticleController::class, 'show']);
+// routes/api.php
+Route::get('/articles/{slug}', [ArticleController::class, 'show']);
 
 // Admin/editor routes — full CRUD, all statuses, by numeric id
 Route::middleware(['auth:sanctum', 'role:admin,editor'])->prefix('admin')->group(function () {

@@ -145,7 +145,9 @@
             <nav class="flex flex-col">
 
               <div class="flex items-center gap-1 cursor-pointer hover:text-red-600 transition-colors">
-                  <router-link :to="`/category/latest`" class="whitespace-nowrap">
+                  <router-link :to="`/category/latest`" class="whitespace-nowrap"
+                      @click="closeMobileMenu"
+                  >
                     সর্বশেষ
                   </router-link>
               </div>

@@ -25,54 +25,55 @@ class CategoryController extends Controller
         return CategoryResource::collection($categories);
     }
 
-public function show(string $slug)
-{
-    $category = Category::where('slug', $slug)
-        ->with('activeChildren:id,name,slug,icon,parent_id,is_active')
-        ->firstOrFail();
+    public function show(string $slug)
+    {
+        $category = Category::where('slug', $slug)
+            ->with('activeChildren:id,name,slug,icon,parent_id,is_active')
+            ->firstOrFail();
 
-    return new CategoryResource($category);
-}
+        return new CategoryResource($category);
+    }
 
-public function articles(string $slug, Request $request)
-{
-    $category = Category::where('slug', $slug)
-        ->with('activeChildren:id,name,slug,icon,parent_id,is_active')
-        ->firstOrFail();
+    public function articles(string $slug, Request $request)
+    {
+        $category = Category::where('slug', $slug)
+            ->with('activeChildren:id,name,slug,icon,parent_id,is_active')
+            ->firstOrFail();
 
-    $categoryIds = $category->activeChildren->pluck('id')->push($category->id);
+        $categoryIds = $category->activeChildren->pluck('id')->push($category->id);
 
-    $articles = Article::query()
-        ->whereIn('category_id', $categoryIds)
-        ->where('status', 'published')
-        ->with(['category:id,name,slug', 'subCategory:id,name,slug', 'author:id,name'])
-        ->latest('published_at')
-        ->paginate($request->integer('per_page', 12));
+        $articles = Article::query()
+            ->whereIn('category_id', $categoryIds)
+            ->where('status', 'published')
+            ->when($request->filled('sub_category'), function ($query) use ($request) {
+                $query->whereHas('subCategory', function ($q) use ($request) {
+                    $q->where('slug', $request->string('sub_category'));
+                });
+            })
+            ->with(['category:id,name,slug', 'subCategory:id,name,slug', 'author:id,name'])
+            ->latest('published_at')
+            ->paginate($request->integer('per_page', 12));
 
-    return ArticleResource::collection($articles)->additional([
-        'category' => new CategoryResource($category),
-    ]);
-}
+        return ArticleResource::collection($articles)->additional([
+            'category' => new CategoryResource($category),
+        ]);
+    }
 
-public function popular(string $slug)
-{
-    $category = Category::where('slug', $slug)
-        ->with('activeChildren:id,parent_id') // fine here — children not serialized in this response
-        ->firstOrFail();
+    public function popular(string $slug)
+    {
+        $category = Category::where('slug', $slug)
+            ->with('activeChildren:id,parent_id') // fine here — children not serialized in this response
+            ->firstOrFail();
 
-    $categoryIds = $category->activeChildren->pluck('id')->push($category->id);
+        $categoryIds = $category->activeChildren->pluck('id')->push($category->id);
 
-    $articles = Article::query()
-        ->whereIn('category_id', $categoryIds)
-        ->where('status', 'published')
-        ->orderByDesc('views')
-        ->limit(8)
-        ->get();
+        $articles = Article::query()
+            ->whereIn('category_id', $categoryIds)
+            ->where('status', 'published')
+            ->orderByDesc('views')
+            ->limit(8)
+            ->get();
 
-    return ArticleResource::collection($articles);
-}
-
-
-
- 
+        return ArticleResource::collection($articles);
+    }
 }

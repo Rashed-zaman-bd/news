@@ -96,11 +96,28 @@ class ArticleController extends Controller
             ->setStatusCode(201);
     }
 
-    public function show(Article $article): ArticleResource
+   public function show(string $slug)
     {
-        $article->load(['category', 'author', 'editor']);
+        $article = Article::where('slug', $slug)
+            ->where('status', 'published')
+            ->with(['category:id,name,slug', 'subCategory:id,name,slug', 'author:id,name'])
+            ->firstOrFail();
 
-        return new ArticleResource($article);
+        $article->increment('views');
+
+        // Related articles: same category, excluding this one
+        $related = Article::query()
+            ->where('category_id', $article->category_id)
+            ->where('id', '!=', $article->id)
+            ->where('status', 'published')
+            ->with(['category:id,name,slug', 'subCategory:id,name,slug'])
+            ->latest('published_at')
+            ->limit(6)
+            ->get();
+
+        return (new ArticleResource($article))->additional([
+            'related' => ArticleResource::collection($related),
+        ]);
     }
 
     public function update(UpdateArticleRequest $request, Article $article): ArticleResource

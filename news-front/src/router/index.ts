@@ -25,6 +25,12 @@ const routes = [
         component: () => import("@/views/category/latest.vue"),
         meta: { requiresAuth: false },
       },
+
+      {
+          path: '/article/:slug',
+          name: 'article.show',
+          component: () => import('@/views/article/[slug].vue'),
+      }
     ],
   },
   {
