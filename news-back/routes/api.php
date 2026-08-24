@@ -109,11 +109,12 @@ Route::middleware(['auth:sanctum', 'role:admin,editor'])->group(function () {
     Route::delete('/advertisements/{advertisement}', [AdvertisementController::class, 'destroy']);
 });
 
-//Video routes
-Route::get('/video', [VideoController::class, 'index']);
-Route::get('/video', [VideoController::class, 'show']);
-Route::middleware(['auth:sanctum', 'role:admin,editor'])->group(function(){
+// Video api routes
+Route::get('/video', [VideoController::class, 'index']);        
+Route::get('/video/{video:slug}', [VideoController::class, 'show']); 
+
+Route::middleware(['auth:sanctum', 'role:admin,editor'])->group(function () {
     Route::post('/video', [VideoController::class, 'store']);
-    Route::put('/video', [VideoController::class, 'update']);
-    Route::Delete('/video', [VideoController::class, 'destroy']);
+    Route::put('/video/{video:slug}', [VideoController::class, 'update']);
+    Route::delete('/video/{video:slug}', [VideoController::class, 'destroy']);
 });

@@ -18,13 +18,16 @@ class VideoController extends Controller
     }
 
     // Store new video
-    public function store(StoreVideoRequest $request)
+   public function store(StoreVideoRequest $request)
     {
         $validated = $request->validated();
 
-        // Handle image upload
         if ($request->hasFile('thumbnail')) {
             $validated['thumbnail'] = $request->file('thumbnail')->store('thumbnails', 'public');
+        }
+
+        if ($validated['video_type'] === 'upload' && $request->hasFile('video')) {
+            $validated['video'] = $request->file('video')->store('videos', 'public');
         }
 
         $video = Video::create($validated);
@@ -32,18 +35,10 @@ class VideoController extends Controller
         return new VideoResource($video);
     }
 
-    // Show single video
-    public function show(Video $video)
-    {
-        return new VideoResource($video);
-    }
-
-    // Update existing video
     public function update(UpdateVideoRequest $request, Video $video)
     {
         $validated = $request->validated();
 
-        // Handle image update and delete old image
         if ($request->hasFile('thumbnail')) {
             if ($video->thumbnail) {
                 Storage::disk('public')->delete($video->thumbnail);
@@ -51,16 +46,25 @@ class VideoController extends Controller
             $validated['thumbnail'] = $request->file('thumbnail')->store('thumbnails', 'public');
         }
 
+        if (($validated['video_type'] ?? $video->video_type) === 'upload' && $request->hasFile('video')) {
+            if ($video->video) {
+                Storage::disk('public')->delete($video->video);
+            }
+            $validated['video'] = $request->file('video')->store('videos', 'public');
+        }
+
         $video->update($validated);
 
         return new VideoResource($video);
     }
 
-    // Delete video
     public function destroy(Video $video)
     {
         if ($video->thumbnail) {
             Storage::disk('public')->delete($video->thumbnail);
+        }
+        if ($video->video) {
+            Storage::disk('public')->delete($video->video);
         }
 
         $video->delete();

@@ -17,6 +17,8 @@ return new class extends Migration
             $table->string('slug')->unique();
             $table->string('thumbnail'); 
             $table->string('video_url')->nullable();
+            $table->string('video')->nullable();
+            $table->enum('video_type', ['upload', 'embed'])->default('upload');
             $table->text('description')->nullable();
             $table->boolean('is_active')->default(true);
             $table->timestamps();

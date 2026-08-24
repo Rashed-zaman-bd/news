@@ -14,7 +14,14 @@ class Video extends Model
         'slug',
         'thumbnail',
         'video_url',
+        'video',
+        'video_type',
         'description',
         'is_active',
     ];
+
+    public function getRouteKeyName(): string
+    {
+        return 'slug';
+    }
 }

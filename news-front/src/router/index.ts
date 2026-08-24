@@ -2,7 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import DefaultLayout from '@/layouts/DefaultLatout.vue'
 import AdminLayout from '@/layouts/AdminLayout.vue'
 import api from '@/services/api'
-import path from 'path'
+
 
 const ALL_ADMIN_ROLES = ['admin', 'editor', 'author']
 
@@ -31,7 +31,14 @@ const routes = [
           path: '/article/:slug',
           name: 'article.show',
           component: () => import('@/views/article/[slug].vue'),
+      },
+
+      {
+        path: '/video/:slug',
+        name: 'video.show', 
+        component: () => import('@/views/video/[slug].vue')
       }
+
     ],
   },
   {
@@ -115,7 +122,13 @@ const routes = [
         path: 'logo',
         name: 'admin.logo',
         component: () => import('@/views/admin/LogoViews.vue'),
-        meta: { roles: ['admin'] }, // matches your backend admin-only logo routes
+        meta: { roles: ['admin'] }, 
+      },
+      {
+        path: 'video',
+        name: 'admin.video',
+        component: () => import('@/views/admin/VideoView.vue'),
+        meta: {roles: ['admin', 'editor']},
       },
     ],
   },

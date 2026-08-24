@@ -26,31 +26,7 @@
       </div>
 
       <!-- Right Side: Media Top Items -->
-      <div class="flex items-center justify-end gap-6">
-        <a href="#" class="flex items-center gap-3 group min-w-0 w-64">
-          <div class="relative shrink-0">
-            <img src="/images/media.jpg" alt="Media" class="w-24 h-16 object-cover rounded" />
-            <div class="absolute inset-0 flex items-center justify-center">
-              <i class="bi bi-play-circle-fill text-red-500 text-2xl drop-shadow"></i>
-            </div>
-          </div>
-          <p class="text-sm font-medium text-gray-700 leading-5 group-hover:text-red-600 transition-colors">
-            বিদ্যুৎ সাশ্রয়ে দেশের সব বিপণিবিতান
-          </p>
-        </a>
-
-        <a href="#" class="flex items-center gap-3 group min-w-0 w-64">
-          <div class="relative shrink-0">
-            <img src="/images/media.jpg" alt="Media" class="w-24 h-16 object-cover rounded" />
-            <div class="absolute inset-0 flex items-center justify-center">
-              <i class="bi bi-play-circle-fill text-red-500 text-2xl drop-shadow"></i>
-            </div>
-          </div>
-          <p class="text-sm font-medium text-gray-700 leading-5 group-hover:text-red-600 transition-colors">
-            বিদ্যুৎ সাশ্রয়ে দেশের সব বিপণিবিতান, মার্কেট ও দোকানপাট খোলার
-          </p>
-        </a>
-      </div>
+      <NavbarVideo/>
     </div>
 
     <!-- DESKTOP FIXED SPACER -->
@@ -176,6 +152,7 @@
 import UserAccount from "@/components/UserAccount.vue";
 import { ref, computed, onMounted, onUnmounted } from "vue";
 import api from "@/services/api";
+import NavbarVideo from "@/components/NavbarVideo.vue";
 
 interface NavCategory {
   id: number;
