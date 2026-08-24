@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\LogoController;
 use App\Http\Controllers\Api\ProfileController;
 use App\Http\Controllers\Api\UserController;
+use App\Http\Controllers\Api\VideoController;
 use App\Http\Controllers\Auth\SocialAuthController;
 use Illuminate\Support\Facades\Route;
 
@@ -95,9 +96,6 @@ Route::middleware(['auth:sanctum', 'role:admin,editor'])->prefix('admin')->group
     Route::delete('/articles/{article:id}', [ArticleController::class, 'destroy']);
 });
 
-
-
-// Public route — used by the live site, only ever shows active ads
 // Public routes — used by the live article/site pages
 Route::get('/advertisements', [AdvertisementController::class, 'index']);
 Route::get('/advertisements/{advertisement}', [AdvertisementController::class, 'show']);
@@ -109,4 +107,13 @@ Route::middleware(['auth:sanctum', 'role:admin,editor'])->group(function () {
     Route::post('/advertisements', [AdvertisementController::class, 'store']);
     Route::put('/advertisements/{advertisement}', [AdvertisementController::class, 'update']);
     Route::delete('/advertisements/{advertisement}', [AdvertisementController::class, 'destroy']);
+});
+
+//Video routes
+Route::get('/video', [VideoController::class, 'index']);
+Route::get('/video', [VideoController::class, 'show']);
+Route::middleware(['auth:sanctum', 'role:admin,editor'])->group(function(){
+    Route::post('/video', [VideoController::class, 'store']);
+    Route::put('/video', [VideoController::class, 'update']);
+    Route::Delete('/video', [VideoController::class, 'destroy']);
 });
