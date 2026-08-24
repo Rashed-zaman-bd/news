@@ -21,9 +21,9 @@
       </template>
 
       <!-- Guest State -->
-      <template v-else>
+      <template v-else >
         <i class="bi bi-person-fill text-xl"></i>
-        <span class="hidden sm:block text-lg ">একাউন্ট</span>
+        <span class="hidden sm:block text-lg cursor-pointer">একাউন্ট</span>
       </template>
     </button>
 

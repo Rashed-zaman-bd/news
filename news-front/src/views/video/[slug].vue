@@ -22,8 +22,9 @@
                 <div v-else-if="!video" class="py-20 text-center text-gray-500">
                     ভিডিওটি খুঁজে পাওয়া যায়নি।
                 </div>
-
+                
                 <template v-else>
+                    
                     <!-- Player -->
                     <div class="relative w-full aspect-video bg-black rounded overflow-hidden">
                         <iframe v-if="video.video_type === 'embed' && embedUrl" :src="embedUrl"
@@ -74,6 +75,7 @@
                     </div>
 
                     <!-- Meta -->
+                  <!-- CORRECTED: -->
                     <p class="mt-3 text-base text-gray-500">
                         প্রকাশ: {{ formattedDate }}
                     </p>
@@ -288,21 +290,28 @@ const toggleBookmark = () => {
 };
 
 // --- Bangla digit + date helpers ---
-const banglaDigits: Record<string, string> = {
-    "0": "০", "1": "১", "2": "২", "3": "৩", "4": "৪",
-    "5": "৫", "6": "৬", "7": "৭", "8": "৮", "9": "৯",
+
+const toBanglaNumber = (num: number | string) => {
+    const bengaliDigits = ['০', '১', '২', '৩', '৪', '৫', '৬', '৭', '৮', '৯'];
+    return num.toString().replace(/\d/g, (digit) => bengaliDigits[parseInt(digit)] ?? digit);
 };
-const toBanglaNumber = (n: number | string) =>
-    String(n).replace(/[0-9]/g, (d) => banglaDigits[d]);
+
+const parseUtcDate = (dateStr: string): Date => {
+    const iso = dateStr.includes('T') ? dateStr : dateStr.replace(' ', 'T') + 'Z';
+    return new Date(iso);
+};
 
 const banglaMonths = [
     "জানুয়ারি", "ফেব্রুয়ারি", "মার্চ", "এপ্রিল", "মে", "জুন",
     "জুলাই", "আগস্ট", "সেপ্টেম্বর", "অক্টোবর", "নভেম্বর", "ডিসেম্বর",
 ];
 
+
 const formattedDate = computed(() => {
     if (!video.value?.created_at) return "";
-    const d = new Date(video.value.created_at);
+    const d = parseUtcDate(video.value.created_at);
+    if (isNaN(d.getTime())) return video.value.created_at;
+
     const day = toBanglaNumber(d.getDate());
     const month = banglaMonths[d.getMonth()];
     const year = toBanglaNumber(d.getFullYear());
@@ -315,20 +324,16 @@ const formattedDate = computed(() => {
     return `${day} ${month} ${year}, ${hh}:${mm} ${period}`;
 });
 
-const timeAgo = (dateStr?: string) => {
-    if (!dateStr) return "";
-    const diffMs = Date.now() - new Date(dateStr).getTime();
-    const minutes = Math.floor(diffMs / 60000);
-    if (minutes < 1) return "এইমাত্র";
-    if (minutes < 60) return `${toBanglaNumber(minutes)} মিনিট আগে`;
-    const hours = Math.floor(minutes / 60);
+const timeAgo = (dateStr?: string | null) => {
+    if (!dateStr) return '';
+    const diffMs = Date.now() - parseUtcDate(dateStr).getTime();
+    const mins = Math.floor(diffMs / 60000);
+    if (mins < 1) return 'এইমাত্র';
+    if (mins < 60) return `${toBanglaNumber(mins)} মিনিট আগে`;
+    const hours = Math.floor(mins / 60);
     if (hours < 24) return `${toBanglaNumber(hours)} ঘণ্টা আগে`;
     const days = Math.floor(hours / 24);
-    if (days < 30) return `${toBanglaNumber(days)} দিন আগে`;
-    const months = Math.floor(days / 30);
-    if (months < 12) return `${toBanglaNumber(months)} মাস আগে`;
-    const years = Math.floor(months / 12);
-    return `${toBanglaNumber(years)} বছর আগে`;
+    return `${toBanglaNumber(days)} দিন আগে`;
 };
 
 const trackClick = async (ad: Advertisement) => {

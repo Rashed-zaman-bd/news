@@ -180,7 +180,7 @@
                             </span>
                             <router-link
                                 :to="`/article/${item.slug}`"
-                                class="text-base font-semibold text-gray-800 group-hover:text-red-600 leading-snug"
+                                class="text-lg font-semibold text-gray-800 group-hover:text-red-600 leading-snug"
                             >
                                 {{ item.title }}
                             </router-link>

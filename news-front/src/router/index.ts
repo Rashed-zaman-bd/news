@@ -37,6 +37,12 @@ const routes = [
         path: '/video/:slug',
         name: 'video.show', 
         component: () => import('@/views/video/[slug].vue')
+      },
+
+      {
+        path: '/video/item',
+        name: 'video.item', 
+        component: () => import('@/views/video/Item.vue')
       }
 
     ],

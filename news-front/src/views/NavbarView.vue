@@ -73,7 +73,7 @@
               :key="cat.id" 
               class="relative group py-4"
             >
-              <div class="flex items-center gap-1 cursor-pointer hover:text-red-600 transition-colors">
+              <div class="flex items-center gap-1  cursor-pointer hover:text-red-600 transition-colors">
                 <router-link :to="`/category/${cat.slug}`" class="whitespace-nowrap">
                   {{ cat.name }}
                 </router-link>
@@ -82,7 +82,7 @@
           </template>
 
           <div class="flex items-center gap-1 cursor-pointer hover:text-red-600 transition-colors">
-              <router-link :to="`/video/show`" class="whitespace-nowrap">
+              <router-link :to="`/video/item`" class="whitespace-nowrap">
                 ভিডিও
               </router-link>
           </div>
@@ -90,7 +90,7 @@
 
         <!-- DESKTOP RIGHT -->
         <div class="hidden lg:flex items-center space-x-4 ml-auto text-lg ">
-          <button class="flex items-center gap-1 hover:text-red-600">
+          <button class="flex items-center gap-1 hover:text-red-600 cursor-pointer">
             <i class="bi bi-search"></i>
             <span>খুঁজুন</span>
           </button>
@@ -145,6 +145,13 @@
                     {{ cat.name }}
                   </router-link>
                 </div>
+              </div>
+
+              <div class="flex items-center gap-1 cursor-pointer hover:text-red-600 transition-colors">
+                  <router-link :to="`/video/item`" class="whitespace-nowrap"
+                   @click="closeMobileMenu">
+                    ভিডিও
+                  </router-link>
               </div>
             </nav>
           </div>
