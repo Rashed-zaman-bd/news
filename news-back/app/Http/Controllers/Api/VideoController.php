@@ -17,6 +17,12 @@ class VideoController extends Controller
         return VideoResource::collection($videos);
     }
 
+
+    public function show(Video $video)
+    {
+        return new VideoResource($video);
+    }
+
     // Store new video
    public function store(StoreVideoRequest $request)
     {

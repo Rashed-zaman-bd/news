@@ -74,10 +74,12 @@ const videos = ref<Video[]>([]);
 const loading = ref(true);
 
 const activeVideos = computed(() => {
-  return videos.value.filter((v) => {
-    if (v.is_active === undefined || v.is_active === null) return true;
-    return Boolean(Number(v.is_active) || v.is_active === true || v.is_active === "true");
-  });
+  return videos.value
+    .filter((v) => {
+      if (v.is_active === undefined || v.is_active === null) return true;
+      return Boolean(Number(v.is_active) || v.is_active === true || v.is_active === "true");
+    })
+    .slice(0, 2);
 });
 
 const fetchVideos = async () => {

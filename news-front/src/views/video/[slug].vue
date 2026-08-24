@@ -1,258 +1,355 @@
 <template>
-  <div class="max-w-7xl mx-auto px-4 py-6">
-    <!-- Loading State -->
-    <div v-if="loading" class="flex justify-center items-center h-64">
-      <div class="text-gray-500 animate-pulse font-medium">ভিডিও লোড হচ্ছে...</div>
-    </div>
+    <div class="max-w-[1280px] mx-auto px-4 py-6 ">
+        <div v-if="topAds[0]"
+                class="w-full border-y border-gray-200 py-2 mt-10 mb-5 flex flex-col items-center cursor-pointer"
+                @click="trackClick(topAds[0])">
+                <img :src="topAds[0].image" :alt="topAds[0].name" class="w-full max-w-[728px] h-auto object-contain" />
+                <span class="text-[10px] text-gray-400 mt-1">বিজ্ঞাপন — {{ topAds[0].provider }}</span>
+            </div>
 
-    <div v-else-if="video" class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-      
-      <!-- LEFT SECTION: Main Video Player & Details -->
-      <div class="lg:col-span-2 space-y-4">
-        
-        <!-- Video Player Wrapper -->
-        <div class="relative w-full aspect-video bg-black rounded-lg overflow-hidden shadow-md">
-          <!-- Embed Video (YouTube) -->
-          <iframe
-            v-if="video.video_type === 'embed' || isYouTubeUrl(video.video_url)"
-            :src="getEmbedUrl(video.video_url)"
-            class="w-full h-full border-0"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            allowfullscreen
-          ></iframe>
-
-          <!-- Direct Uploaded Video -->
-          <video
-            v-else-if="video.video_url"
-            controls
-            autoplay
-            class="w-full h-full object-contain"
-            :poster="video.thumbnail || ''"
-          >
-            <source :src="video.video_url" type="video/mp4" />
-            আপনার ব্রাউজার ভিডিও প্লেয়ার সাপোর্ট করে না।
-          </video>
-
-          <div v-else class="flex items-center justify-center h-full text-white">
-            ভিডিও টি পাওয়া যায়নি।
-          </div>
-        </div>
-
-        <!-- Video Title -->
-        <h1 class="text-2xl md:text-3xl font-bold text-gray-900 leading-snug">
-          {{ video.title }}
-        </h1>
-
-        <!-- Action Bar: Social Icons & Date -->
-        <div class="flex flex-wrap items-center justify-between gap-4 py-2 border-b border-gray-100">
-          <div class="flex items-center gap-2">
-            <!-- Share Buttons -->
-            <button class="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center hover:opacity-90">
-              <i class="bi bi-facebook text-sm"></i>
-            </button>
-            <button class="w-8 h-8 rounded-full bg-black text-white flex items-center justify-center hover:opacity-90">
-              <i class="bi bi-x text-base"></i>
-            </button>
-            <button class="w-8 h-8 rounded-full bg-red-100 text-red-600 flex items-center justify-center hover:bg-red-200">
-              <i class="bi bi-share-fill text-sm"></i>
-            </button>
-            <button class="w-8 h-8 rounded-full bg-gray-100 text-gray-600 flex items-center justify-center hover:bg-gray-200">
-              <i class="bi bi-bookmark text-sm"></i>
-            </button>
-            <!-- YouTube Subscribe Badge -->
-            <span class="inline-flex items-center gap-1 bg-red-600 text-white text-xs px-2.5 py-1.5 rounded font-medium ml-2">
-              <i class="bi bi-youtube"></i> YouTube
-            </span>
-          </div>
-
-          <!-- Publish Date -->
-          <span class="text-xs text-gray-500">
-            প্রকাশ: {{ formatDate(video.created_at) }}
-          </span>
-        </div>
-
-        <!-- Video Description -->
-        <div class="text-gray-800 text-base leading-relaxed pt-2 whitespace-pre-line">
-          {{ video.description || 'কোনো বিবরণ নেই।' }}
-        </div>
-      </div>
-
-      <!-- RIGHT SECTION: Sidebar Ad & Up Next Videos -->
-      <div class="space-y-6">
-        
-        <!-- Ad Banner Placeholder -->
-        <div class="bg-gray-50 border border-gray-200 rounded p-4 text-center">
-          <span class="text-xs text-gray-400 block mb-2">বিজ্ঞাপন</span>
-          <div class="w-full bg-gray-200 h-60 flex items-center justify-center text-gray-500 text-sm font-medium rounded">
-            [ Ad Banner Space ]
-          </div>
-        </div>
-
-        <!-- Sidebar Header: "পরবর্তী ভিডিও" -->
-        <div>
-          <h2 class="text-xl font-bold text-gray-900 mb-4 pb-1 border-b-2 border-red-600 inline-block">
-            পরবর্তী ভিডিও
-          </h2>
-
-          <!-- Up Next Video List -->
-          <div class="space-y-4">
-            <router-link
-              v-for="item in sideVideos"
-              :key="item.id"
-              :to="{ name: 'video.show', params: { slug: item.slug || item.id } }"
-              class="flex gap-3 group items-start"
-            >
-              <!-- Info Title & Date -->
-              <div class="flex-1">
-                <h3 class="text-sm font-semibold text-gray-800 group-hover:text-red-600 transition-colors line-clamp-2 leading-tight">
-                  {{ item.title }}
-                </h3>
-                <span class="text-xs text-gray-400 mt-2 block">
-                  {{ formatDate(item.created_at) }}
-                </span>
-              </div>
-
-              <!-- Thumbnail -->
-              <div class="relative shrink-0 w-28 h-20 bg-gray-100 rounded overflow-hidden">
-                <img
-                  :src="item.thumbnail || '/images/media.jpg'"
-                  :alt="item.title"
-                  class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
-                  @error="handleImageError"
-                />
-                <div class="absolute inset-0 flex items-center justify-center bg-black/20">
-                  <i class="bi bi-play-circle-fill text-red-600 text-xl drop-shadow"></i>
+        <div class="grid grid-cols-1 lg:grid-cols-[1fr_360px] gap-8">
+            
+            <!-- ==================== MAIN COLUMN ==================== -->
+            <div class="min-w-0">
+                <!-- Loading -->
+                <div v-if="loading" class="animate-pulse space-y-4">
+                    <div class="w-full aspect-video bg-gray-200 rounded"></div>
+                    <div class="h-7 bg-gray-200 rounded w-3/4"></div>
+                    <div class="h-4 bg-gray-200 rounded w-1/3"></div>
                 </div>
-              </div>
-            </router-link>
-          </div>
+
+                <!-- Not found -->
+                <div v-else-if="!video" class="py-20 text-center text-gray-500">
+                    ভিডিওটি খুঁজে পাওয়া যায়নি।
+                </div>
+
+                <template v-else>
+                    <!-- Player -->
+                    <div class="relative w-full aspect-video bg-black rounded overflow-hidden">
+                        <iframe v-if="video.video_type === 'embed' && embedUrl" :src="embedUrl"
+                            class="absolute inset-0 w-full h-full" title="video player"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowfullscreen />
+                        <video v-else-if="video.video_url" :src="video.video_url" :poster="video.thumbnail || undefined"
+                            class="absolute inset-0 w-full h-full" controls playsinline />
+                    </div>
+
+                    <!-- Title -->
+                    <h1 class="mt-4 text-2xl md:text-[28px] font-bold text-gray-900 leading-snug">
+                        {{ video.title }}
+                    </h1>
+
+                    <!-- Share row -->
+                    <div class="mt-3 flex items-center gap-3">
+                        <a :href="shareLinks.facebook" target="_blank" rel="noopener"
+                            class="w-8 h-8 rounded-full bg-[#1877F2] text-white flex items-center justify-center hover:opacity-90"
+                            aria-label="ফেসবুকে শেয়ার করুন">
+                            <i class="bi bi-facebook text-sm"></i>
+                        </a>
+                        <a :href="shareLinks.twitter" target="_blank" rel="noopener"
+                            class="w-8 h-8 rounded-full bg-black text-white flex items-center justify-center hover:opacity-90"
+                            aria-label="এক্স-এ শেয়ার করুন">
+                            <i class="bi bi-twitter-x text-sm"></i>
+                        </a>
+                        <button type="button" @click="copyLink"
+                            class="w-8 h-8 rounded-full bg-gray-100 text-gray-600 flex items-center justify-center hover:bg-gray-200"
+                            aria-label="লিংক কপি করুন">
+                            <i class="bi bi-share-fill text-sm"></i>
+                        </button>
+                        <button type="button" @click="toggleBookmark"
+                            class="w-8 h-8 rounded-full flex items-center justify-center hover:bg-gray-200"
+                            :class="isBookmarked ? 'bg-red-50 text-red-600' : 'bg-gray-100 text-gray-600'"
+                            aria-label="সংরক্ষণ করুন">
+                            <i class="bi text-sm" :class="isBookmarked ? 'bi-bookmark-fill' : 'bi-bookmark'"></i>
+                        </button>
+
+                        <a v-if="video.video_type === 'embed'" :href="video.video_url || '#'" target="_blank"
+                            rel="noopener"
+                            class="ml-1 flex items-center gap-1.5 bg-red-600 text-white text-sm font-medium px-3 py-1.5 rounded">
+                            <i class="bi bi-youtube"></i>
+                            Watch on YouTube
+                        </a>
+
+                        <span v-if="copied" class="text-xs text-green-600 ml-1">লিংক কপি হয়েছে</span>
+                    </div>
+
+                    <!-- Meta -->
+                    <p class="mt-3 text-base text-gray-500">
+                        প্রকাশ: {{ formattedDate }}
+                    </p>
+
+                    <!-- Description -->
+                    <p v-if="video.description" class="mt-4 text-[20px] leading-7 text-gray-800 whitespace-pre-line">
+                        {{ video.description }}
+                    </p>
+                </template>
+            </div>
+
+            <!-- ==================== SIDEBAR ==================== -->
+            <aside class="min-w-0">
+
+                <div class="space-y-5">
+                    <div v-for="ad in sidebarAds" :key="ad.id" class="overflow-hidden cursor-pointer"
+                        @click="trackClick(ad)">
+                        <img :src="ad.image" :alt="ad.name" class="w-full h-auto" />
+                        <div class="text-[10px] text-gray-400 mt-1 text-center">বিজ্ঞাপন — {{ ad.provider }}</div>
+                    </div>
+                </div>
+
+                <h2 class="text-xl font-bold text-gray-900 border-b border-gray-200 pb-2 mb-3">
+                    পরবর্তী ভিডিও
+                </h2>
+
+                <div v-if="relatedLoading" class="space-y-4">
+                    <div v-for="n in 3" :key="n" class="flex gap-3 animate-pulse">
+                        <div class="w-28 h-20 bg-gray-200 rounded shrink-0"></div>
+                        <div class="flex-1 space-y-2 py-1">
+                            <div class="h-3.5 bg-gray-200 rounded w-full"></div>
+                            <div class="h-3.5 bg-gray-200 rounded w-2/3"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div v-else class="flex flex-col divide-y divide-gray-100">
+                    <router-link v-for="item in relatedVideos" :key="item.id"
+                        :to="{ name: 'video.show', params: { slug: item.slug || item.id } }"
+                        class="flex gap-3 py-4 first:pt-0 group">
+                        <div class="relative w-28 h-20 shrink-0 bg-gray-100 rounded overflow-hidden">
+                            <img :src="item.thumbnail || ''" :alt="item.title"
+                                class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200" />
+                            <div class="absolute inset-0 flex items-center justify-center bg-black/10">
+                                <i class="bi bi-play-circle-fill text-white text-xl drop-shadow"></i>
+                            </div>
+                        </div>
+                        <div class="min-w-0 flex-1">
+                            <p
+                                class="text-lg font-medium text-gray-800 leading-5 line-clamp-3 group-hover:text-red-600 transition-colors">
+                                {{ item.title }}
+                            </p>
+                            <p class="mt-1.5 text-sm text-gray-400">{{ timeAgo(item.created_at) }}</p>
+                        </div>
+                    </router-link>
+
+                    <p v-if="relatedVideos.length === 0" class="text-sm text-gray-400 py-4">
+                        আর কোনো ভিডিও নেই।
+                    </p>
+                </div>
+            </aside>
         </div>
-
-      </div>
     </div>
-
-    <!-- Fallback if Not Found -->
-    <div v-else class="text-center py-12 text-gray-500">
-      ভিডিও পাওয়া যায়নি।
-    </div>
-  </div>
 </template>
 
 <script setup lang="ts">
-import { ref, watch, onMounted } from 'vue';
-import { useRoute } from 'vue-router';
-import api from '@/services/api';
+import { ref, computed, watch, onMounted } from "vue";
+import { useRoute } from "vue-router";
+import api from "@/services/api";
 
 interface Video {
-  id: number;
-  title: string;
-  slug: string;
-  thumbnail: string | null;
-  video_type: 'upload' | 'embed';
-  video_url: string | null;
-  description: string | null;
-  is_active?: boolean | number;
-  created_at?: string;
+    id: number;
+    title: string;
+    slug?: string;
+    thumbnail: string | null;
+    video_type?: "upload" | "embed";
+    video_url?: string | null;
+    description?: string | null;
+    is_active?: boolean | number | string;
+    created_at?: string;
 }
 
+interface Advertisement {
+    id: number
+    image: string
+    name: string
+    provider: string
+    link_url: string | null
+    placement: 'top' | 'middle' | 'sidebar'
+}
+
+const topAds = ref<Advertisement[]>([])
+const middleAds = ref<Advertisement[]>([])
+const sidebarAds = ref<Advertisement[]>([])
+
 const route = useRoute();
+
 const video = ref<Video | null>(null);
-const sideVideos = ref<Video[]>([]);
+const relatedVideos = ref<Video[]>([]);
 const loading = ref(true);
+const relatedLoading = ref(true);
+const copied = ref(false);
+const isBookmarked = ref(false);
 
-// Fetch current video detail using the slug parameter
-const fetchVideoDetail = async (slugOrId: string) => {
-  loading.value = true;
-  try {
-    const res = await api.get(`/video/${slugOrId}`);
-    let data = res?.data;
-    if (data && typeof data === 'object' && 'data' in data) {
-      data = data.data;
+const fetchAds = async () => {
+    try {
+        const [topRes, middleRes, sidebarRes] = await Promise.all([
+            api.get('/advertisements', { params: { placement: 'top', limit: 1 } }),
+            api.get('/advertisements', { params: { placement: 'middle', limit: 3 } }),
+            api.get('/advertisements', { params: { placement: 'sidebar', limit: 2 } }),
+        ])
+        topAds.value = topRes.data.data ?? []
+        middleAds.value = middleRes.data.data ?? []
+        sidebarAds.value = sidebarRes.data.data ?? []
+    } catch (error) {
+        console.error('Failed to load advertisements:', error)
     }
-    video.value = data;
-  } catch (err) {
-    console.error('Error fetching video detail:', err);
+}
+
+// --- Extract slug from route, matching VideoList's :params="{ slug: video.slug || video.id }" ---
+const slug = computed(() => route.params.slug as string);
+
+// --- Unwrap Laravel Resource / paginated / direct payloads consistently ---
+function unwrap(payload: any) {
+    let data = payload;
+    if (data?.data) data = data.data;
+    if (data?.data) data = data.data;
+    return data;
+}
+
+const fetchVideo = async () => {
+    loading.value = true;
     video.value = null;
-  } finally {
-    loading.value = false;
-  }
-};
-
-// Fetch list of videos for the sidebar ("পরবর্তী ভিডিও")
-const fetchSideVideos = async () => {
-  try {
-    const res = await api.get('/video');
-    let data = res?.data;
-    if (data && typeof data === 'object' && 'data' in data) {
-      data = data.data;
+    try {
+        const response = await api.get(`/video/${slug.value}`);
+        video.value = unwrap(response?.data) || null;
+    } catch (error) {
+        console.error("Video fetch error:", error);
+        video.value = null;
+    } finally {
+        loading.value = false;
     }
-    if (Array.isArray(data)) {
-      const currentSlug = route.params.slug as string;
-      sideVideos.value = data.filter(v => v.slug !== currentSlug && String(v.id) !== currentSlug);
+};
+
+const fetchRelated = async () => {
+    relatedLoading.value = true;
+    try {
+        const response = await api.get("/video", { params: { exclude: slug.value, limit: 8 } });
+        let data = unwrap(response?.data);
+        let list: Video[] = Array.isArray(data) ? data : [];
+        // Fallback filter client-side in case the API doesn't support `exclude`
+        list = list.filter((v) => (v.slug || String(v.id)) !== slug.value);
+        relatedVideos.value = list.slice(0, 8);
+    } catch (error) {
+        console.error("Related videos fetch error:", error);
+        relatedVideos.value = [];
+    } finally {
+        relatedLoading.value = false;
     }
-  } catch (err) {
-    console.error('Error fetching side videos:', err);
-  }
 };
 
-// YouTube helper check
-const isYouTubeUrl = (url?: string | null) => {
-  if (!url) return false;
-  return url.includes('youtube.com') || url.includes('youtu.be');
+const loadAll = () => {
+    fetchVideo();
+    fetchRelated();
 };
 
-// Formats YouTube links to work cleanly inside an iframe
-const getEmbedUrl = (url?: string | null) => {
-  if (!url) return '';
-  if (url.includes('youtube.com/embed/')) return url;
-  
-  let videoId = '';
-  if (url.includes('youtu.be/')) {
-    videoId = url.split('youtu.be/')[1]?.split('?')[0];
-  } else if (url.includes('watch?v=')) {
-    videoId = url.split('watch?v=')[1]?.split('&')[0];
-  }
-  return videoId ? `https://www.youtube.com/embed/${videoId}?autoplay=1` : url;
-};
+onMounted(loadAll);
 
-// Bengali Date Formatter
-const formatDate = (dateString?: string) => {
-  if (!dateString) return 'কিছুক্ষণ আগে';
-  try {
-    return new Date(dateString).toLocaleDateString('bn-BD', {
-      day: 'numeric',
-      month: 'long',
-      year: 'numeric',
-    });
-  } catch {
-    return dateString;
-  }
-};
+// Handle navigating from one video page directly to another (component reuse)
+watch(
+    () => route.params.slug,
+    () => loadAll()
+);
 
-const handleImageError = (e: Event) => {
-  const img = e.target as HTMLImageElement;
-  if (img.src !== '/images/media.jpg') {
-    img.src = '/images/media.jpg';
-  }
-};
+// --- YouTube / Facebook embed URL builder ---
+const embedUrl = computed(() => {
+    const url = video.value?.video_url;
+    if (!url) return null;
 
-// Initial Fetch
-onMounted(() => {
-  const currentSlug = route.params.slug as string;
-  if (currentSlug) {
-    fetchVideoDetail(currentSlug);
-    fetchSideVideos();
-  }
+    const ytMatch = url.match(
+        /(?:youtube\.com\/(?:watch\?v=|embed\/|shorts\/)|youtu\.be\/)([\w-]{11})/
+    );
+    if (ytMatch) return `https://www.youtube.com/embed/${ytMatch[1]}`;
+
+    // Already an embeddable URL (e.g. already /embed/, Facebook plugin, Vimeo player, etc.)
+    return url;
 });
 
-// Watch route parameter change (allows clicking up-next videos seamlessly)
-watch(
-  () => route.params.slug,
-  (newSlug) => {
-    if (newSlug) {
-      fetchVideoDetail(newSlug as string);
-      fetchSideVideos();
+// --- Share links ---
+const shareLinks = computed(() => {
+    const pageUrl = typeof window !== "undefined" ? window.location.href : "";
+    const title = video.value?.title || "";
+    return {
+        facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(pageUrl)}`,
+        twitter: `https://twitter.com/intent/tweet?url=${encodeURIComponent(pageUrl)}&text=${encodeURIComponent(title)}`,
+    };
+});
+
+const copyLink = async () => {
+    try {
+        await navigator.clipboard.writeText(window.location.href);
+        copied.value = true;
+        setTimeout(() => (copied.value = false), 2000);
+    } catch (error) {
+        console.error("Copy link failed:", error);
     }
-  }
-);
+};
+
+const toggleBookmark = () => {
+    isBookmarked.value = !isBookmarked.value;
+    // TODO: wire up to a real bookmarks endpoint / localStorage as needed
+};
+
+// --- Bangla digit + date helpers ---
+const banglaDigits: Record<string, string> = {
+    "0": "০", "1": "১", "2": "২", "3": "৩", "4": "৪",
+    "5": "৫", "6": "৬", "7": "৭", "8": "৮", "9": "৯",
+};
+const toBanglaNumber = (n: number | string) =>
+    String(n).replace(/[0-9]/g, (d) => banglaDigits[d]);
+
+const banglaMonths = [
+    "জানুয়ারি", "ফেব্রুয়ারি", "মার্চ", "এপ্রিল", "মে", "জুন",
+    "জুলাই", "আগস্ট", "সেপ্টেম্বর", "অক্টোবর", "নভেম্বর", "ডিসেম্বর",
+];
+
+const formattedDate = computed(() => {
+    if (!video.value?.created_at) return "";
+    const d = new Date(video.value.created_at);
+    const day = toBanglaNumber(d.getDate());
+    const month = banglaMonths[d.getMonth()];
+    const year = toBanglaNumber(d.getFullYear());
+    let hours = d.getHours();
+    const minutes = d.getMinutes();
+    const period = hours >= 12 ? "অপরাহ্ণ" : "পূর্বাহ্ণ";
+    hours = hours % 12 || 12;
+    const hh = toBanglaNumber(String(hours).padStart(2, "0"));
+    const mm = toBanglaNumber(String(minutes).padStart(2, "0"));
+    return `${day} ${month} ${year}, ${hh}:${mm} ${period}`;
+});
+
+const timeAgo = (dateStr?: string) => {
+    if (!dateStr) return "";
+    const diffMs = Date.now() - new Date(dateStr).getTime();
+    const minutes = Math.floor(diffMs / 60000);
+    if (minutes < 1) return "এইমাত্র";
+    if (minutes < 60) return `${toBanglaNumber(minutes)} মিনিট আগে`;
+    const hours = Math.floor(minutes / 60);
+    if (hours < 24) return `${toBanglaNumber(hours)} ঘণ্টা আগে`;
+    const days = Math.floor(hours / 24);
+    if (days < 30) return `${toBanglaNumber(days)} দিন আগে`;
+    const months = Math.floor(days / 30);
+    if (months < 12) return `${toBanglaNumber(months)} মাস আগে`;
+    const years = Math.floor(months / 12);
+    return `${toBanglaNumber(years)} বছর আগে`;
+};
+
+const trackClick = async (ad: Advertisement) => {
+    if (!ad.link_url) return
+    try {
+        await api.post(`/advertisements/${ad.id}/click`)
+    } catch { /* non-blocking */ }
+    window.open(ad.link_url, '_blank')
+}
+
+onMounted(() => {
+    fetchAds()
+
+})
 </script>
+
+<style scoped>
+.line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+</style>

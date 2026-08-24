@@ -80,6 +80,12 @@
               </div>
             </div>
           </template>
+
+          <div class="flex items-center gap-1 cursor-pointer hover:text-red-600 transition-colors">
+              <router-link :to="`/video/show`" class="whitespace-nowrap">
+                ভিডিও
+              </router-link>
+          </div>
         </div>
 
         <!-- DESKTOP RIGHT -->
