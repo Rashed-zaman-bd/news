@@ -1,6 +1,13 @@
 <template>
     <div class="max-w-7xl mx-auto px-4 py-6 text-gray-900">
 
+        <div v-if="topAds[0]"
+            class="w-full border-y border-gray-200 py-2 mt-10 sm:mt-0 mb-5 flex flex-col items-center cursor-pointer"
+            @click="trackClick(topAds[0])">
+            <img :src="topAds[0].image" :alt="topAds[0].name" class="w-full max-w-[728px] h-auto object-contain" />
+            <span class="text-[10px] text-gray-400 mt-1">বিজ্ঞাপন — {{ topAds[0].provider }}</span>
+        </div>
+
         <!-- Loading -->
         <div v-if="loading" class="text-center py-20 text-gray-400">
             <i class="bi bi-arrow-repeat animate-spin text-3xl"></i>
@@ -82,12 +89,12 @@
 
                     <!-- TOP BANNER (dynamic) -->
                     <div
-                        v-if="topAds[0]"
+                        v-if="middleAds[0]"
                         class="w-full border-y border-gray-200 py-2 mb-5 flex flex-col items-center cursor-pointer"
-                        @click="trackClick(topAds[0])"
+                        @click="trackClick(middleAds[0])"
                     >
-                        <img :src="topAds[0].image" :alt="topAds[0].name" class="w-full max-w-[728px] h-auto object-contain" />
-                        <span class="text-[10px] text-gray-400 mt-1">বিজ্ঞাপন — {{ topAds[0].provider }}</span>
+                        <img :src="middleAds[0].image" :alt="middleAds[0].name" class="w-full max-w-[728px] h-auto object-contain" />
+                        <span class="text-[10px] text-gray-400 mt-1">বিজ্ঞাপন — {{ middleAds[0].provider }}</span>
                     </div>
 
                     <!-- CONTENT -->

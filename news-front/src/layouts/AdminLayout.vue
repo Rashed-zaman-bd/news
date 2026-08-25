@@ -117,7 +117,7 @@
           class="block px-4 py-2 rounded transition-colors hover:bg-gray-700"
           active-class="bg-gray-800 text-emerald-400 font-semibold"
         >
-          <i class="bi bi-chat-dots mr-2"></i>Advertisment
+          <i class="bi bi-chat-dots mr-2"></i>Details Page Ads
         </router-link>
 
         <router-link

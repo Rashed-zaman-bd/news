@@ -1,14 +1,14 @@
 <template>
     <div class="max-w-[1280px] mx-auto px-4 py-6 ">
         <div v-if="topAds[0]"
-                class="w-full border-y border-gray-200 py-2 mt-10 mb-5 flex flex-col items-center cursor-pointer"
-                @click="trackClick(topAds[0])">
-                <img :src="topAds[0].image" :alt="topAds[0].name" class="w-full max-w-[728px] h-auto object-contain" />
-                <span class="text-[10px] text-gray-400 mt-1">বিজ্ঞাপন — {{ topAds[0].provider }}</span>
-            </div>
+            class="w-full border-y border-gray-200 py-2 mt-10 mb-5 flex flex-col items-center cursor-pointer"
+            @click="trackClick(topAds[0])">
+            <img :src="topAds[0].image" :alt="topAds[0].name" class="w-full max-w-[728px] h-auto object-contain" />
+            <span class="text-[10px] text-gray-400 mt-1">বিজ্ঞাপন — {{ topAds[0].provider }}</span>
+        </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-[1fr_360px] gap-8">
-            
+
             <!-- ==================== MAIN COLUMN ==================== -->
             <div class="min-w-0">
                 <!-- Loading -->
@@ -22,9 +22,9 @@
                 <div v-else-if="!video" class="py-20 text-center text-gray-500">
                     ভিডিওটি খুঁজে পাওয়া যায়নি।
                 </div>
-                
+
                 <template v-else>
-                    
+
                     <!-- Player -->
                     <div class="relative w-full aspect-video bg-black rounded overflow-hidden">
                         <iframe v-if="video.video_type === 'embed' && embedUrl" :src="embedUrl"
@@ -75,7 +75,7 @@
                     </div>
 
                     <!-- Meta -->
-                  <!-- CORRECTED: -->
+                    <!-- CORRECTED: -->
                     <p class="mt-3 text-base text-gray-500">
                         প্রকাশ: {{ formattedDate }}
                     </p>
@@ -85,6 +85,13 @@
                         {{ video.description }}
                     </p>
                 </template>
+
+                <div v-if="middleAds[0]"
+                    class="w-full border-y border-gray-200 py-2 mt-10 mb-5 flex flex-col items-center cursor-pointer"
+                    @click="trackClick(middleAds[0])">
+                    <img :src="middleAds[0].image" :alt="middleAds[0].name" class="w-full max-w-[728px] h-auto object-contain" />
+                    <span class="text-[10px] text-gray-400 mt-1">বিজ্ঞাপন — {{ middleAds[0].provider }}</span>
+                </div>
             </div>
 
             <!-- ==================== SIDEBAR ==================== -->
@@ -138,6 +145,64 @@
                 </div>
             </aside>
         </div>
+
+        <div>
+            <h2 class="text-xl font-bold text-gray-900 border-b border-gray-200 pb-2 mb-3">
+                আরও ভিডিও
+            </h2>
+
+            <div v-if="nextLoading" class="space-y-4">
+                <div v-for="n in 3" :key="n" class="flex gap-3 animate-pulse">
+                    <div class="w-28 h-20 bg-gray-200 rounded shrink-0"></div>
+                    <div class="flex-1 space-y-2 py-1">
+                        <div class="h-3.5 bg-gray-200 rounded w-full"></div>
+                        <div class="h-3.5 bg-gray-200 rounded w-2/3"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div v-else class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <router-link
+                    v-for="item in nextVideos"
+                    :key="item.id"
+                    :to="{ name: 'video.show', params: { slug: item.slug || item.id } }"
+                    class="group"
+                >
+                    <!-- Thumbnail -->
+                    <div class="relative w-full aspect-video bg-gray-100 rounded overflow-hidden">
+                        <img
+                            :src="item.thumbnail || ''"
+                            :alt="item.title"
+                            class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
+                        />
+
+                        <!-- Play Icon -->
+                        <div class="absolute inset-0 flex items-center justify-center bg-black/10">
+                            <i class="bi bi-play-circle-fill text-white text-3xl drop-shadow"></i>
+                        </div>
+                    </div>
+
+                    <!-- Title -->
+                    <p
+                        class="mt-2 text-base font-medium text-gray-800 leading-5 line-clamp-2 group-hover:text-red-600 transition-colors"
+                    >
+                        {{ item.title }}
+                    </p>
+
+                    <!-- Time -->
+                    <p class="mt-1 text-sm text-gray-400">
+                        {{ timeAgo(item.created_at) }}
+                    </p>
+                </router-link>
+
+                <p
+                    v-if="nextVideos.length === 0"
+                    class="col-span-full text-sm text-gray-400 py-4"
+                >
+                    আর কোনো ভিডিও নেই।
+                </p>
+            </div>
+        </div>
     </div>
 </template>
 
@@ -175,8 +240,10 @@ const route = useRoute();
 
 const video = ref<Video | null>(null);
 const relatedVideos = ref<Video[]>([]);
+const nextVideos = ref<Video[]>([]);
 const loading = ref(true);
 const relatedLoading = ref(true);
+const nextLoading = ref(true);
 const copied = ref(false);
 const isBookmarked = ref(false);
 
@@ -223,12 +290,12 @@ const fetchVideo = async () => {
 const fetchRelated = async () => {
     relatedLoading.value = true;
     try {
-        const response = await api.get("/video", { params: { exclude: slug.value, limit: 8 } });
+        const response = await api.get("/video", { params: { exclude: slug.value, limit: 5 } });
         let data = unwrap(response?.data);
         let list: Video[] = Array.isArray(data) ? data : [];
         // Fallback filter client-side in case the API doesn't support `exclude`
         list = list.filter((v) => (v.slug || String(v.id)) !== slug.value);
-        relatedVideos.value = list.slice(0, 8);
+        relatedVideos.value = list.slice(0, 5);
     } catch (error) {
         console.error("Related videos fetch error:", error);
         relatedVideos.value = [];
@@ -237,9 +304,40 @@ const fetchRelated = async () => {
     }
 };
 
+const fetchNext = async () => {
+    nextLoading.value = true;
+
+    try {
+        const response = await api.get("/video", {
+            params: {
+                exclude: slug.value,
+                limit: 21,
+            },
+        });
+
+        let data = unwrap(response?.data);
+
+        let list: Video[] = Array.isArray(data) ? data : [];
+
+        // Fallback filter client-side
+        list = list.filter(
+            (v) => (v.slug || String(v.id)) !== slug.value
+        );
+
+        nextVideos.value = list.slice(5, 21);
+
+    } catch (error) {
+        console.error("Related videos fetch error:", error);
+        nextVideos.value = [];
+    } finally {
+        nextLoading.value = false;
+    }
+};
+
 const loadAll = () => {
     fetchVideo();
     fetchRelated();
+    fetchNext();
 };
 
 onMounted(loadAll);

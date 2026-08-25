@@ -315,7 +315,7 @@ const listArticleChunks = computed(() => {
 });
 
 const sidePanelList = computed(() =>
-    (sideTab.value === 'featured' ? featuredList.value : popularList.value).slice(0, 8)
+    (sideTab.value === 'featured' ? featuredList.value : popularList.value).slice(0, 5)
 );
 
 const toBengaliNumber = (num: number | string) => {
