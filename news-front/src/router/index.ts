@@ -115,7 +115,7 @@ const routes = [
       {
         path: 'advertisement',
         name: 'admin.advertisement',
-        component: () => import('@/views/admin/Advertisement.vue')
+        component: () => import('@/views/admin/ads/Advertisement.vue')
         
       },
       {
@@ -135,6 +135,22 @@ const routes = [
         name: 'admin.video',
         component: () => import('@/views/admin/VideoView.vue'),
         meta: {roles: ['admin', 'editor']},
+      },
+      {
+          path: 'categorypageads',
+          name: 'admin.ads.categorypageads',
+          component: () => import('@/views/admin/ads/CategoryPageAds.vue'),
+          meta: {
+              roles: ['admin', 'editor']
+          },
+      },
+      {
+          path: 'frontpageads',
+          name: 'admin.ads.frontpageads',
+          component: () => import('@/views/admin/ads/FrontPageAds.vue'),
+          meta: {
+              roles: ['admin', 'editor']
+          },
       },
     ],
   },

@@ -112,13 +112,55 @@
           </Transition>
         </div>
 
-        <router-link
-          to="/admin/advertisement"
-          class="block px-4 py-2 rounded transition-colors hover:bg-gray-700"
-          active-class="bg-gray-800 text-emerald-400 font-semibold"
-        >
-          <i class="bi bi-chat-dots mr-2"></i>Details Page Ads
-        </router-link>
+        <div>
+          <button
+            @click="isAdsOpen = !isAdsOpen"
+            class="w-full flex items-center justify-between px-4 py-2 rounded hover:bg-gray-700 transition-colors"
+            :class="{ 'text-emerald-400 font-semibold': isAdsRouteActive }"
+          >
+            <span class="flex items-center gap-2">
+              <i class="bi bi-newspaper"></i>
+              Advertisment
+            </span>
+            <i class="bi" :class="isAdsOpen ? 'bi-chevron-up' : 'bi-chevron-down'"></i>
+          </button>
+
+          <Transition
+            enter-active-class="transition-all duration-200 ease-out"
+            enter-from-class="opacity-0 max-h-0"
+            enter-to-class="opacity-100 max-h-96"
+            leave-active-class="transition-all duration-200 ease-in"
+            leave-from-class="opacity-100 max-h-96"
+            leave-to-class="opacity-0 max-h-0"
+          >
+            <div v-show="isAdsOpen" class="ml-6 mt-1 space-y-1 overflow-hidden">
+              <router-link
+                to="/admin/advertisement"
+                class="block px-4 py-2 rounded transition-colors hover:bg-gray-700"
+                active-class="bg-gray-800 text-emerald-400 font-semibold"
+              >
+                <i class="bi bi-chat-dots mr-2"></i>Details Page Ads
+              </router-link>
+
+              <router-link
+                  :to="{ name: 'admin.ads.categorypageads' }"
+                  class="block px-4 py-2 rounded transition-colors hover:bg-gray-700"
+                active-class="bg-gray-800 text-emerald-400 font-semibold"
+              >
+                  Category Page Ads
+              </router-link>
+
+              <router-link
+                :to="{ name: 'admin.ads.frontpageads' }"
+                class="block px-4 py-2 rounded transition-colors hover:bg-gray-700"
+                active-class="bg-gray-800 text-emerald-400 font-semibold"
+              >
+                Front Page Ads
+              </router-link>
+
+            </div>
+          </Transition>
+        </div>
 
         <router-link
           to="/admin/comments"
@@ -240,6 +282,7 @@ const route = useRoute()
 const isAccountsOpen = ref(false)
 const isCategoryOpen = ref(false)
 const isArticleOpen = ref(false)
+const isAdsOpen = ref(false)
 const imageError = ref(false)
 const loggingOut = ref(false)
 const accountMenuRef = ref<HTMLElement | null>(null)
@@ -264,18 +307,32 @@ const handleImageError = () => {
 
 // Highlight parent menu button when a child route is active
 const isCategoryRouteActive = computed(() =>
-  route.path.startsWith('/admin/category') || route.path.startsWith('/admin/sub_category')
+  route.path === '/admin/category' ||
+  route.path.startsWith('/admin/category/') ||
+  route.path === '/admin/sub_category' ||
+  route.path.startsWith('/admin/sub_category/')
 )
 
 const isArticleRouteActive = computed(() =>
-  route.path.startsWith('/admin/article') ||
-  route.path.startsWith('/admin/tags') ||
-  route.path.startsWith('/admin/article_pending')
+  route.path === '/admin/article' ||
+  route.path.startsWith('/admin/article/') ||
+  route.path === '/admin/tags' ||
+  route.path.startsWith('/admin/tags/')
+)
+
+const isAdsRouteActive = computed(() =>
+  route.path === '/admin/advertisement' ||
+  route.path.startsWith('/admin/advertisement/') ||
+  route.path === '/admin/ads/categorypageads' ||
+  route.path.startsWith('/admin/ads/categorypageads/') ||
+  route.path === '/admin/ads/frontpageads' ||
+  route.path.startsWith('/admin/ads/frontpageads/')
 )
 
 // Auto-expand the relevant menu section on load / route change
 if (isCategoryRouteActive.value) isCategoryOpen.value = true
 if (isArticleRouteActive.value) isArticleOpen.value = true
+if (isAdsRouteActive.value) isAdsOpen.value = true
 
 const logout = async () => {
   loggingOut.value = true

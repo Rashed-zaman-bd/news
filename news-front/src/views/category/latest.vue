@@ -2,8 +2,11 @@
     <div class="max-w-7xl mx-auto px-4 py-6 text-gray-900">
 
         <!-- Top advert banner -->
-        <div class="w-full flex items-center justify-center border-b cursor-pointer p-4 mt-14 sm:mt-0">
-            <img src="/images/topbanner.png" alt="Top Banner" class="max-w-full h-auto" />
+        <div v-if="topAds[0]"
+            class="w-full border-y border-gray-200 mt-10 sm:mt-0 mb-5 flex flex-col items-center cursor-pointer"
+            @click="trackClick(topAds[0])">
+            <img :src="topAds[0].image" :alt="topAds[0].name" class="w-full max-w-[728px] h-auto object-contain" />
+            <span class="text-[10px] text-gray-400 mt-1">বিজ্ঞাপন — {{ topAds[0].provider }}</span>
         </div>
 
         <!-- Header Category Title -->
@@ -344,8 +347,10 @@
                 <div class="lg:col-span-4 xl:col-span-3 flex flex-col gap-6 border-l border-gray-300 p-3">
 
                 <!-- Side Banner Slot -->
-                <div class="w-full border rounded overflow-hidden flex justify-center">
-                    <img src="/images/topbanner.png" alt="Ad" class="w-full h-auto object-cover max-w-xs sm:max-w-none" />
+                <div v-for="ad in sidebarAds" :key="ad.id" class="overflow-hidden cursor-pointer"
+                        @click="trackClick(ad)">
+                        <img :src="ad.image" :alt="ad.name" class="w-full h-auto" />
+                        <div class="text-[10px] text-gray-400 mt-1 text-center">বিজ্ঞাপন — {{ ad.provider }}</div>
                 </div>
 
                 <!-- Tabbed Widget -->
@@ -387,6 +392,11 @@
                         </li>
                     </ul>
                 </div>
+                <div v-for="ad in sidebarTwoAds" :key="ad.id" class="overflow-hidden cursor-pointer"
+                        @click="trackClick(ad)">
+                        <img :src="ad.image" :alt="ad.name" class="w-full h-auto" />
+                        <div class="text-[10px] text-gray-400 mt-1 text-center">বিজ্ঞাপন — {{ ad.provider }}</div>
+                    </div>
 
             </div>
 
@@ -395,9 +405,11 @@
             <!-- Middle Advert Banner (Separator) -->
             <div class="my-8 pt-4 border-t border-gray-200 flex flex-col items-center">
                 <span class="text-[10px] text-gray-400 mb-1">বিজ্ঞাপন</span>
-                <div class="w-full max-w-4xl bg-amber-100 rounded flex items-center justify-center py-2">
-                    <img src="/images/top-advertis.png" alt="Bottom Banner" class="max-w-full h-auto" />
-                </div>
+                <div v-for="ad in middleAds" :key="ad.id" class="overflow-hidden cursor-pointer"
+                        @click="trackClick(ad)">
+                        <img :src="ad.image" :alt="ad.name" class="w-full h-auto" />
+                        <div class="text-[10px] text-gray-400 mt-1 text-center">বিজ্ঞাপন — {{ ad.provider }}</div>
+                    </div>
             </div>
 
             <!-- BOTTOM SECTION: Remaining Articles -->
@@ -479,6 +491,29 @@ interface Article {
     sub_category?: { id: number; name: string; slug: string } | null;
 }
 
+interface CategoryAd {
+    id: number;
+    image: string;
+    name: string;
+    provider: string;
+    link_url: string | null;
+    placement:
+        | 'top'
+        | 'middle'
+        | 'middle-two'
+        | 'middle-three'
+        | 'sidebar'
+        | 'sidebar-two';
+    sort_order: number;
+    is_active: boolean;
+    starts_at?: string | null;
+    ends_at?: string | null;
+    impressions?: number;
+    clicks?: number;
+}
+
+const ads = ref<CategoryAd[]>([]);
+
 const route = useRoute();
 
 const category = ref<Category | null>(null);
@@ -509,7 +544,7 @@ const listArticleChunks = computed(() => {
 });
 
 const sidePanelList = computed(() =>
-    (sideTab.value === 'featured' ? featuredList.value : popularList.value).slice(0, 8)
+    (sideTab.value === 'featured' ? featuredList.value : popularList.value).slice(0, 5)
 );
 
 const toBengaliNumber = (num: number | string) => {
@@ -527,6 +562,46 @@ const timeAgo = (dateStr: string | null) => {
     if (hours < 24) return `${toBengaliNumber(hours)} ঘণ্টা আগে`;
     const days = Math.floor(hours / 24);
     return `${toBengaliNumber(days)} দিন আগে`;
+};
+
+const topAds = computed(() =>
+        ads.value.filter(ad => ad.placement === 'top')
+    );
+
+    const middleAds = computed(() =>
+        ads.value.filter(ad => ad.placement === 'middle')
+    );
+
+    const middleTwoAds = computed(() =>
+        ads.value.filter(ad => ad.placement === 'middle-two')
+    );
+
+    const middleThreeAds = computed(() =>
+        ads.value.filter(ad => ad.placement === 'middle-three')
+    );
+
+    const sidebarAds = computed(() =>
+        ads.value.filter(ad => ad.placement === 'sidebar')
+    );
+
+    const sidebarTwoAds = computed(() =>
+        ads.value.filter(ad => ad.placement === 'sidebar-two')
+);
+
+const fetchAds = async () => {
+    try {
+        const { data } = await api.get('/category-ads', {
+            params: {
+                limit: 50
+            }
+        });
+
+        ads.value = data.data ?? [];
+
+    } catch (error) {
+        console.error('Failed to load category ads:', error);
+        ads.value = [];
+    }
 };
 
 const fetchArticles = async (page = 1) => {
@@ -560,10 +635,45 @@ const fetchArticles = async (page = 1) => {
     }
 };
 
+const trackClick = async (ad: CategoryAd) => {
+    try {
+        const { data } = await api.post(
+            `/category-ads/${ad.id}/click`
+        );
+
+        if (data.redirect) {
+            window.open(
+                data.redirect,
+                '_blank',
+                'noopener,noreferrer'
+            );
+        }
+    } catch (error) {
+        console.error(
+            'Failed to track advertisement click:',
+            error
+        );
+
+        // Optional fallback
+        if (ad.link_url) {
+            window.open(
+                ad.link_url,
+                '_blank',
+                'noopener,noreferrer'
+            );
+        }
+    }
+};
+
 watch(
     () => route.params.slug,
     () => fetchArticles(1)
 );
 
-onMounted(() => fetchArticles());
+onMounted(async () => {
+    await Promise.all([
+        fetchArticles(),
+        fetchAds()
+    ]);
+});
 </script>

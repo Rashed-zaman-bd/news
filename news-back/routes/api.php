@@ -132,6 +132,6 @@ Route::post('/category-ads/{ads}/click', [CategoryAdsResource::class, 'click']);
 Route::middleware(['auth:sanctum', 'role:admin,editor'])->group(function () {
     Route::get('/admin/category-ads', [CategoryAdsController::class, 'adminIndex']);
     Route::post('/category-ads', [CategoryAdsController::class, 'store']);
-    Route::put('/category-ads/{ads}', [CategoryAdsController::class, 'update']);
-    Route::delete('/category-ads/{ads}', [CategoryAdsController::class, 'destroy']);
+    Route::put('/category-ads/{advertisement}', [CategoryAdsController::class, 'update']);
+    Route::delete('/category-ads/{advertisement}', [CategoryAdsController::class, 'destroy']);
 });
