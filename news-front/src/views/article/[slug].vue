@@ -183,6 +183,43 @@
                             </router-link>
                         </div>
 
+                        <div
+                            v-for="ad in sidebarTwoAds"
+                            :key="ad.id"
+                            class="overflow-hidden cursor-pointer"
+                            @click="trackClick(ad)"
+                        >
+                            <img :src="ad.image" :alt="ad.name" class="w-full h-auto" />
+                            <div class="text-[10px] text-gray-400 mt-1 text-center">বিজ্ঞাপন — {{ ad.provider }}</div>
+                        </div>
+
+                        <div>
+                            <router-link
+                                v-for="item in latestBottomArticles"
+                                :key="item.id"
+                                :to="`/article/${item.slug}`"
+                                class="flex flex-col gap-3 py-3 border-b border-gray-200 group"
+                            >
+                                <div class="w-full h-36 flex-shrink-0 overflow-hidden rounded">
+                                    <img
+                                        v-if="item.featured_image"
+                                        :src="item.featured_image"
+                                        :alt="item.title"
+                                        class="w-full h-full object-cover"
+                                    />
+                                    <div v-else class="w-full h-full bg-gray-200"></div>
+                                </div>
+                                <div class="flex flex-col justify-between">
+                                    <h3 class="text-xl text-gray-800 group-hover:text-red-600">
+                                        {{ item.title }}
+                                    </h3>
+                                    <span class="text-[14px] text-gray-400 mt-1">
+                                        {{ timeAgo(item.published_at) }}
+                                    </span>
+                                </div>
+                            </router-link>
+                        </div>
+
                         <div class="bg-gray-50 border border-gray-200 p-3">
                             <h3 class="text-sm font-semibold text-red-600 mb-2">বিশেষ সংবাদ</h3>
                             <p class="text-xs text-gray-700 leading-relaxed">
@@ -255,6 +292,7 @@ const route = useRoute()
 const article = ref<Article | null>(null)
 const related = ref<Article[]>([])
 const latestArticles = ref<Article[]>([])
+const latestBottomArticles = ref<Article[]>([])
 const loading = ref(false)
 const sameCategoryArticles = ref<Article[]>([])
 
@@ -265,23 +303,43 @@ interface Advertisement {
     name: string
     provider: string
     link_url: string | null
-    placement: 'top' | 'middle' | 'sidebar'
+    placement: 'top' | 'middle' | 'sidebar' | 'middle-two' | 'middle-three' | 'sidebar-two'
 }
 
 const topAds = ref<Advertisement[]>([])
 const middleAds = ref<Advertisement[]>([])
 const sidebarAds = ref<Advertisement[]>([])
+const sidebarTwoAds = ref<Advertisement[]>([])
 
 
 const fetchLatestArticles = async () => {
     try {
         const { data } = await api.get('/articles', {
-            params: { per_page: 5 }, 
+            params: { per_page: 3 }, 
         })
 
         latestArticles.value = (data.data ?? []).filter(
             (item: Article) => item.slug !== route.params.slug
         )
+    } catch (error) {
+        console.error('Failed to load latest articles:', error)
+    }
+}
+
+const fetchLatestBottomArticles = async () => {
+    try {
+        const { data } = await api.get('/articles', {
+            params: {
+                limit: 6,
+            },
+        })
+
+        latestBottomArticles.value = (data.data ?? [])
+            .filter(
+                (item: Article) => item.slug !== route.params.slug
+            )
+            .slice(3, 6)
+
     } catch (error) {
         console.error('Failed to load latest articles:', error)
     }
@@ -326,14 +384,18 @@ const formatBanglaDate = (date: string | null) => {
 
 const fetchAds = async () => {
     try {
-        const [topRes, middleRes, sidebarRes] = await Promise.all([
+        const [topRes, middleRes, sidebarRes, sidebarTwoRes] = await Promise.all([
             api.get('/advertisements', { params: { placement: 'top', limit: 1 } }),
-            api.get('/advertisements', { params: { placement: 'middle', limit: 3 } }),
-            api.get('/advertisements', { params: { placement: 'sidebar', limit: 2 } }),
+            api.get('/advertisements', { params: { placement: 'middle', limit: 1 } }),
+            api.get('/advertisements', { params: { placement: 'sidebar', limit: 1 } }),
+            api.get('/advertisements', { params: { placement: 'sidebar-two', limit: 1 } }),
         ])
         topAds.value = topRes.data.data ?? []
         middleAds.value = middleRes.data.data ?? []
         sidebarAds.value = sidebarRes.data.data ?? []
+        sidebarTwoAds.value = sidebarTwoRes.data.data ?? []
+
+        
     } catch (error) {
         console.error('Failed to load advertisements:', error)
     }
@@ -372,12 +434,14 @@ const trackClick = async (ad: Advertisement) => {
 watch(() => route.params.slug, () => {
     fetchArticle()
     fetchLatestArticles()
+    fetchLatestBottomArticles()
 })
 
 onMounted(() => {
     fetchArticle()
     fetchAds()
     fetchLatestArticles()
+    fetchLatestBottomArticles()
 })
 </script>
 

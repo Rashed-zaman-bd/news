@@ -27,7 +27,7 @@
 
                         <input
                             type="file"
-                            accept="image/png, image/jpeg, image/webp"
+                            accept="image/png, image/jpeg, image/webp, image/gif"
                             @change="handleFileChange"
                             class="block w-full text-sm text-gray-600
                                    file:mr-3 file:py-2 file:px-3
@@ -85,7 +85,10 @@
                             >
                                 <option value="top">Top</option>
                                 <option value="middle">Middle</option>
+                                <option value="middle-two">middle-two</option>
+                                <option value="middle-three">middle-three</option>
                                 <option value="sidebar">Sidebar</option>
+                                <option value="sidebar-two">sidebar-two</option>
                             </select>
                             <p v-if="errors.placement" class="text-xs text-red-600 mt-1">{{ errors.placement[0] }}</p>
                         </div>
@@ -162,7 +165,7 @@ interface Advertisement {
     name: string
     provider: string
     link_url: string | null
-    placement: 'top' | 'middle' | 'sidebar'
+    placement: 'top' | 'middle' | 'sidebar' | 'middle-two' | 'middle-three' | 'sidebar-two'
     sort_order: number
     is_active: boolean
     starts_at?: string | null
@@ -184,7 +187,7 @@ const form = ref({
     name: '',
     provider: '',
     link_url: '',
-    placement: 'middle' as 'top' | 'middle' | 'sidebar',
+    placement: 'middle' as 'top' | 'middle' | 'sidebar' | 'middle-two' | 'middle-three' | 'sidebar-two',
     sort_order: 0,
     is_active: true,
     starts_at: '',
