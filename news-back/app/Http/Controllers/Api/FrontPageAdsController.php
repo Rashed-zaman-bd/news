@@ -3,19 +3,18 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\StoreCategoryAdsRequest;
-use App\Http\Requests\UpdateCategoryAdsRequest;
-use App\Http\Resources\CategoryAdsResource;
-use App\Models\CategoryPageAds;
+use App\Http\Requests\StoreFrontPageAdsRequest;
+use App\Http\Requests\UpdateFrontPageAdsRequest;
+use App\Http\Resources\FrontPageAdsResource;
+use App\Models\FrontPageAdes;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\Storage;
 
-class CategoryAdsController extends Controller
+class FrontPageAdsController extends Controller
 {
-
-    public function index(Request $request): AnonymousResourceCollection
+     public function index(Request $request): AnonymousResourceCollection
     {
         $request->validate([
             'placement' => [
@@ -30,7 +29,7 @@ class CategoryAdsController extends Controller
             ],
         ]);
 
-        $query = CategoryPageAds::active();
+        $query = FrontPageAdes::active();
 
         if ($request->filled('placement')) {
             $query->placement($request->string('placement')->toString());
@@ -41,14 +40,10 @@ class CategoryAdsController extends Controller
             ->limit($request->integer('limit', 10))
             ->get();
 
-        return CategoryAdsResource::collection($ads);
+        return FrontPageAdsResource::collection($ads);
     }
 
-    /**
-     * Admin - All category page advertisements
-     *
-     * GET /api/admin/categorypageads
-     */
+
     public function adminIndex(Request $request): AnonymousResourceCollection
     {
         $request->validate([
@@ -68,7 +63,7 @@ class CategoryAdsController extends Controller
             ],
         ]);
 
-        $query = CategoryPageAds::query();
+        $query = FrontPageAdes::query();
 
         if ($request->filled('placement')) {
             $query->placement($request->string('placement')->toString());
@@ -90,21 +85,17 @@ class CategoryAdsController extends Controller
             ->limit($request->integer('limit', 100))
             ->get();
 
-        return CategoryAdsResource::collection($ads);
+        return FrontPageAdsResource::collection($ads);
     }
 
-    /**
-     * Show a single advertisement.
-     */
-    public function show(CategoryPageAds $advertisement): CategoryAdsResource
+
+     public function show(FrontPageAdes $advertisement): FrontPageAdsResource
     {
-        return new CategoryAdsResource($advertisement);
+        return new FrontPageAdsResource($advertisement);
     }
 
-    /**
-     * Create advertisement.
-     */
-    public function store(StoreCategoryAdsRequest $request): JsonResponse
+
+    public function store(StoreFrontPageAdsRequest $request): JsonResponse
     {
         $data = $request->validated();
 
@@ -114,12 +105,12 @@ class CategoryAdsController extends Controller
         if ($request->hasFile('image')) {
             $data['image'] = $request
                 ->file('image')
-                ->store('CategoryAds', 'public');
+                ->store('FrontAds', 'public');
         }
 
-        $advertisement = CategoryPageAds::create($data);
+        $advertisement = FrontPageAdes::create($data);
 
-        return (new CategoryAdsResource($advertisement))
+        return (new FrontPageAdsResource($advertisement))
             ->additional([
                 'message' => 'বিজ্ঞাপন সফলভাবে তৈরি হয়েছে।',
             ])
@@ -127,12 +118,10 @@ class CategoryAdsController extends Controller
             ->setStatusCode(201);
     }
 
-    /**
-     * Update advertisement.
-     */
+
     public function update(
-        UpdateCategoryAdsRequest $request,
-        CategoryPageAds $advertisement
+        UpdateFrontPageAdsRequest $request,
+        FrontPageAdes $advertisement
     ): JsonResponse {
         $data = $request->validated();
 
@@ -151,7 +140,7 @@ class CategoryAdsController extends Controller
 
             $data['image'] = $request
                 ->file('image')
-                ->store('CategoryAds', 'public');
+                ->store('FrontAds', 'public');
 
             /*
              * Delete old image after new image is stored.
@@ -163,7 +152,7 @@ class CategoryAdsController extends Controller
 
         $advertisement->update($data);
 
-        return (new CategoryAdsResource($advertisement->fresh()))
+        return (new FrontPageAdsResource($advertisement->fresh()))
             ->additional([
                 'message' => 'বিজ্ঞাপন সফলভাবে আপডেট হয়েছে।',
             ])
@@ -171,10 +160,8 @@ class CategoryAdsController extends Controller
             ->setStatusCode(200);
     }
 
-    /**
-     * Delete advertisement.
-     */
-    public function destroy(CategoryPageAds $advertisement): JsonResponse
+
+    public function destroy(FrontPageAdes $advertisement): JsonResponse
     {
         if ($advertisement->image) {
             Storage::disk('public')->delete($advertisement->image);
@@ -187,12 +174,8 @@ class CategoryAdsController extends Controller
         ]);
     }
 
-    /**
-     * Register advertisement click.
-     *
-     * POST /api/categorypageads/{advertisement}/click
-     */
-    public function click(CategoryPageAds $advertisement): JsonResponse
+
+    public function click(FrontPageAdes $advertisement): JsonResponse
     {
         /*
          * Don't count clicks on inactive/expired ads.
