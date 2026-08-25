@@ -14,11 +14,11 @@ class StoreAdvertisementRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'image'      => ['required', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
+            'image'      => ['required', 'image', 'mimes:jpg,jpeg,png,webp,gif', 'max:2048'],
             'name'       => ['required', 'string', 'max:255'],
             'provider'   => ['required', 'string', 'max:255'],
             'link_url'   => ['nullable', 'url', 'max:2048'],
-            'placement'  => ['required', 'in:top,middle,sidebar'],
+            'placement'  => ['required', 'in:top,middle,middle-two,middle-three,sidebar,sidebar-two'],
             'sort_order' => ['nullable', 'integer', 'min:0'],
             'is_active'  => ['nullable', 'boolean'],
             'starts_at'  => ['nullable', 'date'],

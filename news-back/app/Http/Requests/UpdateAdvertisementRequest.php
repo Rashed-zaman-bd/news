@@ -15,11 +15,11 @@ class UpdateAdvertisementRequest extends FormRequest
     {
         return [
             // image optional on update — only replaced if a new file is sent
-            'image'      => ['sometimes', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
+            'image'      => ['sometimes', 'image', 'mimes:jpg,jpeg,png,webp,gif', 'max:2048'],
             'name'       => ['sometimes', 'string', 'max:255'],
             'provider'   => ['sometimes', 'string', 'max:255'],
             'link_url'   => ['nullable', 'url', 'max:2048'],
-            'placement'  => ['sometimes', 'in:top,middle,sidebar'],
+            'placement'  => ['sometimes', 'in:top,middle,middle-two,middle-three,sidebar,sidebar-two'],
             'sort_order' => ['nullable', 'integer', 'min:0'],
             'is_active'  => ['nullable', 'boolean'],
             'starts_at'  => ['nullable', 'date'],
