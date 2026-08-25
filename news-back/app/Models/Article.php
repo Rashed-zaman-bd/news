@@ -29,6 +29,12 @@ class Article extends Model
         'is_breaking',
         'views',
         'published_at',
+        'article_author',
+        'article_area',
+        'image_title',
+        'image_author',
+        'content_two',
+        'content_three',
     ];
 
     protected $casts = [

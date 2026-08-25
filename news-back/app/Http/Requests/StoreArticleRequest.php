@@ -27,6 +27,12 @@ class StoreArticleRequest extends FormRequest
             'is_featured' => ['nullable', 'boolean'],
             'is_breaking' => ['nullable', 'boolean'],
             'published_at' => ['nullable', 'date'],
+            'article_author' => ['nullable', 'string'],
+            'article_area' => ['nullable', 'string'],
+            'image_title' => ['nullable', 'string'],
+            'image_author' => ['nullable', 'string'],
+            'content_two' => ['nullable', 'string'],
+            'content_three' => ['nullable', 'string'],
         ];
     }
 

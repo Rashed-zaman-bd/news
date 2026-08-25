@@ -4,12 +4,14 @@ use App\Http\Controllers\Api\Admin\AdminCategoryController;
 use App\Http\Controllers\Api\Admin\AdminUserController;
 use App\Http\Controllers\Api\AdvertisementController;
 use App\Http\Controllers\Api\ArticleController;
+use App\Http\Controllers\Api\CategoryAdsController;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\LogoController;
 use App\Http\Controllers\Api\ProfileController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\VideoController;
 use App\Http\Controllers\Auth\SocialAuthController;
+use App\Http\Resources\CategoryAdsResource;
 use Illuminate\Support\Facades\Route;
 
 
@@ -96,6 +98,17 @@ Route::middleware(['auth:sanctum', 'role:admin,editor'])->prefix('admin')->group
     Route::delete('/articles/{article:id}', [ArticleController::class, 'destroy']);
 });
 
+
+// Video api routes
+Route::get('/video', [VideoController::class, 'index']);        
+Route::get('/video/{video:slug}', [VideoController::class, 'show']); 
+
+Route::middleware(['auth:sanctum', 'role:admin,editor'])->group(function () {
+    Route::post('/video', [VideoController::class, 'store']);
+    Route::put('/video/{video:slug}', [VideoController::class, 'update']);
+    Route::delete('/video/{video:slug}', [VideoController::class, 'destroy']);
+});
+
 // Public routes — used by the live article/site pages
 Route::get('/advertisements', [AdvertisementController::class, 'index']);
 Route::get('/advertisements/{advertisement}', [AdvertisementController::class, 'show']);
@@ -109,12 +122,16 @@ Route::middleware(['auth:sanctum', 'role:admin,editor'])->group(function () {
     Route::delete('/advertisements/{advertisement}', [AdvertisementController::class, 'destroy']);
 });
 
-// Video api routes
-Route::get('/video', [VideoController::class, 'index']);        
-Route::get('/video/{video:slug}', [VideoController::class, 'show']); 
 
+// Public routes — category page ads
+Route::get('/category-ads', [CategoryAdsController::class, 'index']);
+Route::get('/category-ads/{ads}', [CategoryAdsController::class, 'show']);
+Route::post('/category-ads/{ads}/click', [CategoryAdsResource::class, 'click']);
+
+// Admin/editor-only routes
 Route::middleware(['auth:sanctum', 'role:admin,editor'])->group(function () {
-    Route::post('/video', [VideoController::class, 'store']);
-    Route::put('/video/{video:slug}', [VideoController::class, 'update']);
-    Route::delete('/video/{video:slug}', [VideoController::class, 'destroy']);
+    Route::get('/admin/category-ads', [CategoryAdsController::class, 'adminIndex']);
+    Route::post('/category-ads', [CategoryAdsController::class, 'store']);
+    Route::put('/category-ads/{ads}', [CategoryAdsController::class, 'update']);
+    Route::delete('/category-ads/{ads}', [CategoryAdsController::class, 'destroy']);
 });

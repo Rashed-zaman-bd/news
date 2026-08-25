@@ -36,6 +36,35 @@
                         >
                     </div>
 
+                    <!-- Article Author + Area -->
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium mb-1">
+                                প্রতিবেদক / লেখক
+                            </label>
+
+                            <input
+                                v-model="form.article_author"
+                                type="text"
+                                placeholder="প্রতিবেদকের নাম"
+                                class="w-full border rounded-md px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-300"
+                            />
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium mb-1">
+                                প্রতিবেদনের স্থান
+                            </label>
+
+                            <input
+                                v-model="form.article_area"
+                                type="text"
+                                placeholder="যেমন: ঢাকা"
+                                class="w-full border rounded-md px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-300"
+                            />
+                        </div>
+                    </div>
+
                     <!-- Category + Status -->
                     <!-- Category + Sub-category + Status -->
                     <div class="grid grid-cols-2 gap-4">
@@ -107,6 +136,34 @@
                         <p v-if="errors.content" class="text-red-500 text-xs mt-1">{{ errors.content }}</p>
                     </div>
 
+                    <!-- Content Two -->
+                    <div>
+                        <label class="block text-sm font-medium mb-1">
+                            কনটেন্ট - ২
+                        </label>
+
+                        <textarea
+                            v-model="form.content_two"
+                            rows="8"
+                            placeholder="দ্বিতীয় অংশের কনটেন্ট লিখুন..."
+                            class="w-full border rounded-md px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-300"
+                        ></textarea>
+                    </div>
+
+                    <!-- Content Three -->
+                    <div>
+                        <label class="block text-sm font-medium mb-1">
+                            কনটেন্ট - ৩
+                        </label>
+
+                        <textarea
+                            v-model="form.content_three"
+                            rows="8"
+                            placeholder="তৃতীয় অংশের কনটেন্ট লিখুন..."
+                            class="w-full border rounded-md px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-300"
+                        ></textarea>
+                    </div>
+
                     <!-- Featured Image -->
                     <div>
                         <label class="block text-sm font-medium mb-1">ফিচার্ড ইমেজ</label>
@@ -120,6 +177,35 @@
 
                         <div v-if="imagePreview" class="mt-3">
                             <img :src="imagePreview" class="w-32 h-32 object-cover rounded-md border" alt="preview">
+                        </div>
+                    </div>
+
+                    <!-- Image Information -->
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium mb-1">
+                                ছবির শিরোনাম
+                            </label>
+
+                            <input
+                                v-model="form.image_title"
+                                type="text"
+                                placeholder="ছবির শিরোনাম"
+                                class="w-full border rounded-md px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-300"
+                            />
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium mb-1">
+                                ছবির কৃতিত্ব / ফটোগ্রাফার
+                            </label>
+
+                            <input
+                                v-model="form.image_author"
+                                type="text"
+                                placeholder="ছবির ফটোগ্রাফারের নাম"
+                                class="w-full border rounded-md px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-300"
+                            />
                         </div>
                     </div>
 
@@ -185,6 +271,13 @@ interface ArticleData {
     is_featured: boolean;
     is_breaking: boolean;
     featured_image?: string | null;
+
+    article_author?: string | null;
+    article_area?: string | null;
+    image_title?: string | null;
+    image_author?: string | null;
+    content_two?: string | null;
+    content_three?: string | null;
 }
 
 const props = defineProps<{
@@ -209,6 +302,14 @@ const form = reactive({
     sub_title: '',
     excerpt: '',
     content: '',
+
+    article_author: '',
+    article_area: '',
+    image_title: '',
+    image_author: '',
+    content_two: '',
+    content_three: '',
+
     category_id: '' as number | string,
     sub_category_id: '' as number | string,
     status: 'draft',
@@ -242,14 +343,26 @@ const resetForm = () => {
     form.sub_title = '';
     form.excerpt = '';
     form.content = '';
+
+    form.article_author = '';
+    form.article_area = '';
+    form.image_title = '';
+    form.image_author = '';
+    form.content_two = '';
+    form.content_three = '';
+
     form.category_id = '';
     form.sub_category_id = '';
     form.status = 'draft';
     form.is_featured = false;
     form.is_breaking = false;
+
     imagePreview.value = null;
     imageFile.value = null;
-    Object.keys(errors).forEach((key) => (errors[key as keyof typeof errors] = ''));
+
+    Object.keys(errors).forEach(
+        (key) => (errors[key as keyof typeof errors] = '')
+    );
 };
 
 watch(
@@ -262,11 +375,28 @@ watch(
             form.sub_title = props.article.sub_title ?? '';
             form.excerpt = props.article.excerpt ?? '';
             form.content = props.article.content;
-            form.category_id = props.article.category_id ?? props.article.category?.id ?? '';
-            form.sub_category_id = props.article.sub_category_id ?? props.article.sub_category?.id ?? '';
+
+            form.article_author = props.article.article_author ?? '';
+            form.article_area = props.article.article_area ?? '';
+            form.image_title = props.article.image_title ?? '';
+            form.image_author = props.article.image_author ?? '';
+            form.content_two = props.article.content_two ?? '';
+            form.content_three = props.article.content_three ?? '';
+
+            form.category_id =
+                props.article.category_id ??
+                props.article.category?.id ??
+                '';
+
+            form.sub_category_id =
+                props.article.sub_category_id ??
+                props.article.sub_category?.id ??
+                '';
+
             form.status = props.article.status ?? 'draft';
             form.is_featured = Boolean(props.article.is_featured);
             form.is_breaking = Boolean(props.article.is_breaking);
+
             imagePreview.value = props.article.featured_image ?? null;
             imageFile.value = null;
         } else {
@@ -308,53 +438,139 @@ const close = () => {
 };
 
 const handleSubmit = async () => {
-    Object.keys(errors).forEach((key) => (errors[key as keyof typeof errors] = ''));
+    Object.keys(errors).forEach(
+        (key) => (errors[key as keyof typeof errors] = '')
+    );
+
     submitting.value = true;
 
     try {
         const formData = new FormData();
+
         formData.append('title', form.title);
         formData.append('content', form.content);
         formData.append('category_id', String(form.category_id));
         formData.append('status', form.status);
-        formData.append('is_featured', form.is_featured ? '1' : '0');
-        formData.append('is_breaking', form.is_breaking ? '1' : '0');
+        formData.append(
+            'is_featured',
+            form.is_featured ? '1' : '0'
+        );
+        formData.append(
+            'is_breaking',
+            form.is_breaking ? '1' : '0'
+        );
 
-        if (form.sub_category_id) formData.append('sub_category_id', String(form.sub_category_id));
-        if (form.sub_title) formData.append('sub_title', form.sub_title);
-        if (form.excerpt) formData.append('excerpt', form.excerpt);
-        if (imageFile.value) formData.append('featured_image', imageFile.value);
+        // Optional fields
+        if (form.sub_category_id) {
+            formData.append(
+                'sub_category_id',
+                String(form.sub_category_id)
+            );
+        }
+
+        if (form.sub_title) {
+            formData.append('sub_title', form.sub_title);
+        }
+
+        if (form.excerpt) {
+            formData.append('excerpt', form.excerpt);
+        }
+
+        if (form.article_author) {
+            formData.append(
+                'article_author',
+                form.article_author
+            );
+        }
+
+        if (form.article_area) {
+            formData.append(
+                'article_area',
+                form.article_area
+            );
+        }
+
+        if (form.image_title) {
+            formData.append(
+                'image_title',
+                form.image_title
+            );
+        }
+
+        if (form.image_author) {
+            formData.append(
+                'image_author',
+                form.image_author
+            );
+        }
+
+        if (form.content_two) {
+            formData.append(
+                'content_two',
+                form.content_two
+            );
+        }
+
+        if (form.content_three) {
+            formData.append(
+                'content_three',
+                form.content_three
+            );
+        }
+
+        if (imageFile.value) {
+            formData.append(
+                'featured_image',
+                imageFile.value
+            );
+        }
 
         if (isEdit.value) {
             formData.append('_method', 'PUT');
-            await api.post(`/admin/articles/${props.article!.id}`, formData);
+
+            await api.post(
+                `/admin/articles/${props.article!.id}`,
+                formData
+            );
         } else {
-            await api.post('/admin/articles', formData);
+            await api.post(
+                '/admin/articles',
+                formData
+            );
         }
 
         Swal.fire({
             icon: 'success',
-            title: isEdit.value ? 'আপডেট হয়েছে!' : 'তৈরি হয়েছে!',
+            title: isEdit.value
+                ? 'আপডেট হয়েছে!'
+                : 'তৈরি হয়েছে!',
             timer: 1500,
             showConfirmButton: false,
         });
 
         emit('saved');
         emit('close');
+
     } catch (error: any) {
         const serverErrors = error.response?.data?.errors;
 
-        if (serverErrors && typeof serverErrors === 'object') {
+        if (
+            serverErrors &&
+            typeof serverErrors === 'object'
+        ) {
             Object.keys(serverErrors).forEach((key) => {
                 if (key in errors) {
-                    errors[key as keyof typeof errors] = serverErrors[key][0];
+                    errors[key as keyof typeof errors] =
+                        serverErrors[key][0];
                 }
             });
         } else {
             Swal.fire({
                 icon: 'error',
                 title: 'ত্রুটি',
-                text: error.response?.data?.message || 'কিছু একটা ভুল হয়েছে।',
+                text:
+                    error.response?.data?.message ||
+                    'কিছু একটা ভুল হয়েছে।',
                 confirmButtonColor: '#4B5563',
             });
         }

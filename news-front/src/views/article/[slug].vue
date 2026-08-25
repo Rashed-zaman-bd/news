@@ -83,11 +83,16 @@
                     </div>
 
                     <!-- Image Caption -->
-                    <div v-if="article.featured_image" class="text-xs text-gray-500 pb-2 mb-5">
-                        {{ article.title }}
+                    <div class="flex flex-row text-lg text-gray-700">
+                        <div v-if="article.image_title" class="text-base text-gray-500 pb-2 mb-5">
+                        {{ article.image_title }} <span class="text-red-700">|</span>
+                    </div>
+                    <div v-if="article.image_author" class="text-base text-gray-500 pb-2 pl-2 mb-5">
+                         ছবি: {{ article.image_author }} 
+                    </div>
                     </div>
 
-                    <!-- TOP BANNER (dynamic) -->
+                    <!-- MIDDLE BANNER (dynamic) -->
                     <div
                         v-if="middleAds[0]"
                         class="w-full border-y border-gray-200 py-2 mb-5 flex flex-col items-center cursor-pointer"
@@ -114,6 +119,46 @@
                             class="whitespace-pre-line text-lg sm:text-xl text-gray-900 font-medium leading-relaxed space-y-4"
                         >
                             {{ article.content }}
+                        </div>
+                    </div>
+
+                     <!-- MIDDLE TWO BANNER (dynamic) -->
+                    <div
+                        v-if="middleTwoAds[0]"
+                        class="w-full flex flex-col items-center m-2 cursor-pointer"
+                        @click="trackClick(middleTwoAds[0])"
+                    >
+                        <img :src="middleTwoAds[0].image" :alt="middleTwoAds[0].name" class="w-full max-w-[728px] h-64 object-contain" />
+                        <span class="text-[10px] text-gray-400">বিজ্ঞাপন — {{ middleTwoAds[0].provider }}</span>
+                    </div>
+
+                    <!-- CONTENT Two -->
+                    <div class="max-w-2xl mx-auto mt-4">
+                        <div
+                            v-if="article.content_two"
+                            class="whitespace-pre-line text-lg sm:text-xl text-gray-900 font-medium leading-relaxed space-y-4"
+                        >
+                            {{ article.content_two }}
+                        </div>
+                    </div>
+
+                     <!-- MIDDLE Third BANNER (dynamic) -->
+                    <div
+                        v-if="middleThreeAds[0]"
+                        class="w-full flex flex-col items-center m-2 cursor-pointer"
+                        @click="trackClick(middleThreeAds[0])"
+                    >
+                        <img :src="middleThreeAds[0].image" :alt="middleThreeAds[0].name" class="w-full max-w-[728px] h-64 object-contain" />
+                        <span class="text-[10px] text-gray-400">বিজ্ঞাপন — {{ middleThreeAds[0].provider }}</span>
+                    </div>
+
+                    <!-- CONTENT THREE -->
+                    <div class="max-w-2xl mx-auto mt-4">
+                        <div
+                            v-if="article.content_three"
+                            class="whitespace-pre-line text-lg sm:text-xl text-gray-900 font-medium leading-relaxed space-y-4"
+                        >
+                            {{ article.content_three }}
                         </div>
                     </div>
 
@@ -280,8 +325,12 @@ interface Article {
     slug: string
     sub_title: string
     content?: string
+    content_two?: string
+    content_three?: string
     excerpt?: string | null
     featured_image: string | null
+    image_title: string | null
+    image_author: string | null
     published_at: string | null
     category?: { id: number; name: string; slug: string }
     sub_category?: { id: number; name: string; slug: string } | null
@@ -308,6 +357,8 @@ interface Advertisement {
 
 const topAds = ref<Advertisement[]>([])
 const middleAds = ref<Advertisement[]>([])
+const middleTwoAds = ref<Advertisement[]>([])
+const middleThreeAds = ref<Advertisement[]>([])
 const sidebarAds = ref<Advertisement[]>([])
 const sidebarTwoAds = ref<Advertisement[]>([])
 
@@ -384,14 +435,18 @@ const formatBanglaDate = (date: string | null) => {
 
 const fetchAds = async () => {
     try {
-        const [topRes, middleRes, sidebarRes, sidebarTwoRes] = await Promise.all([
+        const [topRes, middleRes, middleTwoRes, middleThreeRes, sidebarRes, sidebarTwoRes] = await Promise.all([
             api.get('/advertisements', { params: { placement: 'top', limit: 1 } }),
             api.get('/advertisements', { params: { placement: 'middle', limit: 1 } }),
+            api.get('/advertisements', { params: { placement: 'middle-two', limit: 1 } }),
+            api.get('/advertisements', { params: { placement: 'middle-three', limit: 1 } }),
             api.get('/advertisements', { params: { placement: 'sidebar', limit: 1 } }),
             api.get('/advertisements', { params: { placement: 'sidebar-two', limit: 1 } }),
         ])
         topAds.value = topRes.data.data ?? []
         middleAds.value = middleRes.data.data ?? []
+        middleTwoAds.value = middleTwoRes.data.data ?? []
+        middleThreeAds.value = middleThreeRes.data.data ?? []
         sidebarAds.value = sidebarRes.data.data ?? []
         sidebarTwoAds.value = sidebarTwoRes.data.data ?? []
 

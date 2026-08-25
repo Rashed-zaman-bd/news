@@ -19,113 +19,325 @@
         <template v-else>
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
 
-                <!-- LEFT SECTION: Main Content Area -->
-                <div class="lg:col-span-8 xl:col-span-9 flex flex-col gap-6">
+               <!-- LEFT SECTION: Main Content Area -->
+<div class="lg:col-span-8 xl:col-span-9 flex flex-col gap-6">
 
-                    <!-- TOP ROW: Lead Article + Secondary Article (Articles #1 & #2) -->
-                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 pb-6 border-b border-gray-200">
+    <!-- =====================================================
+         MOBILE LAYOUT
+         ===================================================== -->
+    <div class="sm:hidden">
 
-                        <!-- Lead Article (#1) -->
-                        <router-link
-                            v-if="leadArticle"
-                            :to="`/article/${leadArticle.slug}`"
-                            class="sm:col-span-2 group block relative rounded overflow-hidden bg-black h-64 sm:h-80 md:h-96"
-                        >
-                            <img
-                                v-if="leadArticle.featured_image"
-                                :src="leadArticle.featured_image"
-                                class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300 opacity-90"
-                                alt=""
-                            />
-                            <div v-else class="w-full h-full bg-gray-800"></div>
+        <!-- #1 Lead Article - Full Width -->
+        <router-link
+            v-if="leadArticle"
+            :to="`/article/${leadArticle.slug}`"
+            class="group block relative rounded overflow-hidden bg-black h-64 mb-5"
+        >
+            <img
+                v-if="leadArticle.featured_image"
+                :src="leadArticle.featured_image"
+                :alt="leadArticle.title"
+                class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300 opacity-90"
+            />
 
-                            <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent p-4 sm:p-5 flex flex-col justify-end">
-                                <h2 class="text-white font-bold text-lg sm:text-xl md:text-2xl leading-snug group-hover:underline">
-                                    {{ leadArticle.title }}
-                                </h2>
-                                <span class="text-xs text-gray-300 mt-2">
-                                    {{ timeAgo(leadArticle.published_at) }}
-                                </span>
-                            </div>
-                        </router-link>
+            <div
+                v-else
+                class="w-full h-full bg-gray-800"
+            ></div>
 
-                        <!-- Secondary Article (#2) -->
-                        <router-link
-                            v-if="secondaryArticle"
-                            :to="`/article/${secondaryArticle.slug}`"
-                            class="grid grid-cols-2 sm:grid-cols-1 gap-3 sm:gap-0 group"
-                        >
-                            <div class="relative h-28 sm:h-44 w-full rounded overflow-hidden sm:mb-2">
-                                <img
-                                    v-if="secondaryArticle.featured_image"
-                                    :src="secondaryArticle.featured_image"
-                                    class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                                    alt=""
-                                />
-                                <div v-else class="w-full h-full bg-gray-200"></div>
+            <div
+                class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent p-4 flex flex-col justify-end"
+            >
+                <h2 class="text-white font-bold text-xl leading-snug">
+                    {{ leadArticle.title }}
+                </h2>
 
-                                <div v-if="secondaryArticle.is_video" class="absolute top-2 left-2 bg-red-600 text-white p-1.5 rounded-full flex items-center justify-center">
-                                    <i class="bi bi-play-fill text-lg leading-none"></i>
-                                </div>
-                            </div>
+                <span class="text-xs text-gray-300 mt-2">
+                    {{ timeAgo(leadArticle.published_at) }}
+                </span>
+            </div>
+        </router-link>
 
-                            <div class="flex flex-col justify-between">
-                                <div>
-                                    <h3 class="font-bold text-sm sm:text-lg text-gray-900 group-hover:text-red-700 leading-snug">
-                                        {{ secondaryArticle.title }}
-                                    </h3>
-                                    <p v-if="secondaryArticle.excerpt" class="text-xs sm:text-sm text-gray-600 mt-1 line-clamp-2 sm:line-clamp-3 leading-relaxed">
-                                        {{ secondaryArticle.excerpt }}
-                                    </p>
-                                </div>
-                                <span class="text-[11px] text-gray-400 mt-2">
-                                    {{ timeAgo(secondaryArticle.published_at) }}
-                                </span>
-                            </div>
-                        </router-link>
-                    </div>
 
-                    <!-- TOP SECTION GRID: Next 3 Articles (#3, #4, #5) -->
-                    <div class="grid grid-cols-2 sm:grid-cols-3 gap-4 sm:gap-5">
-                        <router-link
-                            v-for="article in topGridArticles"
-                            :key="article.id"
-                            :to="`/article/${article.slug}`"
-                            class="group flex flex-col justify-between"
-                        >
-                            <div>
-                                <div class="relative h-28 sm:h-36 w-full rounded overflow-hidden mb-2">
-                                    <img
-                                        v-if="article.featured_image"
-                                        :src="article.featured_image"
-                                        class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                                        alt=""
-                                    />
-                                    <div v-else class="w-full h-full bg-gray-200"></div>
+        <!-- =====================================================
+             MOBILE: #2 + #3 + #4 + #5
+             2 COLUMNS
+             ===================================================== -->
+        <div class="grid grid-cols-2 gap-4">
 
-                                    <div v-if="article.is_video" class="absolute top-2 left-2 bg-red-600 text-white p-1 rounded">
-                                        <i class="bi bi-camera-fill text-xs"></i>
-                                    </div>
-                                </div>
+            <!-- #2 Secondary Article -->
+            <router-link
+                v-if="secondaryArticle"
+                :to="`/article/${secondaryArticle.slug}`"
+                class="group flex flex-col"
+            >
+                <div class="relative h-28 w-full rounded overflow-hidden mb-2">
 
-                                <h4 class="font-bold text-sm sm:text-base text-gray-900 leading-snug group-hover:text-red-700">
-                                    <span v-if="article.sub_category" class="text-red-600 font-bold">
-                                        {{ article.sub_category.name }} •
-                                    </span>
-                                    {{ article.title }}
-                                </h4>
-                                <p v-if="article.excerpt" class="text-xs sm:text-sm text-gray-500 mt-1 line-clamp-2 sm:line-clamp-3 leading-relaxed">
-                                    {{ article.excerpt }}
-                                </p>
-                            </div>
+                    <img
+                        v-if="secondaryArticle.featured_image"
+                        :src="secondaryArticle.featured_image"
+                        :alt="secondaryArticle.title"
+                        class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    />
 
-                            <span class="text-[11px] text-gray-400 mt-2">
-                                {{ timeAgo(article.published_at) }}
-                            </span>
-                        </router-link>
+                    <div
+                        v-else
+                        class="w-full h-full bg-gray-200"
+                    ></div>
+
+                    <!-- Video Icon -->
+                    <div
+                        v-if="secondaryArticle.is_video"
+                        class="absolute top-2 left-2 bg-red-600 text-white p-1 rounded"
+                    >
+                        <i class="bi bi-camera-fill text-xs"></i>
                     </div>
 
                 </div>
+
+                <h3
+                    class="font-bold text-sm text-gray-900 leading-snug group-hover:text-red-700 line-clamp-3"
+                >
+                    {{ secondaryArticle.title }}
+                </h3>
+
+                <p
+                    v-if="secondaryArticle.excerpt"
+                    class="text-xs text-gray-500 mt-1 line-clamp-2"
+                >
+                    {{ secondaryArticle.excerpt }}
+                </p>
+
+                <span class="text-[11px] text-gray-400 mt-2">
+                    {{ timeAgo(secondaryArticle.published_at) }}
+                </span>
+            </router-link>
+
+
+            <!-- #3, #4, #5 -->
+            <router-link
+                v-for="article in topGridArticles"
+                :key="article.id"
+                :to="`/article/${article.slug}`"
+                class="group flex flex-col"
+            >
+
+                <div
+                    class="relative h-28 w-full rounded overflow-hidden mb-2"
+                >
+                    <img
+                        v-if="article.featured_image"
+                        :src="article.featured_image"
+                        :alt="article.title"
+                        class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    />
+
+                    <div
+                        v-else
+                        class="w-full h-full bg-gray-200"
+                    ></div>
+
+                    <!-- Video Icon -->
+                    <div
+                        v-if="article.is_video"
+                        class="absolute top-2 left-2 bg-red-600 text-white p-1 rounded"
+                    >
+                        <i class="bi bi-camera-fill text-xs"></i>
+                    </div>
+                </div>
+
+                <h4
+                    class="font-bold text-sm text-gray-900 leading-snug group-hover:text-red-700 line-clamp-3"
+                >
+                    <span
+                        v-if="article.sub_category"
+                        class="text-red-600 font-bold"
+                    >
+                        {{ article.sub_category.name }} •
+                    </span>
+
+                    {{ article.title }}
+                </h4>
+
+                <p
+                    v-if="article.excerpt"
+                    class="text-xs text-gray-500 mt-1 line-clamp-2"
+                >
+                    {{ article.excerpt }}
+                </p>
+
+                <span class="text-[11px] text-gray-400 mt-2">
+                    {{ timeAgo(article.published_at) }}
+                </span>
+
+            </router-link>
+
+        </div>
+    </div>
+
+
+    <!-- =====================================================
+         TABLET / DESKTOP LAYOUT
+         ===================================================== -->
+    <div class="hidden sm:block">
+
+        <!-- TOP ROW: #1 + #2 -->
+        <div
+            class="grid grid-cols-3 gap-6 pb-6 border-b border-gray-200"
+        >
+
+            <!-- Lead Article #1 -->
+            <router-link
+                v-if="leadArticle"
+                :to="`/article/${leadArticle.slug}`"
+                class="col-span-2 group block relative rounded overflow-hidden bg-black h-80 md:h-96"
+            >
+                <img
+                    v-if="leadArticle.featured_image"
+                    :src="leadArticle.featured_image"
+                    :alt="leadArticle.title"
+                    class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300 opacity-90"
+                />
+
+                <div
+                    v-else
+                    class="w-full h-full bg-gray-800"
+                ></div>
+
+                <div
+                    class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent p-5 flex flex-col justify-end"
+                >
+                    <h2
+                        class="text-white font-bold text-xl md:text-2xl leading-snug"
+                    >
+                        {{ leadArticle.title }}
+                    </h2>
+
+                    <span class="text-xs text-gray-300 mt-2">
+                        {{ timeAgo(leadArticle.published_at) }}
+                    </span>
+                </div>
+            </router-link>
+
+
+            <!-- Secondary Article #2 -->
+            <router-link
+                v-if="secondaryArticle"
+                :to="`/article/${secondaryArticle.slug}`"
+                class="group"
+            >
+                <div
+                    class="relative h-44 w-full rounded overflow-hidden mb-2"
+                >
+                    <img
+                        v-if="secondaryArticle.featured_image"
+                        :src="secondaryArticle.featured_image"
+                        :alt="secondaryArticle.title"
+                        class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    />
+
+                    <div
+                        v-else
+                        class="w-full h-full bg-gray-200"
+                    ></div>
+
+                    <div
+                        v-if="secondaryArticle.is_video"
+                        class="absolute top-2 left-2 bg-red-600 text-white p-1.5 rounded-full"
+                    >
+                        <i class="bi bi-play-fill"></i>
+                    </div>
+                </div>
+
+                <h3
+                    class="font-bold text-lg text-gray-900 group-hover:text-red-700 leading-snug"
+                >
+                    {{ secondaryArticle.title }}
+                </h3>
+
+                <p
+                    v-if="secondaryArticle.excerpt"
+                    class="text-sm text-gray-600 mt-1 line-clamp-3"
+                >
+                    {{ secondaryArticle.excerpt }}
+                </p>
+
+                <span class="text-[11px] text-gray-400 mt-2 block">
+                    {{ timeAgo(secondaryArticle.published_at) }}
+                </span>
+            </router-link>
+
+        </div>
+
+
+        <!-- DESKTOP: #3 #4 #5 -->
+        <div class="grid grid-cols-3 gap-5 mt-6">
+
+            <router-link
+                v-for="article in topGridArticles"
+                :key="article.id"
+                :to="`/article/${article.slug}`"
+                class="group flex flex-col justify-between"
+            >
+
+                <div>
+
+                    <div
+                        class="relative h-36 w-full rounded overflow-hidden mb-2"
+                    >
+                        <img
+                            v-if="article.featured_image"
+                            :src="article.featured_image"
+                            :alt="article.title"
+                            class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                        />
+
+                        <div
+                            v-else
+                            class="w-full h-full bg-gray-200"
+                        ></div>
+
+                        <div
+                            v-if="article.is_video"
+                            class="absolute top-2 left-2 bg-red-600 text-white p-1 rounded"
+                        >
+                            <i class="bi bi-camera-fill text-xs"></i>
+                        </div>
+                    </div>
+
+                    <h4
+                        class="font-bold text-base text-gray-900 leading-snug group-hover:text-red-700"
+                    >
+                        <span
+                            v-if="article.sub_category"
+                            class="text-red-600 font-bold"
+                        >
+                            {{ article.sub_category.name }} •
+                        </span>
+
+                        {{ article.title }}
+                    </h4>
+
+                    <p
+                        v-if="article.excerpt"
+                        class="text-sm text-gray-500 mt-1 line-clamp-3"
+                    >
+                        {{ article.excerpt }}
+                    </p>
+
+                </div>
+
+                <span class="text-[11px] text-gray-400 mt-2">
+                    {{ timeAgo(article.published_at) }}
+                </span>
+
+            </router-link>
+
+        </div>
+
+    </div>
+
+</div>
                 <!-- /LEFT SECTION -->
 
                 <!-- RIGHT SECTION: Sidebar -->

@@ -41,6 +41,13 @@ class ArticleResource extends JsonResource
                 'name' => $this->editor->name,
             ] : null),
 
+            'article_author' => $this->article_autor,
+            'article_area' => $this->article_area,
+            'image_title' => $this->image_title,
+            'image_author' => $this->image_author,
+            'content_two' => $this->content_two,
+            'content_three' => $this->content_three,
+
         ];
     }
 }
