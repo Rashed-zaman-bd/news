@@ -1,8 +1,11 @@
 <template>
   <div class="max-w-7xl mx-auto pl-4 pr-4 bg-white text-gray-900 pb-4">
     <!-- Top advert banner -->
-    <div class="w-full flex items-center justify-center cursor-pointer p-4 mt-14 sm:mt-0">
-      <img src="/images/topbanner.png" alt="Top Banner" />
+    <div v-if="topAds[0]"
+        class="w-full border-y border-gray-200 py-2 mt-10 sm:mt-0 mb-5 flex flex-col items-center cursor-pointer"
+        @click="trackClick(topAds[0])">
+        <img :src="topAds[0].image" :alt="topAds[0].name" class="w-full max-w-[728px] h-auto object-contain" />
+          <span class="text-[10px] text-gray-400 mt-1">বিজ্ঞাপন — </span>
     </div>
 
     <!-- Main Section (Lead + Right Column) -->
@@ -156,4 +159,60 @@
 </template>
 
 <script setup lang="ts">
+import { ref, watch, computed, onMounted } from 'vue'
+import { useRoute } from 'vue-router'
+import api from '@/services/api'
+
+interface Advertisement {
+    id: number
+    image: string
+    name: string
+    provider: string
+    link_url: string | null
+    placement: 'top' | 'middle' | 'middle-two' | 'middle-three' | 'middle-four' | 'middle-five' | 'middle-six' | 'middle-seven' | 'middle-eight' | 'middle-nine' | 'middle-ten' | 'sidebar' | 'sidebar-two' | 'sidebar-three' | 'sidebar-four' | 'sidebar-five' | 'sidebar-six',
+}
+
+const topAds = ref<Advertisement[]>([])
+const middleAds = ref<Advertisement[]>([])
+const middleTwoAds = ref<Advertisement[]>([])
+const middleThreeAds = ref<Advertisement[]>([])
+const sidebarAds = ref<Advertisement[]>([])
+const sidebarTwoAds = ref<Advertisement[]>([])
+
+const fetchAds = async () => {
+    try {
+        const [topRes, middleRes, middleTwoRes, middleThreeRes, sidebarRes, sidebarTwoRes] = await Promise.all([
+            api.get('/front-ads', { params: { placement: 'top', limit: 1 } }),
+            api.get('/advertisements', { params: { placement: 'middle', limit: 1 } }),
+            api.get('/advertisements', { params: { placement: 'middle-two', limit: 1 } }),
+            api.get('/advertisements', { params: { placement: 'middle-three', limit: 1 } }),
+            api.get('/advertisements', { params: { placement: 'sidebar', limit: 1 } }),
+            api.get('/advertisements', { params: { placement: 'sidebar-two', limit: 1 } }),
+        ])
+        topAds.value = topRes.data.data ?? []
+        middleAds.value = middleRes.data.data ?? []
+        middleTwoAds.value = middleTwoRes.data.data ?? []
+        middleThreeAds.value = middleThreeRes.data.data ?? []
+        sidebarAds.value = sidebarRes.data.data ?? []
+        sidebarTwoAds.value = sidebarTwoRes.data.data ?? []
+
+        
+    } catch (error) {
+        console.error('Failed to load advertisements:', error)
+    }
+}
+
+const trackClick = async (ad: Advertisement) => {
+    if (!ad.link_url) return
+    try {
+        await api.post(`/front-ads/${ad.id}/click`)
+    } catch { /* non-blocking */ }
+    window.open(ad.link_url, '_blank')
+}
+
+onMounted(() => {
+
+    fetchAds()
+
+})
 </script>

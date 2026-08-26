@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\AdvertisementController;
 use App\Http\Controllers\Api\ArticleController;
 use App\Http\Controllers\Api\CategoryAdsController;
 use App\Http\Controllers\Api\CategoryController;
+use App\Http\Controllers\Api\FrontPageAdsController;
 use App\Http\Controllers\Api\LogoController;
 use App\Http\Controllers\Api\ProfileController;
 use App\Http\Controllers\Api\UserController;
@@ -134,4 +135,18 @@ Route::middleware(['auth:sanctum', 'role:admin,editor'])->group(function () {
     Route::post('/category-ads', [CategoryAdsController::class, 'store']);
     Route::put('/category-ads/{advertisement}', [CategoryAdsController::class, 'update']);
     Route::delete('/category-ads/{advertisement}', [CategoryAdsController::class, 'destroy']);
+});
+
+
+// Public routes — front page ads
+Route::get('/front-ads', [FrontPageAdsController::class, 'index']);
+Route::get('/front-ads/{advertisement}', [FrontPageAdsController::class, 'show']);
+Route::post('/front-ads/{advertisement}/click',[FrontPageAdsController::class, 'click']);
+
+// Admin/editor-only routes
+Route::middleware(['auth:sanctum', 'role:admin,editor'])->group(function () {
+    Route::get('/admin/front-ads', [FrontPageAdsController::class, 'adminIndex']);
+    Route::post('/front-ads', [FrontPageAdsController::class, 'store']);
+    Route::put('/front-ads/{advertisement}', [FrontPageAdsController::class, 'update']);
+    Route::delete('/front-ads/{advertisement}', [FrontPageAdsController::class, 'destroy']);
 });

@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
-class FrontPageAdes extends Model
+class FrontPageAds extends Model
 {
      protected $fillable = [
         'image', 'name', 'provider', 'link_url',
