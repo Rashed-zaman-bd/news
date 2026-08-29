@@ -85,10 +85,21 @@
                             >
                                 <option value="top">Top</option>
                                 <option value="middle">Middle</option>
-                                <option value="middle-two">middle-two</option>
-                                <option value="middle-three">middle-three</option>
+                                <option value="middle-two">Middle-two</option>
+                                <option value="middle-three">Middle-three</option>
+                                <option value="middle-four">Middle-four</option>
+                                <option value="middle-five">Middle-five</option>
+                                <option value="middle-six">Middle-six</option>
+                                <option value="middle-seven">Middle-seven</option>
+                                <option value="middle-eight">Middle-eight</option>
+                                <option value="middle-nine">Middle-nine</option>
+                                <option value="middle-ten">Middle-ten</option>
                                 <option value="sidebar">Sidebar</option>
-                                <option value="sidebar-two">sidebar-two</option>
+                                <option value="sidebar-two">Sidebar-two</option>
+                                <option value="sidebar-three">Sidebar-three</option>
+                                <option value="sidebar-four">Sidebar-four</option>
+                                <option value="sidebar-five">Sidebar-five</option>
+                                <option value="sidebar-six">Sidebar-six</option>
                             </select>
                             <p v-if="errors.placement" class="text-xs text-red-600 mt-1">{{ errors.placement[0] }}</p>
                         </div>

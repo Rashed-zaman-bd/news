@@ -64,6 +64,43 @@ class ArticleController extends Controller
         return ArticleResource::collection($articles);
     }
 
+
+    public function featured()
+    {
+        $article = Article::with([
+            'category',
+            'subCategory',
+            'author',
+            'editor',
+        ])
+        ->where('status', 'published')
+        ->where('is_featured', true)
+        ->latest('published_at')
+        ->first();
+
+        return new ArticleResource($article);
+    }
+
+
+public function breaking(): AnonymousResourceCollection
+{
+    $articles = Article::query()
+        ->published()
+        ->breaking()
+        ->with([
+            'category',
+            'subCategory',
+            'author',
+            'editor',
+        ])
+        ->orderByDesc('is_featured')
+        ->latest('published_at')
+        ->limit(10)
+        ->get();
+
+    return ArticleResource::collection($articles);
+}
+
     /**
      * Site-wide popular articles, ordered by views.
      * Must be registered ABOVE the /articles/{slug} route,

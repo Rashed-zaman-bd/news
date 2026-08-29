@@ -86,6 +86,8 @@ Route::middleware(['auth:sanctum', 'admin'])->group(function () {
 // routes/api.php
 
 Route::get('/articles', [ArticleController::class, 'index']);
+Route::get('/articles/featured', [ArticleController::class, 'featured']);
+Route::get('/articles/breaking', [ArticleController::class, 'breaking']);
 Route::get('/articles/popular', [ArticleController::class, 'popular']);
 Route::get('/articles/{slug}', [ArticleController::class, 'show']);
 
