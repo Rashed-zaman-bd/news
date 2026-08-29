@@ -19,7 +19,7 @@
                                     class="w-full h-full object-cover cursor-pointer hover:scale-105 transition-transform duration-300" />
                             </div>
                             <h3
-                                class="font-bold text-base leading-snug text-gray-900 hover:text-amber-700 cursor-pointer mt-2">
+                                class="font-bold text-lg leading-snug text-gray-900 hover:text-amber-700 cursor-pointer mt-2">
                                 <span>{{ bangladeshArticle.title }}</span>
                             </h3>
                         </router-link>
@@ -34,7 +34,7 @@
                                     class="w-full h-full object-cover cursor-pointer hover:scale-105 transition-transform duration-300" />
                             </div>
                             <h3
-                                class="font-bold text-base leading-snug text-gray-900 hover:text-amber-700 cursor-pointer mt-2">
+                                class="font-bold text-lg leading-snug text-gray-900 hover:text-amber-700 cursor-pointer mt-2">
                                 <span>{{ biswArticle.title }}</span>
                             </h3>
                         </router-link>
@@ -49,7 +49,7 @@
                                     class="w-full h-full object-cover cursor-pointer hover:scale-105 transition-transform duration-300" />
                             </div>
                             <h3
-                                class="font-bold text-base leading-snug text-gray-900 hover:text-amber-700 cursor-pointer mt-2">
+                                class="font-bold text-lg leading-snug text-gray-900 hover:text-amber-700 cursor-pointer mt-2">
                                 <span>{{ arthoneetiArticle.title }}</span>
                             </h3>
                         </router-link>
@@ -63,19 +63,18 @@
                                     class="w-full h-full object-cover cursor-pointer hover:scale-105 transition-transform duration-300" />
                             </div>
                             <h3
-                                class="font-bold text-base leading-snug text-gray-900 hover:text-amber-700 cursor-pointer mt-2">
+                                class="font-bold text-lg leading-snug text-gray-900 hover:text-amber-700 cursor-pointer mt-2">
                                 <span>{{ sportsArticle.title }}</span>
                             </h3>
                         </router-link>
                     </article>
                     
-
                 </div>
 
-                <div class="p-3 flex items-center justify-between cursor-pointer shadow">
+                <div class="p-3 flex items-center justify-between cursor-pointer">
                     <div class="flex items-center space-x-3">
                         <div v-if="middleTwoAds[0]"
-                            class="w-full border-y border-gray-200 py-2 mt-20 sm:mt-0 mb-5 flex flex-col items-center cursor-pointer"
+                            class="w-full py-2  flex flex-col items-center cursor-pointer"
                             @click="trackClick(middleTwoAds[0])">
                             <img :src="middleTwoAds[0].image" :alt="middleTwoAds[0].name" class="w-full max-w-[728px] h-auto object-contain" />
                             <span class="text-[10px] text-gray-400 mt-1">বিজ্ঞাপন — </span>

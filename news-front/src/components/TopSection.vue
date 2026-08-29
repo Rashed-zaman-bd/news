@@ -41,7 +41,7 @@
               {{ featuredArticle.title }}
             </h2>
 
-            <p v-if="featuredArticle.excerpt" class="text-gray-600 text-sm leading-relaxed pt-1">
+            <p v-if="featuredArticle.excerpt" class="text-gray-600 text-base leading-relaxed pt-1">
               {{ featuredArticle.excerpt }}
             </p>
           </div>
@@ -76,17 +76,17 @@
                     class="w-full h-full object-cover cursor-pointer hover:scale-105 transition-transform duration-300" />
                 </div>
 
-                <h3 class="font-bold text-base leading-snug text-gray-900 hover:text-amber-700 cursor-pointer mt-2">
+                <h3 class="font-bold text-lg leading-snug text-gray-900 hover:text-amber-700 cursor-pointer mt-2">
                   {{ article.title }}
                 </h3>
               </router-link>
 
               <!-- Other Breaking Articles: title only -->
               <router-link v-else :to="`/article/${article.slug}`" class="block">
-                <h3 class="font-bold text-base leading-snug text-gray-900 hover:text-amber-700 cursor-pointer">
+                <h3 class="font-bold text-lg leading-snug text-gray-900 hover:text-amber-700 cursor-pointer">
                   {{ article.title }}
                 </h3>
-                <p class="text-sm text-gray-600 pt-2">
+                <p class="text-base text-gray-600 pt-2">
                   {{ article.excerpt }}
                 </p>
               </router-link>
@@ -127,7 +127,7 @@
             class="w-full h-full object-cover cursor-pointer hover:scale-105 transition-transform duration-300" />
         </div>
 
-        <h3 class="w-2/5 font-bold text-sm md:text-base leading-snug text-gray-900 hover:text-amber-700 cursor-pointer">
+        <h3 class="w-2/5 font-bold text-sm md:text-lg leading-snug text-gray-900 line-clamp-5 hover:text-amber-700 cursor-pointer">
           {{ article.title }}
         </h3>
 

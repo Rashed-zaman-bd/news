@@ -4,28 +4,43 @@
 
             <!-- ফিচার: slider column -->
             <div class="lg:col-span-3 flex flex-col gap-3 border-r border-gray-300 p-2">
-                <h2 class="font-bold text-lg border-b-2 border-red-600 inline-block pb-1 w-fit">
+                <h2 class="font-bold text-xl border-b-2 border-red-600 inline-block pb-1 w-fit">
                     ফিচার
                 </h2>
 
-                <div class="relative w-full aspect-[4/3] overflow-hidden rounded-md bg-gray-100">
-                    <transition-group name="fade" tag="div" class="absolute inset-0">
-                        <img v-for="(slide, i) in featureSlides" v-show="i === activeSlide" :key="slide.src"
-                            :src="slide.src" :alt="slide.alt" class="absolute inset-0 w-full h-full object-cover" />
-                    </transition-group>
-
-                    <!-- dots -->
-                    <div class="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1.5">
-                        <button v-for="(slide, i) in featureSlides" :key="'dot-' + i" @click="activeSlide = i"
-                            class="w-2 h-2 rounded-full transition-colors"
-                            :class="i === activeSlide ? 'bg-white' : 'bg-white/50'" />
+                <div class="relative w-full h-72 aspect-[4/3] overflow-hidden rounded-md bg-gray-100">
+                <router-link
+                    v-for="(slide, i) in featureSlides"
+                    :key="slide.slug"
+                    :to="`/article/${slide.slug}`"
+                    class="absolute inset-0 block transition-opacity duration-700 ease-in-out"
+                    :class="i === activeSlide ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'"
+                >
+                    <img
+                        :src="slide.src"
+                        :alt="slide.alt"
+                        class="absolute inset-0 w-full h-full object-cover"
+                    />
+                    <!-- title overlay -->
+                    <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 to-transparent px-3 pt-8 pb-3">
+                        <h3 class="text-white text-lg font-semibold leading-snug line-clamp-2">
+                            {{ slide.title }}
+                        </h3>
                     </div>
-                </div>
+                </router-link>
+
+    <!-- dots -->
+    <div class="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1.5 z-10">
+        <button v-for="(slide, i) in featureSlides" :key="'dot-' + i" @click="activeSlide = i"
+            class="w-2 h-2 rounded-full transition-colors"
+            :class="i === activeSlide ? 'bg-white' : 'bg-white/50'" />
+    </div>
+</div>
             </div>
 
             <!-- মতামত -->
             <div class="lg:col-span-4 border-r border-gray-300 p-2">
-                <h2 class="font-bold text-lg border-b-2 border-red-600 inline-block pb-1 w-fit mb-3">
+                <h2 class="font-bold text-xl border-b-2 border-red-600 inline-block pb-1 w-fit mb-3">
                     মতামত
                 </h2>
 
@@ -46,15 +61,26 @@
 
             <!-- সর্বাধিক পঠিত -->
             <div class="lg:col-span-5 flex flex-col gap-3 p-2">
-                <h2 class="font-bold text-lg border-b-2 border-red-600 inline-block pb-1 w-fit">
+                <h2 class="font-bold text-xl border-b-2 border-red-600 inline-block pb-1 w-fit">
                     সর্বাধিক পঠিত
                 </h2>
-                <ul class="flex flex-col divide-y divide-gray-200">
-                    <li v-for="(item, i) in mostRead" :key="i" class="py-2 flex gap-2">
-                        <span class="font-bold text-red-600">{{ i + 1 }}</span>
-                        <span>{{ item }}</span>
-                    </li>
-                </ul>
+                <ul class="divide-y divide-gray-100">
+                        <li
+                            v-for="(item, i) in sidePanelList"
+                            :key="item.id"
+                            class="py-3 flex items-start gap-3 group"
+                        >
+                            <span class="text-2xl font-bold text-gray-400 leading-none shrink-0 w-5">
+                                {{ toBengaliNumber(i + 1) }}
+                            </span>
+                            <router-link
+                                :to="`/article/${item.slug}`"
+                                class="text-lg font-semibold text-gray-800 group-hover:text-red-600 leading-snug"
+                            >
+                                {{ item.title }}
+                            </router-link>
+                        </li>
+                    </ul>
             </div>
 
         </div>
@@ -62,32 +88,124 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, reactive, onMounted, onUnmounted, computed } from 'vue'
+import { useRoute } from 'vue-router'
+import api from '@/services/api'
 
-const featureSlides = [
-    { src: '/images/topimage.png', alt: 'Feature 1' },
-    { src: '/images/ad-topbottom-right.png', alt: 'Feature 2' },
-    { src: '/images/ad-topbottom-rightbottom.png', alt: 'Feature 3' },
-]
+const route = useRoute()
 
-const mostRead = ['1', '2', '3', '4', '5'] // replace with real titles from API
-
-const activeSlide = ref(0)
-let timer: ReturnType<typeof setInterval> | null = null
-
-function nextSlide() {
-    activeSlide.value = (activeSlide.value + 1) % featureSlides.length
+interface Article {
+    id: number;
+    title: string;
+    slug: string;
+    excerpt?: string | null;
+    featured_image: string | null;
+    published_at: string | null;
+    is_video?: boolean;
+    is_featured?: boolean;
+    category?: { id: number; name: string; slug: string };
+    sub_category?: { id: number; name: string; slug: string } | null;
 }
-function prevSlide() {
-    activeSlide.value =
-        (activeSlide.value - 1 + featureSlides.length) % featureSlides.length
+
+interface Slide {
+    src: string;
+    alt: string;
+    slug: string;
+    title: string;
+}
+const featureSlides = ref<Slide[]>([])
+const activeSlide = ref(0)
+let slideTimer: ReturnType<typeof setInterval> | null = null
+
+const startSlideshow = () => {
+    stopSlideshow()
+    if (featureSlides.value.length <= 1) return
+    slideTimer = setInterval(() => {
+        activeSlide.value = (activeSlide.value + 1) % featureSlides.value.length
+    }, 4000)
+}
+
+const stopSlideshow = () => {
+    if (slideTimer) {
+        clearInterval(slideTimer)
+        slideTimer = null
+    }
+}
+
+
+
+// --- article lists ---
+const articles = ref<Article[]>([])
+const featuredList = ref<Article[]>([])
+const popularList = ref<Article[]>([])
+const category = ref<{ id: number; name: string; slug: string } | null>(null)
+const loading = ref(false)
+
+const meta = reactive({
+    current_page: 1,
+    last_page: 1,
+})
+
+// --- side panel tab toggle ('featured' | 'popular') ---
+const sideTab = ref<'featured' | 'popular'>('popular')
+
+const sidePanelList = computed(() =>
+    (sideTab.value === 'featured' ? featuredList.value : popularList.value).slice(0, 5)
+)
+
+const bengaliDigits = ['০', '১', '২', '৩', '৪', '৫', '৬', '৭', '৮', '৯']
+const toBengaliNumber = (n: number): string =>
+    String(n).split('').map(d => bengaliDigits[Number(d)] ?? d).join('')
+
+const fetchArticles = async (page = 1) => {
+    loading.value = true
+    try {
+        const slug = route.params.slug as string | undefined
+        const endpoint = slug ? `/categories/${slug}/articles` : '/articles'
+        const popularEndpoint = slug ? `/categories/${slug}/popular` : '/articles/popular'
+
+        const { data } = await api.get(endpoint, { params: { page, per_page: 15 } })
+
+        articles.value = data.data ?? []
+        category.value = data.category ?? null
+        meta.current_page = data.meta?.current_page ?? 1
+        meta.last_page = data.meta?.last_page ?? 1
+
+        featuredList.value = articles.value.filter((a) => a.is_featured)
+
+        // last 5 featured articles → slider slides
+        featureSlides.value = featuredList.value
+        .slice(0, 5)
+        .filter((a) => a.featured_image)
+        .map((a) => ({
+            src: a.featured_image as string,
+            alt: a.title,
+            slug: a.slug,
+            title: a.title,
+        }))
+        startSlideshow()
+
+        try {
+            const { data: popularData } = await api.get(popularEndpoint)
+            popularList.value = popularData.data ?? []
+        } catch (popularError) {
+            console.error('Failed to load popular articles:', popularError)
+            popularList.value = []
+        }
+    } catch (error) {
+        console.error('Failed to load articles:', error)
+        articles.value = []
+    } finally {
+        loading.value = false
+    }
 }
 
 onMounted(() => {
-    timer = setInterval(nextSlide, 5000)
+    fetchArticles()
 })
+
 onUnmounted(() => {
-    if (timer) clearInterval(timer)
+    stopSlideshow()
 })
 </script>
 
