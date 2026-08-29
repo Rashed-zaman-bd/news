@@ -29,13 +29,13 @@
                     </div>
                 </router-link>
 
-    <!-- dots -->
-    <div class="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1.5 z-10">
-        <button v-for="(slide, i) in featureSlides" :key="'dot-' + i" @click="activeSlide = i"
-            class="w-2 h-2 rounded-full transition-colors"
-            :class="i === activeSlide ? 'bg-white' : 'bg-white/50'" />
-    </div>
-</div>
+                <!-- dots -->
+                <div class="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1.5 z-10">
+                    <button v-for="(slide, i) in featureSlides" :key="'dot-' + i" @click="activeSlide = i"
+                        class="w-2 h-2 rounded-full transition-colors"
+                        :class="i === activeSlide ? 'bg-white' : 'bg-white/50'" />
+                </div>
+            </div>
             </div>
 
             <!-- মতামত -->
@@ -44,19 +44,27 @@
                     মতামত
                 </h2>
 
-                <div>
-                    <img src="/images/topimage.png" alt="মতামত"
-                        class="float-left w-16 h-16 object-cover rounded-md mr-3 mb-1" />
-                    <p class="text-base leading-relaxed text-gray-800">
-                        প্রধানমন্ত্রী তারেক রহমান বলেছেন, ‘আমরা ৭১ সালে যুদ্ধ করে দেশ স্বাধীন করেছি।
-                        পরবর্তী সময়ে যখনই গণতন্ত্র হুমকির মুখে পড়েছে, জনগণ রাজপথে নেমে এসেছে,
-                        আন্দোলন করেছে, বারবার গণতন্ত্রকে ফিরিয়ে নিয়ে এসেছে। এখন হচ্ছে আমাদের
-                        দেশ গঠন করার সময়। বাংলাদেশের ২০ কোটি মানুষকে সচেতন থাকতে হবে। এখন হচ্ছে আমাদের
-                        দেশ গঠন করার সময়। বাংলাদেশের ২০ কোটি মানুষকে সচেতন থাকতে হবে।
+                <router-link v-if="opinion" :to="`/opinion/${opinion.slug}`" class="block">
+                    <img
+                        v-if="opinion.writer_image"
+                        :src="opinion.writer_image"
+                        :alt="opinion.writer_name"
+                        class="float-left w-16 h-16 object-cover rounded-md mr-3 mb-1"
+                    />
+                    <h3 class="font-semibold text-gray-900 leading-snug mb-1">
+                        {{ opinion.title }}
+                    </h3>
+                    <p class="text-sm text-gray-500 mt-2">
+                        — {{ opinion.writer_name }}<span v-if="opinion.writer_designation">, {{ opinion.writer_designation }}</span>
                     </p>
-                    <!-- clears the float so the next block in the page doesn't ride up beside the image -->
+                    <p class="text-base leading-relaxed text-gray-800 line-clamp-10">
+                        {{ opinion.text }}
+                    </p>
                     <div class="clear-both"></div>
-                </div>
+                    
+                </router-link>
+
+                <div v-else class="text-sm text-gray-400">কোনো মতামত পাওয়া যায়নি</div>
             </div>
 
             <!-- সর্বাধিক পঠিত -->
@@ -93,6 +101,28 @@ import { useRoute } from 'vue-router'
 import api from '@/services/api'
 
 const route = useRoute()
+
+interface Opinion {
+    id: number;
+    title: string;
+    slug: string;
+    writer_name: string;
+    writer_designation: string | null;
+    writer_image: string | null;
+    text: string;
+}
+
+const opinion = ref<Opinion | null>(null)
+
+const fetchOpinion = async () => {
+    try {
+        const { data } = await api.get('/opinions/latest', { params: { limit: 1 } })
+        opinion.value = data.data?.[0] ?? null
+    } catch (error) {
+        console.error('Failed to load opinion:', error)
+        opinion.value = null
+    }
+}
 
 interface Article {
     id: number;
@@ -202,6 +232,7 @@ const fetchArticles = async (page = 1) => {
 
 onMounted(() => {
     fetchArticles()
+    fetchOpinion()
 })
 
 onUnmounted(() => {

@@ -2,6 +2,9 @@ import { createRouter, createWebHistory } from 'vue-router'
 import DefaultLayout from '@/layouts/DefaultLatout.vue'
 import AdminLayout from '@/layouts/AdminLayout.vue'
 import api from '@/services/api'
+import OpinionsView from '@/views/admin/OpinionsView.vue'
+
+
 
 
 const ALL_ADMIN_ROLES = ['admin', 'editor', 'author']
@@ -43,8 +46,15 @@ const routes = [
         path: '/video/item',
         name: 'video.item', 
         component: () => import('@/views/video/Item.vue')
-      }
+      },
 
+      {
+        path: '/opinion',
+        name: 'opinion', 
+        component: () => import('@/components/Opinion.vue')
+      },
+
+      
     ],
   },
   {
@@ -151,6 +161,11 @@ const routes = [
           meta: {
               roles: ['admin', 'editor']
           },
+      },
+      {
+          path: 'opinions',
+          name: 'admin.opinions',
+          component: () => import('@/views/admin/OpinionsView.vue'),
       },
     ],
   },

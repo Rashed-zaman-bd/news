@@ -165,6 +165,14 @@
         </router-link>
 
         <router-link
+          to="/admin/opinions"
+          class="block px-4 py-2 rounded transition-colors hover:bg-gray-700"
+          active-class="bg-gray-800 text-emerald-400 font-semibold"
+        >
+          <i class="bi bi-pen mr-2"></i>Opinions
+        </router-link>
+
+        <router-link
           to="/admin/user"
           class="block px-4 py-2 rounded transition-colors hover:bg-gray-700"
           active-class="bg-gray-800 text-emerald-400 font-semibold"

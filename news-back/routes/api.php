@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\CategoryAdsController;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\FrontPageAdsController;
 use App\Http\Controllers\Api\LogoController;
+use App\Http\Controllers\Api\OpinionController;
 use App\Http\Controllers\Api\ProfileController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\VideoController;
@@ -153,4 +154,18 @@ Route::middleware(['auth:sanctum', 'role:admin,editor'])->group(function () {
     Route::post('/front-ads', [FrontPageAdsController::class, 'store']);
     Route::put('/front-ads/{advertisement}', [FrontPageAdsController::class, 'update']);
     Route::delete('/front-ads/{advertisement}', [FrontPageAdsController::class, 'destroy']);
+});
+
+//Opinion routes
+Route::get('/opinions', [OpinionController::class, 'index']);
+Route::get('/opinions/latest', [OpinionController::class, 'latest']);
+Route::get('/opinions/{slug}', [OpinionController::class, 'show']);
+
+Route::middleware(['auth:sanctum', 'role:admin,editor'])->prefix('admin')->group(function () {
+    Route::get('/opinions', [OpinionController::class, 'index']);
+    Route::post('/opinions', [OpinionController::class, 'store']);
+    Route::get('/opinions/{opinion:id}', [OpinionController::class, 'show']);
+    Route::put('/opinions/{opinion:id}', [OpinionController::class, 'update']);
+    Route::patch('/opinions/{opinion:id}', [OpinionController::class, 'update']);
+    Route::delete('/opinions/{opinion:id}', [OpinionController::class, 'destroy']);
 });
