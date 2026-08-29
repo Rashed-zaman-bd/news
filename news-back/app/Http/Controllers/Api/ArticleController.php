@@ -117,6 +117,22 @@ public function breaking(): AnonymousResourceCollection
         return ArticleResource::collection($articles);
     }
 
+
+    public function latestByCategory(string $slug)
+    {
+        $article = Article::query()
+            ->where('status', 'published')
+            ->whereHas('category', fn ($q) => $q->where('slug', $slug))
+            ->with(['category', 'author'])
+            ->latest('published_at')
+            ->first();
+
+        return $article
+            ? new ArticleResource($article)
+            : response()->json(['data' => null]);
+    }
+    
+
     public function store(StoreArticleRequest $request): JsonResponse
     {
         $data = $request->validated();

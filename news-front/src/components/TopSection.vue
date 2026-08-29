@@ -62,54 +62,55 @@
 
         <!-- 2-Column News Feed Below Banner -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <!-- Breaking News -->
-            <div class="space-y-4">
+          <!-- Breaking News -->
+          <div class="space-y-4">
 
-              <div v-for="article in breakingArticles.slice(0, 3)" :key="article.id"
-  class="border-b border-gray-200 pb-3">
+            <div v-for="article in breakingArticles.slice(0, 3)" :key="article.id"
+              class="border-b border-gray-200 pb-3">
 
-  <!-- Featured + Breaking Article: shown with image -->
-  <router-link v-if="article.is_featured && article.is_breaking" :to="`/article/${article.slug}`" class="block">
-    <div class="aspect-video w-full overflow-hidden rounded bg-gray-100">
-      <img :src="article.featured_image || '/images/topsideimage.png'" :alt="article.title"
-        class="w-full h-full object-cover cursor-pointer hover:scale-105 transition-transform duration-300" />
-    </div>
+              <!-- Featured + Breaking Article: shown with image -->
+              <router-link v-if="article.is_featured && article.is_breaking" :to="`/article/${article.slug}`"
+                class="block">
+                <div class="aspect-video w-full overflow-hidden rounded bg-gray-100">
+                  <img :src="article.featured_image || '/images/topsideimage.png'" :alt="article.title"
+                    class="w-full h-full object-cover cursor-pointer hover:scale-105 transition-transform duration-300" />
+                </div>
 
-    <h3 class="font-bold text-base leading-snug text-gray-900 hover:text-amber-700 cursor-pointer mt-2">
-      {{ article.title }}
-    </h3>
-  </router-link>
+                <h3 class="font-bold text-base leading-snug text-gray-900 hover:text-amber-700 cursor-pointer mt-2">
+                  {{ article.title }}
+                </h3>
+              </router-link>
 
-  <!-- Other Breaking Articles: title only -->
-  <router-link v-else :to="`/article/${article.slug}`" class="block">
-    <h3 class="font-bold text-base leading-snug text-gray-900 hover:text-amber-700 cursor-pointer">
-      {{ article.title }}
-    </h3>
-    <p class="text-sm text-gray-600 pt-2">
-      {{ article.excerpt }}
-    </p>
-  </router-link>
+              <!-- Other Breaking Articles: title only -->
+              <router-link v-else :to="`/article/${article.slug}`" class="block">
+                <h3 class="font-bold text-base leading-snug text-gray-900 hover:text-amber-700 cursor-pointer">
+                  {{ article.title }}
+                </h3>
+                <p class="text-sm text-gray-600 pt-2">
+                  {{ article.excerpt }}
+                </p>
+              </router-link>
 
-</div>
-
-            </div>
-
-            <!-- News Column B (With Ads) -->
-            <div class="space-y-4">
-              <div v-if="sideBarTwoAds[0]" class="w-full flex flex-col items-center cursor-pointer"
-                @click="trackClick(sideBarTwoAds[0])">
-                <img :src="sideBarTwoAds[0].image" :alt="sideBarTwoAds[0].name"
-                  class="w-full max-w-[728px] h-auto object-contain" />
-              </div>
-
-              <div v-if="sideBarThreeAds[0]" class="w-full flex flex-col items-center cursor-pointer"
-                @click="trackClick(sideBarThreeAds[0])">
-                <img :src="sideBarThreeAds[0].image" :alt="sideBarThreeAds[0].name"
-                  class="w-full max-w-[728px] h-auto object-contain" />
-              </div>
             </div>
 
           </div>
+
+          <!-- News Column B (With Ads) -->
+          <div class="space-y-4">
+            <div v-if="sideBarTwoAds[0]" class="w-full flex flex-col items-center cursor-pointer"
+              @click="trackClick(sideBarTwoAds[0])">
+              <img :src="sideBarTwoAds[0].image" :alt="sideBarTwoAds[0].name"
+                class="w-full max-w-[728px] h-auto object-contain" />
+            </div>
+
+            <div v-if="sideBarThreeAds[0]" class="w-full flex flex-col items-center cursor-pointer"
+              @click="trackClick(sideBarThreeAds[0])">
+              <img :src="sideBarThreeAds[0].image" :alt="sideBarThreeAds[0].name"
+                class="w-full max-w-[728px] h-auto object-contain" />
+            </div>
+          </div>
+
+        </div>
 
       </div>
 

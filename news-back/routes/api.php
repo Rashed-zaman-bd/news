@@ -91,6 +91,8 @@ Route::get('/articles/breaking', [ArticleController::class, 'breaking']);
 Route::get('/articles/popular', [ArticleController::class, 'popular']);
 Route::get('/articles/{slug}', [ArticleController::class, 'show']);
 
+Route::get('/articles/category/{slug}/latest', [ArticleController::class, 'latestByCategory']);
+
 // Admin/editor routes — full CRUD, all statuses, by numeric id
 Route::middleware(['auth:sanctum', 'role:admin,editor'])->prefix('admin')->group(function () {
     Route::get('/articles', [ArticleController::class, 'index']);
