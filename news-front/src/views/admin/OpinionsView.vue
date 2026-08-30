@@ -104,15 +104,15 @@
                             <div class="flex items-center justify-end gap-2">
                                 <button
                                     @click="openEditModal(opinion)"
-                                    class="text-blue-600 hover:text-blue-800 text-xs font-semibold"
+                                    class="text-blue-600 hover:text-blue-800 text-xs font-semibold cursor-pointer"
                                 >
-                                    সম্পাদনা
+                                    edit
                                 </button>
                                 <button
                                     @click="openDeleteModal(opinion)"
-                                    class="text-red-600 hover:text-red-800 text-xs font-semibold"
+                                    class="text-red-600 hover:text-red-800 text-xs font-semibold cursor-pointer"
                                 >
-                                    মুছুন
+                                    delete
                                 </button>
                             </div>
                         </td>

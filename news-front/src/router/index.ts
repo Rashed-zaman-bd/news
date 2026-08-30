@@ -49,9 +49,9 @@ const routes = [
       },
 
       {
-        path: '/opinion',
-        name: 'opinion', 
-        component: () => import('@/components/Opinion.vue')
+        path: '/opinion/:slug',
+        name: 'opinion.show', 
+        component: () => import('@/views/opinion/[slug].vue')
       },
 
       

@@ -51,7 +51,7 @@
                         :alt="opinion.writer_name"
                         class="float-left w-16 h-16 object-cover rounded-md mr-3 mb-1"
                     />
-                    <h3 class="font-semibold text-gray-900 leading-snug mb-1">
+                    <h3 class="font-semibold text-lg text-gray-900 leading-snug mb-1">
                         {{ opinion.title }}
                     </h3>
                     <p class="text-sm text-gray-500 mt-2">
