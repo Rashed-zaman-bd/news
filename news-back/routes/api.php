@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\Admin\AdminCategoryController;
 use App\Http\Controllers\Api\Admin\AdminUserController;
 use App\Http\Controllers\Api\AdvertisementController;
 use App\Http\Controllers\Api\ArticleController;
+use App\Http\Controllers\Api\ArticleImageController;
 use App\Http\Controllers\Api\CategoryAdsController;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\FrontPageAdsController;
@@ -169,3 +170,8 @@ Route::middleware(['auth:sanctum', 'role:admin,editor'])->prefix('admin')->group
     Route::patch('/opinions/{opinion:id}', [OpinionController::class, 'update']);
     Route::delete('/opinions/{opinion:id}', [OpinionController::class, 'destroy']);
 });
+
+
+// routes/api.php (inside your admin/auth group)
+Route::patch('/admin/articles/{article:id}/images/{articleImage}', [ArticleImageController::class, 'update']);
+Route::delete('/admin/articles/{article:id}/images/{articleImage}', [ArticleImageController::class, 'destroy']);

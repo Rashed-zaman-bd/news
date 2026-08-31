@@ -231,6 +231,42 @@
                                 >
                                     {{ coverIndex === i ? 'কভার ✓' : 'কভার করুন' }}
                                 </button>
+
+                                <input
+                                    v-model="galleryCaptions[i]"
+                                    type="text"
+                                    placeholder="ক্যাপশন (ঐচ্ছিক)"
+                                    class="w-full mt-1 border rounded px-1 py-0.5 text-[10px] outline-none focus:ring-1 focus:ring-blue-300"
+                                >
+                            </div>
+                        </div>
+
+                        <!-- Existing images: editable caption + individual delete -->
+                        <div v-if="isEdit && existingImages.length && !gallerySelectionTouched" class="grid grid-cols-5 gap-2 mt-3">
+                            <div v-for="img in existingImages" :key="img.id" class="relative group">
+                                <img :src="img.url" class="w-full h-16 object-cover rounded border" :alt="img.caption ?? ''">
+
+                                <span v-if="img.is_cover" class="absolute top-0.5 left-0.5 bg-blue-600 text-white text-[9px] px-1 rounded">
+                                    কভার
+                                </span>
+
+                                <button
+                                    type="button"
+                                    @click="deleteExistingImage(img)"
+                                    :disabled="deletingImageId === img.id"
+                                    class="absolute top-0.5 right-0.5 bg-red-600 text-white rounded-full w-4 h-4 flex items-center justify-center text-[10px] leading-none opacity-0 group-hover:opacity-100 transition disabled:opacity-50"
+                                    title="মুছে ফেলুন"
+                                >
+                                    <i class="bi bi-x"></i>
+                                </button>
+
+                                <input
+                                    v-model="img.caption"
+                                    type="text"
+                                    placeholder=""
+                                    @change="updateExistingCaption(img)"
+                                    class="w-full mt-1 border rounded px-1 py-0.5 text-[10px] outline-none focus:ring-1 focus:ring-blue-300"
+                                >
                             </div>
                         </div>
                     </div>
@@ -361,6 +397,7 @@ const imageFile = ref<File | null>(null);
 const existingImages = ref<ArticleImage[]>([]);
 const galleryFiles = ref<File[]>([]);
 const galleryPreviews = ref<string[]>([]);
+const galleryCaptions = ref<string[]>([]);
 const coverIndex = ref(0);
 const gallerySelectionTouched = ref(false); // true once user picks new gallery files, replacing the "existing images" notice
 
@@ -428,6 +465,7 @@ const resetForm = () => {
     existingImages.value = [];
     galleryFiles.value = [];
     galleryPreviews.value = [];
+    galleryCaptions.value = [];
     coverIndex.value = 0;
     gallerySelectionTouched.value = false;
 
@@ -474,6 +512,7 @@ watch(
             existingImages.value = props.article.images ?? [];
             galleryFiles.value = [];
             galleryPreviews.value = [];
+            galleryCaptions.value = [];
             coverIndex.value = 0;
             gallerySelectionTouched.value = false;
         } else {
@@ -540,6 +579,7 @@ const handleGalleryChange = (event: Event) => {
 
     galleryFiles.value = selected;
     galleryPreviews.value = selected.map((file) => URL.createObjectURL(file));
+    galleryCaptions.value = selected.map(() => '');
     coverIndex.value = 0;
     gallerySelectionTouched.value = true;
 
@@ -549,6 +589,7 @@ const handleGalleryChange = (event: Event) => {
 const removeGalleryImage = (index: number) => {
     galleryFiles.value.splice(index, 1);
     galleryPreviews.value.splice(index, 1);
+    galleryCaptions.value.splice(index, 1);
 
     if (coverIndex.value >= galleryFiles.value.length) {
         coverIndex.value = Math.max(0, galleryFiles.value.length - 1);
@@ -601,6 +642,9 @@ const handleSubmit = async () => {
             galleryFiles.value.forEach((file) => {
                 formData.append('images[]', file);
             });
+            galleryCaptions.value.forEach((caption) => {
+                formData.append('captions[]', caption ?? '');
+            });
             formData.append('cover_index', String(coverIndex.value));
         }
 
@@ -640,6 +684,56 @@ const handleSubmit = async () => {
         }
     } finally {
         submitting.value = false;
+    }
+};
+
+const deletingImageId = ref<number | null>(null);
+
+const deleteExistingImage = async (img: ArticleImage) => {
+    if (!props.article?.id) return;
+
+    const result = await Swal.fire({
+        icon: 'warning',
+        title: 'ছবি মুছে ফেলবেন?',
+        text: 'এই ছবিটি স্থায়ীভাবে মুছে ফেলা হবে।',
+        showCancelButton: true,
+        confirmButtonText: 'মুছে ফেলুন',
+        cancelButtonText: 'বাতিল',
+        confirmButtonColor: '#dc2626',
+    });
+
+    if (!result.isConfirmed) return;
+
+    deletingImageId.value = img.id;
+    try {
+        await api.delete(`/admin/articles/${props.article.id}/images/${img.id}`);
+        existingImages.value = existingImages.value.filter((i) => i.id !== img.id);
+    } catch (error: any) {
+        Swal.fire({
+            icon: 'error',
+            title: 'ত্রুটি',
+            text: error.response?.data?.message || 'ছবি মুছে ফেলা যায়নি।',
+            confirmButtonColor: '#4B5563',
+        });
+    } finally {
+        deletingImageId.value = null;
+    }
+};
+
+const updateExistingCaption = async (img: ArticleImage) => {
+    if (!props.article?.id) return;
+
+    try {
+        await api.patch(`/admin/articles/${props.article.id}/images/${img.id}`, {
+            caption: img.caption,
+        });
+    } catch (error: any) {
+        Swal.fire({
+            icon: 'error',
+            title: 'ত্রুটি',
+            text: error.response?.data?.message || 'ক্যাপশন সংরক্ষণ করা যায়নি।',
+            confirmButtonColor: '#4B5563',
+        });
     }
 };
 </script>

@@ -33,6 +33,11 @@ class StoreArticleRequest extends FormRequest
             'image_author' => ['nullable', 'string'],
             'content_two' => ['nullable', 'string'],
             'content_three' => ['nullable', 'string'],
+            'images'      => 'nullable|array|max:5',
+            'images.*'    => 'image|max:5120',
+            'captions'    => 'nullable|array',
+            'captions.*'  => 'nullable|string|max:255',
+            'cover_index' => 'nullable|integer|min:0',
 
             
         ];

@@ -25,7 +25,6 @@ class ArticleController extends Controller
         $isStaff = $user && in_array($user->role, ['admin', 'editor']);
 
         if (!$isStaff) {
-            // Public callers only ever see published content, regardless of ?status=
             $query->where('status', 'published');
         } elseif ($request->filled('status')) {
             $statuses = is_array($request->status)
@@ -64,14 +63,10 @@ class ArticleController extends Controller
         return ArticleResource::collection($articles);
     }
 
-
     public function featured()
     {
         $article = Article::with([
-            'category',
-            'subCategory',
-            'author',
-            'editor',
+            'category', 'subCategory', 'author', 'editor', 'images',
         ])
         ->where('status', 'published')
         ->where('is_featured', true)
@@ -81,31 +76,20 @@ class ArticleController extends Controller
         return new ArticleResource($article);
     }
 
+    public function breaking(): AnonymousResourceCollection
+    {
+        $articles = Article::query()
+            ->published()
+            ->breaking()
+            ->with(['category', 'subCategory', 'author', 'editor', 'images'])
+            ->orderByDesc('is_featured')
+            ->latest('published_at')
+            ->limit(10)
+            ->get();
 
-public function breaking(): AnonymousResourceCollection
-{
-    $articles = Article::query()
-        ->published()
-        ->breaking()
-        ->with([
-            'category',
-            'subCategory',
-            'author',
-            'editor',
-        ])
-        ->orderByDesc('is_featured')
-        ->latest('published_at')
-        ->limit(10)
-        ->get();
+        return ArticleResource::collection($articles);
+    }
 
-    return ArticleResource::collection($articles);
-}
-
-    /**
-     * Site-wide popular articles, ordered by views.
-     * Must be registered ABOVE the /articles/{slug} route,
-     * otherwise "popular" gets interpreted as a slug and 404s.
-     */
     public function popular(Request $request): AnonymousResourceCollection
     {
         $articles = Article::query()
@@ -116,7 +100,6 @@ public function breaking(): AnonymousResourceCollection
 
         return ArticleResource::collection($articles);
     }
-
 
     public function latestByCategory(string $slug)
     {
@@ -131,7 +114,6 @@ public function breaking(): AnonymousResourceCollection
             ? new ArticleResource($article)
             : response()->json(['data' => null]);
     }
-    
 
     public function store(StoreArticleRequest $request): JsonResponse
     {
@@ -151,17 +133,7 @@ public function breaking(): AnonymousResourceCollection
 
         $article = Article::create($data);
 
-        if ($request->hasFile('images')) {
-            foreach ($request->file('images') as $i => $file) {
-                $path = $file->store('articles', 'public');
-
-                $article->images()->create([
-                    'image_path' => $path,
-                    'sort_order' => $i,
-                    'is_cover'   => $i === (int) $request->input('cover_index', 0),
-                ]);
-            }
-        }
+        $this->syncGalleryImages($request, $article);
 
         return (new ArticleResource($article->load(['category', 'author', 'images'])))
             ->additional(['message' => 'আর্টিকেল সফলভাবে তৈরি হয়েছে।'])
@@ -172,13 +144,12 @@ public function breaking(): AnonymousResourceCollection
     public function show(string $slug)
     {
         $article = Article::where('slug', $slug)
-        ->where('status', 'published')
-        ->with(['category:id,name,slug', 'subCategory:id,name,slug', 'author:id,name', 'images'])
-        ->firstOrFail();
+            ->where('status', 'published')
+            ->with(['category:id,name,slug', 'subCategory:id,name,slug', 'author:id,name', 'images'])
+            ->firstOrFail();
 
         $article->increment('views');
 
-        // Related articles: same category, excluding this one
         $related = Article::query()
             ->where('category_id', $article->category_id)
             ->where('id', '!=', $article->id)
@@ -220,23 +191,7 @@ public function breaking(): AnonymousResourceCollection
 
         $article->update($data);
 
-        if ($request->hasFile('images')) {
-            // delete old gallery images (files + rows)
-            foreach ($article->images as $old) {
-                Storage::disk('public')->delete($old->image_path);
-            }
-            $article->images()->delete();
-
-            foreach ($request->file('images') as $i => $file) {
-                $path = $file->store('articles', 'public');
-
-                $article->images()->create([
-                    'image_path' => $path,
-                    'sort_order' => $i,
-                    'is_cover'   => $i === (int) $request->input('cover_index', 0),
-                ]);
-            }
-        }
+        $this->syncGalleryImages($request, $article);
 
         return (new ArticleResource($article->fresh(['category', 'author', 'editor', 'images'])))
             ->additional(['message' => 'আর্টিকেল সফলভাবে আপডেট হয়েছে।']);
@@ -258,12 +213,40 @@ public function breaking(): AnonymousResourceCollection
         ], 200);
     }
 
+    /**
+     * Replace the article's gallery images (and their captions) if new files were uploaded.
+     * No-op if the request contains no 'images' files — existing gallery stays untouched.
+     */
+    private function syncGalleryImages(Request $request, Article $article): void
+    {
+        if (!$request->hasFile('images')) {
+            return;
+        }
+
+        foreach ($article->images as $old) {
+            Storage::disk('public')->delete($old->image_path);
+        }
+        $article->images()->delete();
+
+        $captions = $request->input('captions', []);
+        $coverIndex = (int) $request->input('cover_index', 0);
+
+        foreach ($request->file('images') as $i => $file) {
+            $path = $file->store('articles', 'public');
+
+            $article->images()->create([
+                'image_path' => $path,
+                'caption'    => $captions[$i] ?? null,
+                'sort_order' => $i,
+                'is_cover'   => $i === $coverIndex,
+            ]);
+        }
+    }
+
     private function generateUniqueSlug(string $title, ?int $ignoreId = null): string
     {
-        // 'language: null' allows UTF-8 multibyte characters (like Bangla) to stay intact
         $base = Str::slug($title, '-', null);
 
-        // Fallback if title contains only symbols that result in an empty string
         if (empty($base)) {
             $base = 'article-' . Str::random(6);
         }

@@ -13,7 +13,8 @@ class ArticleImageResource extends JsonResource
         return [
             'id'         => $this->id,
             'url'        => Storage::disk('public')->url($this->image_path),
-            'caption'    => $this->caption,
+            'captions'   => 'nullable|array',
+            'captions.*' => 'nullable|string|max:255',
             'sort_order' => $this->sort_order,
             'is_cover'   => $this->is_cover,
         ];
