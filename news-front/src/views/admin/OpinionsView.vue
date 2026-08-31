@@ -165,22 +165,7 @@ import { ref, reactive, onMounted } from 'vue'
 import api from '@/services/api'
 import OpinionFormModal from '@/components/admin/opinion/Opinionformmodal.vue'
 import OpinionDeleteModal from '@/components/admin/opinion/Opiniondeletemodal.vue'
-
-export interface Opinion {
-    id: number
-    title: string
-    slug: string
-    writer_name: string
-    writer_designation: string | null
-    writer_image: string | null
-    text: string
-    image: string | null
-    is_published: boolean
-    published_at: string | null
-    sort_order: number
-    created_at: string
-    updated_at: string
-}
+import type { Opinion } from '@/types/opinion'   
 
 const opinions = ref<Opinion[]>([])
 const loading = ref(false)

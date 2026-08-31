@@ -148,7 +148,7 @@
 <script setup lang="ts">
 import { ref, reactive, computed, onMounted } from 'vue'
 import api from '@/services/api'
-import type { Opinion } from '@/components/admin/opinion/Opinionformmodal.vue'
+import type { Opinion } from '@/types/opinion';
 
 const props = defineProps<{
     opinion: Opinion | null
@@ -237,18 +237,5 @@ const submit = async () => {
     }
 }
 
-onMounted(() => {
-    if (props.opinion) {
-        form.title = props.opinion.title
-        form.slug = props.opinion.slug
-        form.writer_name = props.opinion.writer_name
-        form.writer_designation = props.opinion.writer_designation ?? ''
-        form.text = props.opinion.text
-        form.sort_order = props.opinion.sort_order
-        form.is_published = props.opinion.is_published
 
-        writerImagePreview.value = props.opinion.writer_image
-        imagePreview.value = props.opinion.image
-    }
-})
 </script>

@@ -549,7 +549,7 @@ const sidePanelList = computed(() =>
 
 const toBengaliNumber = (num: number | string) => {
     const bengaliDigits = ['০', '১', '২', '৩', '৪', '৫', '৬', '৭', '৮', '৯'];
-    return num.toString().replace(/\d/g, (digit) => bengaliDigits[parseInt(digit)]);
+    return num.toString().replace(/\d/g, (digit) => bengaliDigits[parseInt(digit)]!);
 };
 
 const timeAgo = (dateStr: string | null) => {

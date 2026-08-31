@@ -34,7 +34,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import api from '@/services/api'
-import type { Opinion } from '@/components/admin/opinion/Opiniondeletemodal.vue'
+import type { Opinion } from '@/types/opinion';
 
 const props = defineProps<{
     opinion: Opinion | null
