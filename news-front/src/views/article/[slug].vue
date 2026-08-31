@@ -123,6 +123,18 @@
                         </div>
                     </div>
 
+                    <!-- GALLERY IMAGE 1 -->
+                    <div v-if="galleryImage(0)" class="max-w-2xl mx-auto mt-4">
+                        <img
+                            :src="galleryImage(0)!.url"
+                            :alt="galleryImage(0)!.caption ?? article.title"
+                            class="w-full h-auto object-cover rounded"
+                        />
+                        <p v-if="galleryImage(0)!.caption" class="text-sm text-gray-500 mt-1">
+                            {{ galleryImage(0)!.caption }}
+                        </p>
+                    </div>
+
                      <!-- MIDDLE TWO BANNER (dynamic) -->
                     <div
                         v-if="middleTwoAds[0]"
@@ -143,13 +155,25 @@
                         </div>
                     </div>
 
+                    <!-- GALLERY IMAGE 2 -->
+                    <div v-if="galleryImage(1)" class="max-w-2xl mx-auto mt-4">
+                        <img
+                            :src="galleryImage(1)!.url"
+                            :alt="galleryImage(1)!.caption ?? article.title"
+                            class="w-full h-auto object-cover rounded"
+                        />
+                        <p v-if="galleryImage(1)!.caption" class="text-sm text-gray-500 mt-1">
+                            {{ galleryImage(1)!.caption }}
+                        </p>
+                    </div>
+
                      <!-- MIDDLE Third BANNER (dynamic) -->
                     <div
                         v-if="middleThreeAds[0]"
-                        class="w-full flex flex-col items-center m-2 cursor-pointer"
+                        class="w-full flex flex-col items-center p-4 cursor-pointer"
                         @click="trackClick(middleThreeAds[0])"
                     >
-                        <img :src="middleThreeAds[0].image" :alt="middleThreeAds[0].name" class="w-full max-w-[728px] h-64 object-contain" />
+                        <img :src="middleThreeAds[0].image" :alt="middleThreeAds[0].name" class="w-full object-contain" />
                         <span class="text-[10px] text-gray-400">বিজ্ঞাপন — {{ middleThreeAds[0].provider }}</span>
                     </div>
 
@@ -161,6 +185,18 @@
                         >
                             {{ article.content_three }}
                         </div>
+                    </div>
+
+                    <!-- GALLERY IMAGE 3 -->
+                    <div v-if="galleryImage(2)" class="max-w-2xl mx-auto mt-4">
+                        <img
+                            :src="galleryImage(2)!.url"
+                            :alt="galleryImage(2)!.caption ?? article.title"
+                            class="w-full h-auto object-cover rounded"
+                        />
+                        <p v-if="galleryImage(2)!.caption" class="text-sm text-gray-500 mt-1">
+                            {{ galleryImage(2)!.caption }}
+                        </p>
                     </div>
 
                     <!-- RELATED ARTICLES -->
@@ -320,6 +356,14 @@ import { ref, watch, computed, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import api from '@/services/api'
 
+interface ArticleImage {
+    id: number
+    url: string
+    caption: string | null
+    sort_order: number
+    is_cover: boolean
+}
+
 interface Article {
     id: number
     title: string
@@ -336,6 +380,7 @@ interface Article {
     category?: { id: number; name: string; slug: string }
     sub_category?: { id: number; name: string; slug: string } | null
     author?: { id: number; name: string }
+    images?: ArticleImage[]  
 }
 
 const route = useRoute()
@@ -345,6 +390,10 @@ const latestArticles = ref<Article[]>([])
 const latestBottomArticles = ref<Article[]>([])
 const loading = ref(false)
 const sameCategoryArticles = ref<Article[]>([])
+
+const galleryImage = (index: number): ArticleImage | null => {
+    return article.value?.images?.[index] ?? null
+}
 
 
 interface Advertisement {

@@ -65,8 +65,7 @@
                         </div>
                     </div>
 
-                    <!-- Category + Status -->
-                    <!-- Category + Sub-category + Status -->
+                    <!-- Category + Sub-category -->
                     <div class="grid grid-cols-2 gap-4">
                         <div>
                             <label class="block text-sm font-medium mb-1">ক্যাটাগরি <span class="text-red-500">*</span></label>
@@ -100,7 +99,7 @@
                         </div>
                     </div>
 
-                    <!-- Status moves to its own row now that the grid above is full -->
+                    <!-- Status -->
                     <div>
                         <label class="block text-sm font-medium mb-1">স্ট্যাটাস</label>
                         <select
@@ -138,28 +137,22 @@
 
                     <!-- Content Two -->
                     <div>
-                        <label class="block text-sm font-medium mb-1">
-                            কনটেন্ট - ২
-                        </label>
-
+                        <label class="block text-sm font-medium mb-1">কনটেন্ট - ২</label>
                         <textarea
                             v-model="form.content_two"
                             rows="8"
-                            placeholder="দ্বিতীয় অংশের কনটেন্ট লিখুন..."
+                            placeholder="দ্বিতীয় অংশের কনটেন্ট লিখুন..."
                             class="w-full border rounded-md px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-300"
                         ></textarea>
                     </div>
 
                     <!-- Content Three -->
                     <div>
-                        <label class="block text-sm font-medium mb-1">
-                            কনটেন্ট - ৩
-                        </label>
-
+                        <label class="block text-sm font-medium mb-1">কনটেন্ট - ৩</label>
                         <textarea
                             v-model="form.content_three"
                             rows="8"
-                            placeholder="তৃতীয় অংশের কনটেন্ট লিখুন..."
+                            placeholder="তৃতীয় অংশের কনটেন্ট লিখুন..."
                             class="w-full border rounded-md px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-300"
                         ></textarea>
                     </div>
@@ -180,13 +173,72 @@
                         </div>
                     </div>
 
+                    <!-- Gallery Images (2-5) -->
+                    <div class="border-t pt-4">
+                        <label class="block text-sm font-medium mb-1">
+                            গ্যালারি ছবি <span class="text-gray-400 font-normal">(সর্বোচ্চ ৫টি)</span>
+                        </label>
+
+                        <p v-if="isEdit && existingImages.length && !gallerySelectionTouched" class="text-xs text-amber-600 mb-2">
+                            নতুন গ্যালারি ছবি যোগ করলে বর্তমান {{ existingImages.length }}টি ছবি প্রতিস্থাপিত হবে।
+                        </p>
+
+                        <input
+                            type="file"
+                            accept="image/jpeg,image/jpg,image/png,image/webp"
+                            multiple
+                            @change="handleGalleryChange"
+                            class="w-full border rounded-md px-3 py-2 text-sm file:mr-3 file:py-1 file:px-3 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+                        >
+                        <p v-if="errors.gallery" class="text-red-500 text-xs mt-1">{{ errors.gallery }}</p>
+
+                        <!-- Existing images shown for reference in edit mode, until replaced -->
+                        <div v-if="isEdit && existingImages.length && !gallerySelectionTouched" class="grid grid-cols-5 gap-2 mt-3">
+                            <div v-for="img in existingImages" :key="img.id" class="relative">
+                                <img :src="img.url" class="w-full h-16 object-cover rounded border" :alt="img.caption ?? ''">
+                                <span v-if="img.is_cover" class="absolute top-0.5 left-0.5 bg-blue-600 text-white text-[9px] px-1 rounded">
+                                    কভার
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- Newly selected gallery images -->
+                        <div v-if="galleryPreviews.length" class="grid grid-cols-5 gap-2 mt-3">
+                            <div
+                                v-for="(preview, i) in galleryPreviews"
+                                :key="i"
+                                class="relative group"
+                            >
+                                <img :src="preview" class="w-full h-16 object-cover rounded border" alt="preview">
+
+                                <button
+                                    type="button"
+                                    @click="removeGalleryImage(i)"
+                                    class="absolute top-0.5 right-0.5 bg-red-600 text-white rounded-full w-4 h-4 flex items-center justify-center text-[10px] leading-none opacity-0 group-hover:opacity-100 transition"
+                                    title="সরান"
+                                >
+                                    <i class="bi bi-x"></i>
+                                </button>
+
+                                <button
+                                    type="button"
+                                    @click="coverIndex = i"
+                                    :class="[
+                                        'absolute bottom-0.5 left-0.5 text-[9px] px-1 rounded',
+                                        coverIndex === i ? 'bg-blue-600 text-white' : 'bg-white/80 text-gray-600'
+                                    ]"
+                                    title="কভার হিসেবে নির্ধারণ করুন"
+                                >
+                                    {{ coverIndex === i ? 'কভার ✓' : 'কভার করুন' }}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- Image Information -->
                     <div class="grid grid-cols-2 gap-4">
                         <div>
-                            <label class="block text-sm font-medium mb-1">
-                                ছবির শিরোনাম
-                            </label>
-
+                            <label class="block text-sm font-medium mb-1">ছবির শিরোনাম</label>
                             <input
                                 v-model="form.image_title"
                                 type="text"
@@ -196,10 +248,7 @@
                         </div>
 
                         <div>
-                            <label class="block text-sm font-medium mb-1">
-                                ছবির কৃতিত্ব / ফটোগ্রাফার
-                            </label>
-
+                            <label class="block text-sm font-medium mb-1">ছবির কৃতিত্ব / ফটোগ্রাফার</label>
                             <input
                                 v-model="form.image_author"
                                 type="text"
@@ -257,6 +306,14 @@ interface Category {
     children?: Category[];
 }
 
+interface ArticleImage {
+    id: number;
+    url: string;
+    caption: string | null;
+    sort_order: number;
+    is_cover: boolean;
+}
+
 interface ArticleData {
     id?: number;
     title: string;
@@ -271,6 +328,7 @@ interface ArticleData {
     is_featured: boolean;
     is_breaking: boolean;
     featured_image?: string | null;
+    images?: ArticleImage[];
 
     article_author?: string | null;
     article_area?: string | null;
@@ -284,7 +342,6 @@ const props = defineProps<{
     show: boolean;
     article?: ArticleData | null;
     categories: Category[];
-    
 }>();
 
 const emit = defineEmits<{
@@ -292,10 +349,20 @@ const emit = defineEmits<{
     saved: [];
 }>();
 
+const MAX_GALLERY_IMAGES = 5;
+const MAX_GALLERY_SIZE = 5 * 1024 * 1024; // 5MB, matches backend rule
+
 const isEdit = computed(() => !!props.article?.id);
 const submitting = ref(false);
 const imagePreview = ref<string | null>(null);
 const imageFile = ref<File | null>(null);
+
+// Gallery state
+const existingImages = ref<ArticleImage[]>([]);
+const galleryFiles = ref<File[]>([]);
+const galleryPreviews = ref<string[]>([]);
+const coverIndex = ref(0);
+const gallerySelectionTouched = ref(false); // true once user picks new gallery files, replacing the "existing images" notice
 
 const form = reactive({
     title: '',
@@ -323,9 +390,9 @@ const errors = reactive({
     sub_category_id: '',
     content: '',
     featured_image: '',
+    gallery: '',
 });
 
-// Sub-categories belonging to the currently selected parent category
 const availableSubCategories = computed(() => {
     if (!form.category_id) return [];
     const parent = props.categories.find((c) => c.id === Number(form.category_id));
@@ -333,8 +400,6 @@ const availableSubCategories = computed(() => {
 });
 
 const onCategoryChange = () => {
-    // Reset sub-category whenever the parent category changes,
-    // since the previously selected sub-category may not belong to the new parent
     form.sub_category_id = '';
 };
 
@@ -359,6 +424,12 @@ const resetForm = () => {
 
     imagePreview.value = null;
     imageFile.value = null;
+
+    existingImages.value = [];
+    galleryFiles.value = [];
+    galleryPreviews.value = [];
+    coverIndex.value = 0;
+    gallerySelectionTouched.value = false;
 
     Object.keys(errors).forEach(
         (key) => (errors[key as keyof typeof errors] = '')
@@ -399,6 +470,12 @@ watch(
 
             imagePreview.value = props.article.featured_image ?? null;
             imageFile.value = null;
+
+            existingImages.value = props.article.images ?? [];
+            galleryFiles.value = [];
+            galleryPreviews.value = [];
+            coverIndex.value = 0;
+            gallerySelectionTouched.value = false;
         } else {
             resetForm();
         }
@@ -433,6 +510,55 @@ const handleFileChange = (event: Event) => {
     }
 };
 
+const handleGalleryChange = (event: Event) => {
+    const target = event.target as HTMLInputElement;
+    errors.gallery = '';
+
+    if (!target.files || !target.files.length) return;
+
+    const selected = Array.from(target.files);
+    const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
+
+    if (selected.length > MAX_GALLERY_IMAGES) {
+        errors.gallery = `সর্বোচ্চ ${MAX_GALLERY_IMAGES}টি ছবি নির্বাচন করা যাবে।`;
+        target.value = '';
+        return;
+    }
+
+    for (const file of selected) {
+        if (!validTypes.includes(file.type)) {
+            errors.gallery = 'সব ছবি অবশ্যই jpeg, png বা webp ফরম্যাটের হতে হবে।';
+            target.value = '';
+            return;
+        }
+        if (file.size > MAX_GALLERY_SIZE) {
+            errors.gallery = 'প্রতিটি ছবির সাইজ সর্বোচ্চ ৫ মেগাবাইট হতে পারবে।';
+            target.value = '';
+            return;
+        }
+    }
+
+    galleryFiles.value = selected;
+    galleryPreviews.value = selected.map((file) => URL.createObjectURL(file));
+    coverIndex.value = 0;
+    gallerySelectionTouched.value = true;
+
+    target.value = ''; // allow re-selecting the same files if user changes their mind
+};
+
+const removeGalleryImage = (index: number) => {
+    galleryFiles.value.splice(index, 1);
+    galleryPreviews.value.splice(index, 1);
+
+    if (coverIndex.value >= galleryFiles.value.length) {
+        coverIndex.value = Math.max(0, galleryFiles.value.length - 1);
+    }
+
+    if (!galleryFiles.value.length) {
+        gallerySelectionTouched.value = false;
+    }
+};
+
 const close = () => {
     emit('close');
 };
@@ -451,126 +577,64 @@ const handleSubmit = async () => {
         formData.append('content', form.content);
         formData.append('category_id', String(form.category_id));
         formData.append('status', form.status);
-        formData.append(
-            'is_featured',
-            form.is_featured ? '1' : '0'
-        );
-        formData.append(
-            'is_breaking',
-            form.is_breaking ? '1' : '0'
-        );
+        formData.append('is_featured', form.is_featured ? '1' : '0');
+        formData.append('is_breaking', form.is_breaking ? '1' : '0');
 
-        // Optional fields
         if (form.sub_category_id) {
-            formData.append(
-                'sub_category_id',
-                String(form.sub_category_id)
-            );
+            formData.append('sub_category_id', String(form.sub_category_id));
         }
 
-        if (form.sub_title) {
-            formData.append('sub_title', form.sub_title);
-        }
-
-        if (form.excerpt) {
-            formData.append('excerpt', form.excerpt);
-        }
-
-        if (form.article_author) {
-            formData.append(
-                'article_author',
-                form.article_author
-            );
-        }
-
-        if (form.article_area) {
-            formData.append(
-                'article_area',
-                form.article_area
-            );
-        }
-
-        if (form.image_title) {
-            formData.append(
-                'image_title',
-                form.image_title
-            );
-        }
-
-        if (form.image_author) {
-            formData.append(
-                'image_author',
-                form.image_author
-            );
-        }
-
-        if (form.content_two) {
-            formData.append(
-                'content_two',
-                form.content_two
-            );
-        }
-
-        if (form.content_three) {
-            formData.append(
-                'content_three',
-                form.content_three
-            );
-        }
+        if (form.sub_title) formData.append('sub_title', form.sub_title);
+        if (form.excerpt) formData.append('excerpt', form.excerpt);
+        if (form.article_author) formData.append('article_author', form.article_author);
+        if (form.article_area) formData.append('article_area', form.article_area);
+        if (form.image_title) formData.append('image_title', form.image_title);
+        if (form.image_author) formData.append('image_author', form.image_author);
+        if (form.content_two) formData.append('content_two', form.content_two);
+        if (form.content_three) formData.append('content_three', form.content_three);
 
         if (imageFile.value) {
-            formData.append(
-                'featured_image',
-                imageFile.value
-            );
+            formData.append('featured_image', imageFile.value);
+        }
+
+        if (galleryFiles.value.length) {
+            galleryFiles.value.forEach((file) => {
+                formData.append('images[]', file);
+            });
+            formData.append('cover_index', String(coverIndex.value));
         }
 
         if (isEdit.value) {
             formData.append('_method', 'PUT');
-
-            await api.post(
-                `/admin/articles/${props.article!.id}`,
-                formData
-            );
+            await api.post(`/admin/articles/${props.article!.id}`, formData);
         } else {
-            await api.post(
-                '/admin/articles',
-                formData
-            );
+            await api.post('/admin/articles', formData);
         }
 
         Swal.fire({
             icon: 'success',
-            title: isEdit.value
-                ? 'আপডেট হয়েছে!'
-                : 'তৈরি হয়েছে!',
+            title: isEdit.value ? 'আপডেট হয়েছে!' : 'তৈরি হয়েছে!',
             timer: 1500,
             showConfirmButton: false,
         });
 
         emit('saved');
         emit('close');
-
     } catch (error: any) {
         const serverErrors = error.response?.data?.errors;
 
-        if (
-            serverErrors &&
-            typeof serverErrors === 'object'
-        ) {
+        if (serverErrors && typeof serverErrors === 'object') {
             Object.keys(serverErrors).forEach((key) => {
-                if (key in errors) {
-                    errors[key as keyof typeof errors] =
-                        serverErrors[key][0];
+                const mappedKey = key.startsWith('images') ? 'gallery' : key;
+                if (mappedKey in errors) {
+                    errors[mappedKey as keyof typeof errors] = serverErrors[key][0];
                 }
             });
         } else {
             Swal.fire({
                 icon: 'error',
                 title: 'ত্রুটি',
-                text:
-                    error.response?.data?.message ||
-                    'কিছু একটা ভুল হয়েছে।',
+                text: error.response?.data?.message || 'কিছু একটা ভুল হয়েছে।',
                 confirmButtonColor: '#4B5563',
             });
         }

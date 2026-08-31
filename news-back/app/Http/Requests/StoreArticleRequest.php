@@ -33,6 +33,8 @@ class StoreArticleRequest extends FormRequest
             'image_author' => ['nullable', 'string'],
             'content_two' => ['nullable', 'string'],
             'content_three' => ['nullable', 'string'],
+
+            
         ];
     }
 

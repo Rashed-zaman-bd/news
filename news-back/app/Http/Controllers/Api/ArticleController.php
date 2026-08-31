@@ -18,7 +18,7 @@ class ArticleController extends Controller
     public function index(Request $request): AnonymousResourceCollection
     {
         $query = Article::query()
-            ->with(['category', 'subCategory', 'author', 'editor'])
+            ->with(['category', 'subCategory', 'author', 'editor', 'images'])
             ->latest('published_at');
 
         $user = $request->user();
@@ -151,7 +151,19 @@ public function breaking(): AnonymousResourceCollection
 
         $article = Article::create($data);
 
-        return (new ArticleResource($article->load(['category', 'author'])))
+        if ($request->hasFile('images')) {
+            foreach ($request->file('images') as $i => $file) {
+                $path = $file->store('articles', 'public');
+
+                $article->images()->create([
+                    'image_path' => $path,
+                    'sort_order' => $i,
+                    'is_cover'   => $i === (int) $request->input('cover_index', 0),
+                ]);
+            }
+        }
+
+        return (new ArticleResource($article->load(['category', 'author', 'images'])))
             ->additional(['message' => 'আর্টিকেল সফলভাবে তৈরি হয়েছে।'])
             ->response()
             ->setStatusCode(201);
@@ -160,9 +172,9 @@ public function breaking(): AnonymousResourceCollection
     public function show(string $slug)
     {
         $article = Article::where('slug', $slug)
-            ->where('status', 'published')
-            ->with(['category:id,name,slug', 'subCategory:id,name,slug', 'author:id,name'])
-            ->firstOrFail();
+        ->where('status', 'published')
+        ->with(['category:id,name,slug', 'subCategory:id,name,slug', 'author:id,name', 'images'])
+        ->firstOrFail();
 
         $article->increment('views');
 
@@ -208,12 +220,37 @@ public function breaking(): AnonymousResourceCollection
 
         $article->update($data);
 
-        return (new ArticleResource($article->fresh(['category', 'author', 'editor'])))
+        if ($request->hasFile('images')) {
+            // delete old gallery images (files + rows)
+            foreach ($article->images as $old) {
+                Storage::disk('public')->delete($old->image_path);
+            }
+            $article->images()->delete();
+
+            foreach ($request->file('images') as $i => $file) {
+                $path = $file->store('articles', 'public');
+
+                $article->images()->create([
+                    'image_path' => $path,
+                    'sort_order' => $i,
+                    'is_cover'   => $i === (int) $request->input('cover_index', 0),
+                ]);
+            }
+        }
+
+        return (new ArticleResource($article->fresh(['category', 'author', 'editor', 'images'])))
             ->additional(['message' => 'আর্টিকেল সফলভাবে আপডেট হয়েছে।']);
     }
 
     public function destroy(Article $article): JsonResponse
     {
+        foreach ($article->images as $image) {
+            Storage::disk('public')->delete($image->image_path);
+        }
+        if ($article->featured_image) {
+            Storage::disk('public')->delete($article->featured_image);
+        }
+
         $article->delete();
 
         return response()->json([

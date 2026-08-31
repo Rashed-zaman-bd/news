@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Article extends Model
@@ -77,6 +78,16 @@ class Article extends Model
     public function comments(): HasMany
     {
         return $this->hasMany(Comment::class);
+    }
+
+    public function images(): HasMany
+    {
+        return $this->hasMany(ArticleImage::class)->orderBy('sort_order');
+    }
+
+    public function coverImage(): HasOne
+    {
+        return $this->hasOne(ArticleImage::class)->where('is_cover', true);
     }
 
     // --- Scopes ---

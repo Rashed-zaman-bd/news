@@ -119,14 +119,24 @@
                 <tbody class="divide-y">
                     <tr v-for="article in articles" :key="article.id" class="hover:bg-gray-50">
                         <td class="px-4 py-3">
-                            <img
-                                v-if="article.featured_image"
-                                :src="article.featured_image"
-                                class="w-12 h-12 object-cover rounded"
-                                alt="thumbnail"
-                            >
-                            <div v-else class="w-12 h-12 bg-gray-200 rounded flex items-center justify-center text-gray-400">
-                                <i class="bi bi-image"></i>
+                            <div class="relative w-12 h-12">
+                                <img
+                                    v-if="article.featured_image"
+                                    :src="article.featured_image"
+                                    class="w-12 h-12 object-cover rounded"
+                                    alt="thumbnail"
+                                >
+                                <div v-else class="w-12 h-12 bg-gray-200 rounded flex items-center justify-center text-gray-400">
+                                    <i class="bi bi-image"></i>
+                                </div>
+
+                                <span
+                                    v-if="article.images && article.images.length"
+                                    class="absolute -bottom-1 -right-1 bg-blue-600 text-white text-[10px] leading-none px-1.5 py-0.5 rounded-full"
+                                    :title="`${article.images.length}টি অতিরিক্ত ছবি`"
+                                >
+                                    +{{ article.images.length }}
+                                </span>
                             </div>
                         </td>
                         <td class="px-4 py-3 max-w-xs">
@@ -242,6 +252,14 @@ interface Author {
     name: string;
 }
 
+interface ArticleImage {
+    id: number;
+    url: string;
+    caption: string | null;
+    sort_order: number;
+    is_cover: boolean;
+}
+
 interface Article {
     id: number;
     title: string;
@@ -259,6 +277,7 @@ interface Article {
     category_id?: number;
     sub_category?: { id: number; name: string } | null;
     author?: { id: number; name: string };
+    images?: ArticleImage[];  
 }
 
 const articles = ref<Article[]>([]);

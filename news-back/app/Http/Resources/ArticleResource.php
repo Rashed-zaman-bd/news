@@ -41,6 +41,9 @@ class ArticleResource extends JsonResource
                 'name' => $this->editor->name,
             ] : null),
 
+            // Gallery images
+            'images' => ArticleImageResource::collection($this->whenLoaded('images')),
+
             'article_author' => $this->article_autor,
             'article_area' => $this->article_area,
             'image_title' => $this->image_title,
